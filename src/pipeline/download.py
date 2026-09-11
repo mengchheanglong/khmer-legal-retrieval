@@ -37,6 +37,20 @@ DOCUMENTS = [
         "url": "https://data.opendevelopmentmekong.net/dataset/28a1dc26-20a0-4dc8-8d62-8f191348dd53/resource/f48f4119-cfe6-41fe-b54f-48b03341bedc/download/563a6ba2-a45a-42be-8f0d-6baecc84aca7.pdf",
         "filename": "commercial_arbitration_2006_en.pdf",
     },
+    {
+        "name": "Civil Code of Cambodia (2007) — Khmer",
+        "law_key": "civil_code_2007_kh",
+        "language": "kh",
+        "url": "https://data.opendevelopmentcambodia.net/en/dataset/09d1e634-7256-47e9-89e8-1b6494af8883/resource/e92232fb-eb45-47a0-a7f5-5018e9fd5f39/download/6fa9349f-39c9-440f-881b-9e052653e69c.pdf",
+        "filename": "civil_code_2007_kh.pdf",
+    },
+    {
+        "name": "Criminal Code of Cambodia (2009) — Khmer",
+        "law_key": "criminal_code_2009_kh",
+        "language": "kh",
+        "url": "https://data.opendevelopmentcambodia.net/dataset/aac9b82e-4672-4904-9629-e120604f55a7/resource/39521a25-bc64-4d35-908f-f3bcd9a472da/download/2505c33c-a399-42da-8e9e-5b119d293025.pdf",
+        "filename": "criminal_code_2009_kh.pdf",
+    },
 ]
 
 

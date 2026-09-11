@@ -16,5 +16,23 @@
     "last_article": 47,
     "json_path": "data\\04_chunks\\commercial_arbitration_2006_en_chunks.json",
     "jsonl_path": "data\\04_chunks\\commercial_arbitration_2006_en_chunks.jsonl"
+  },
+  {
+    "law_name": "Civil Code 2007",
+    "law_key": "civil_code_2007_kh",
+    "chunks_count": 1304,
+    "first_article": 1,
+    "last_article": 1304,
+    "json_path": "data\\04_chunks\\civil_code_2007_kh_chunks.json",
+    "jsonl_path": "data\\04_chunks\\civil_code_2007_kh_chunks.jsonl"
+  },
+  {
+    "law_name": "Criminal Code 2009",
+    "law_key": "criminal_code_2009_kh",
+    "chunks_count": 672,
+    "first_article": 1,
+    "last_article": 672,
+    "json_path": "data\\04_chunks\\criminal_code_2009_kh_chunks.json",
+    "jsonl_path": "data\\04_chunks\\criminal_code_2009_kh_chunks.jsonl"
   }
 ]

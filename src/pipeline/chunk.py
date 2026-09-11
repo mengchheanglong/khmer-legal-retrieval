@@ -28,6 +28,20 @@ DOC_CHUNK_CONFIGS = [
         "extracted_file": "data/02_extracted/commercial_arbitration_2006_en.txt",
         "language": "en",
     },
+    {
+        "law_name": "Civil Code 2007",
+        "law_name_kh": "ក្រមរដ្ឋប្បវេណី",
+        "law_key": "civil_code_2007_kh",
+        "extracted_file": "data/02_extracted/civil_code_2007_kh.txt",
+        "language": "kh",
+    },
+    {
+        "law_name": "Criminal Code 2009",
+        "law_name_kh": "ក្រមព្រហ្មទណ្ឌ",
+        "law_key": "criminal_code_2009_kh",
+        "extracted_file": "data/02_extracted/criminal_code_2009_kh.txt",
+        "language": "kh",
+    },
 ]
 
 
@@ -55,7 +69,12 @@ def run_chunking() -> None:
         with open(txt_path, "r", encoding="utf-8") as f:
             text = f.read()
 
-        chunks = chunker.chunk(text=text, law_name=law_name, language=language)
+        chunks = chunker.chunk(
+            text=text,
+            law_name=law_name,
+            language=language,
+            law_name_kh=config.get("law_name_kh"),
+        )
 
         # Write as JSON (array of chunks)
         output_json = chunks_dir / f"{law_key}_chunks.json"

@@ -3,12 +3,16 @@ Extraction pipeline script.
 
 Extracts text from raw legal PDFs in data/01_raw/
 and outputs cleaned, extracted text files in data/02_extracted/.
+
+Khmer PDFs from ODC are typeset in legacy Limon fonts and are converted
+to Khmer Unicode by LimonPdfExtractor.
 """
 
 import json
 from pathlib import Path
 
 from src.config.logging import get_logger, setup_logging
+from src.infrastructure.extractors.limon_pdf_extractor import LimonPdfExtractor
 from src.infrastructure.extractors.pymupdf_extractor import PyMuPDFExtractor
 
 setup_logging()
@@ -41,6 +45,28 @@ DOC_CONFIGS = [
         "start_page": 1,
         "end_page": None,
     },
+    {
+        "law_name": "Civil Code 2007",
+        "law_key": "civil_code_2007_kh",
+        "pdf_path": "data/01_raw/kh/civil_code_2007_kh.pdf",
+        "language": "kh",
+        "extractor": "limon",
+        # Pages 1-2: cover; articles 1-1304 on pages 3-475; pages 476-487: table of contents
+        "start_page": 3,
+        "end_page": 475,
+    },
+    {
+        "law_name": "Criminal Code 2009",
+        "law_key": "criminal_code_2009_kh",
+        "pdf_path": "data/01_raw/kh/criminal_code_2009_kh.pdf",
+        "language": "kh",
+        "extractor": "limon",
+        # Pages 1-2: cover and royal kram; articles 1-672 on pages 3-247; pages 248-292: table of contents
+        "start_page": 3,
+        "end_page": 247,
+        # Promulgation block ("Done at the Royal Palace...", signatures) follows the last article
+        "stop_marker": "ធ្វើនៅព្រះបរមរាជវាំង",
+    },
 ]
 
 
@@ -50,12 +76,17 @@ def run_extraction() -> None:
     extracted_dir = base_dir / "data" / "02_extracted"
     extracted_dir.mkdir(parents=True, exist_ok=True)
 
-    extractor = PyMuPDFExtractor(header_margin_pt=45.0, footer_margin_pt=45.0)
+    extractors = {
+        "pymupdf": PyMuPDFExtractor(header_margin_pt=45.0, footer_margin_pt=45.0),
+        "limon": LimonPdfExtractor(),
+    }
 
     for config in DOC_CONFIGS:
         pdf_file = base_dir / config["pdf_path"]
         law_key = config["law_key"]
         law_name = config["law_name"]
+        extractor_name = config.get("extractor", "pymupdf")
+        extractor = extractors[extractor_name]
 
         if not pdf_file.exists():
             logger.warning(f"PDF file not found: {pdf_file}. Skipping.")
@@ -74,6 +105,8 @@ def run_extraction() -> None:
             start_page=config["start_page"],
             end_page=config["end_page"],
         )
+        if config.get("stop_marker"):
+            extracted_text = extracted_text.split(config["stop_marker"])[0].rstrip() + "\n"
 
         # Output text file
         output_txt = extracted_dir / f"{law_key}.txt"
@@ -85,6 +118,7 @@ def run_extraction() -> None:
             "law_name": law_name,
             "law_key": law_key,
             "language": config["language"],
+            "extractor": extractor_name,
             "source_pdf": str(config["pdf_path"]),
             "start_page": config["start_page"],
             "end_page": config["end_page"],
