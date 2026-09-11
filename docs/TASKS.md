@@ -1,148 +1,171 @@
 # 📋 Implementation Tasks
 
 > Track progress by marking tasks: `[ ]` todo → `[/]` in progress → `[x]` done
+> Source of requirements: *DL Final Project Instruction & Evaluation Rubric* (Mr. Soklong HIM, 2026–2027)
+> Direction: **pure Khmer** study (see docs/GOAL.md, Key Technical Decision 1)
 
 ---
 
-## Phase 1: Project Setup & Data Collection
+## 0. Instruction Compliance Audit (last reviewed: 2026-09-11)
 
-### 1.1 Project Scaffolding
-- [x] Initialize project directory structure
-- [x] Create virtual environment and `requirements.txt`
-- [x] Set up `.env.example` with all required config keys
-- [x] Set up `.gitignore` for data files, `.env`, and caches
-- [ ] Initialize git repository
-
-### 1.2 Data Collection
-- [x] Download Civil Code (2007) — English PDF from ODC (300 pages)
-- [ ] Download Civil Code (2007) — Khmer PDF from ODC
-- [x] Download Law on Commercial Enterprises (2005) — English PDF (scanned)
-- [ ] Download Law on Commercial Enterprises (2005) — Khmer PDF
-- [ ] Download Amendment to Law on Commercial Enterprises (2022)
-- [x] Download Law on Commercial Arbitration (2006) — English PDF (selectable)
-- [ ] Download Law on E-Commerce (2019)
-- [x] Verify PDF text selectability and scan detection
-- [x] Place PDFs in `data/01_raw/en/`
-
-### 1.3 Text Extraction (`src/pipeline/extract.py`)
-- [x] Implement `extract_pdf_text()` using PyMuPDF with header/footer clipping
-- [x] Implement `detect_scanned_pdf()` to flag image-only PDFs for OCR
-- [x] Implement TOC page detection and skipping (Civil Code starts at page 9)
-- [x] Strip running headers/footers (e.g., translation disclaimers, page headers)
-- [x] Save extracted text to `data/02_extracted/` as `.txt` and `_meta.json` files
-- [x] Add logging for extraction progress and errors
-- [x] Verify extraction outputs (Civil Code: 774k chars, Commercial Arbitration: 39k chars)
+| Requirement (instruction §) | Status | Gap / action |
+|-----------------------------|:------:|--------------|
+| Topic approved by lecturer (§3.1, Week 7) | ❌ | Present problem, Khmer corpus, A1–A3 and metrics; record approval in README |
+| ≥ 2 (ideally 3) distinct DL approaches trained/fine-tuned by me (§2, §4) | ❌ | **No model training exists yet.** Implement A1–A3 (Phase 6). |
+| All models in PyTorch; no Keras/TF (§5B) | ❌ | `torch` / `transformers` not yet in `requirements.txt` |
+| Same train/val/test split and test preprocessing for all (§2, §5A) | ❌ | Build `data/05_splits/` with leakage guard |
+| Dataset source, license, size, distribution, bias (§5A) | 🟡 | Khmer corpus done and documented (README §2); test set and manual spot-check still open |
+| Checkpoint save/load with `torch.save` (§5B) | ❌ | Shared trainer with `last.pt` / `best.pt` / `--resume` |
+| Seeds fixed for Python, NumPy, PyTorch (§5B) | ❌ | `src/dl/seed.py` |
+| Clean, modular, runnable code (§5B) | 🟡 | Pipeline + app are modular with 73 tests; DL code does not exist yet |
+| Task-appropriate metrics (§5C) | ❌ | Recall@k, MRR@10, nDCG@10, bootstrap CIs in `src/dl/evaluate.py` |
+| Train/val curves for every approach (§5C) | ❌ | Per-epoch CSV logs + overlay plots |
+| Hyperparameter tuning: LR + one regularisation choice (§5C) | ❌ | Grid for A3 (and A1/A2) in `results/tuning/` |
+| Params, training time, hardware per approach (§5C) | ❌ | Written by trainer into metrics JSON |
+| Error analysis (§5C) | ❌ | After evaluation |
+| Single results table + ≥ 2 comparison figures (§5D) | ❌ | `src/dl/report.py` → README + slides |
+| Explanation with course concepts; limitations (§5D) | ❌ | After experiments |
+| Cite reused code/models/data (§5E) | 🟡 | README §8 + THIRD_PARTY_NOTICES for KhmerConverter; add final model versions |
+| AI-use disclosure in README (§5E) | 🟡 | Template present; fill in honestly |
+| Repo contains README, requirements.txt, code, `results/`, `slides/` (§6.1) | 🟡 | `results/`, `slides/`, `notebooks/`, `configs/` missing |
+| `requirements.txt` with exact packages (§6.1) | 🟡 | Currently `>=` ranges; pin exact versions |
+| Weights > 50 MB hosted externally with link (§9) | ❌ | A3 checkpoint (≈ 1.1 GB) → HF Hub/Drive |
+| Regular commit history (§6.1) | ⚠️ | All existing commits dated 2026-09-02. **Commit small and often from now on.** |
+| Slides 10–20, required structure (§6.2) | ❌ | Phase 8 |
 
 ---
 
-## Phase 2: Cleaning & Chunking
-
-### 2.1 Text Cleaning & Formatting
-- [x] Remove table of contents / index pages
-- [x] Normalize whitespace and line breaks
-- [x] Remove decorative characters and formatting artifacts
-- [x] Preserve legal numbering (Article, Section, Chapter markers)
-- [x] Save cleaned text in `data/02_extracted/`
-
-### 2.2 Legal Chunking (`src/pipeline/chunk.py`)
-- [x] Implement Article-level regex chunker for English text
-  - Pattern: `r"Article\s+(\d+)[:.]?"` and `r"(\d+)\.\s*(?:\(([^\)]+)\))?"`
-- [x] Implement Article-level regex chunker for Khmer text
-  - Pattern: `r"មាត្រា\s*([០-៩\d]+)\.?"`
-- [x] Extract hierarchical metadata per chunk:
-  - `law_name`, `book`, `title`, `chapter`, `section`, `article_number`, `article_title`
-- [x] Define `LegalChunk` Pydantic model for validated output
-- [x] Implement dominant pattern detection & binary search hierarchy tracking
-- [x] Save chunks to `data/04_chunks/` as structured JSON and JSONL (1,347 article chunks)
-- [x] Write unit tests with sample articles (8 passed)
+## Phases 1–5: RAG application (done)
+- [x] Project scaffolding, `.env.example`, `.gitignore`, git repository
+- [x] English PDF download and extraction (PyMuPDF, header/footer clipping, TOC skipping)
+- [x] Article-level chunker with hierarchy metadata; `LegalChunk` Pydantic model
+- [x] Embedding adapter (OpenAI), pgvector repository + NumPy fallback, BM25 retriever
+- [x] Hybrid retrieval with RRF, cross-encoder reranker, DeepSeek LLM adapter
+- [x] Citation parsing and verification (English and Khmer numerals); Khmer→English query mapping
+- [x] FastAPI endpoints, Streamlit UI, unit and integration tests
 
 ---
 
-## Phase 3: Embedding & Storage
+## Phase 5b: Khmer Corpus (done)
 
-### 3.1 Embedding Pipeline (`src/pipeline/embed.py` & `src/infrastructure/ai/openai_embedding.py`)
-- [x] Implement `OpenAIEmbedding` adapter using `text-embedding-3-large`
-- [x] Add batching logic (batch size 100 chunks per request)
-- [x] Implement retry logic with exponential backoff via tenacity
-- [x] Add disk caching of embeddings to avoid duplicate API fees
-- [x] Implement `python -m src.pipeline.embed` pipeline runner
+### 5b.1 Sources
+- [x] Find Khmer PDFs on ODC; confirm CC-BY-SA-4.0 for the Civil Code and Criminal Code
+- [x] Download Civil Code (KH) and Criminal Code (KH); add them to `src/pipeline/download.py`
+- [x] Check the Labour Law (KH): scanned images, so excluded pending OCR
+- [x] Check Commercial Arbitration: no Khmer PDF on ODC, so excluded
 
-### 3.2 Database & Storage Setup (`src/infrastructure/storage/`)
-- [x] Implement SQLAlchemy ORM `LegalChunkModel` with pgvector column
-- [x] Configure HNSW vector index (`vector_cosine_ops`)
-- [x] Implement `PgVectorRepository` with PostgreSQL support
-- [x] Implement fast local numpy cosine similarity fallback store
-- [x] Implement `BM25Retriever` using `rank-bm25` with disk persistence (`bm25_index.pkl`)
+### 5b.2 Limon → Unicode conversion (`src/infrastructure/extractors/`)
+- [x] Diagnose: text layer in legacy Limon fonts (not scanned)
+- [x] `limon_converter.py`: KhmerConverter mapping data + Python 3 port of its reordering rules
+- [x] Bundle `resources/khmer_legacy_fontdata.xml`, license and `THIRD_PARTY_NOTICES.md`
+- [x] Unit tests: KhmerConverter reorder cases + real Limon strings (35 tests)
+- [ ] **Manual spot-check:** a Khmer reader compares 20–30 random converted articles with the PDF pages and records the error rate in README §2.2 (not done yet — the earlier automated audit only counted regex patterns)
+- [ ] Decide the licence for the repo given the GPL-2.0-or-later port (see THIRD_PARTY_NOTICES)
 
----
-
-## Phase 4: Retrieval & Generation
-
-### 4.1 Hybrid Retrieval (`src/application/use_cases/hybrid_retrieve.py`)
-- [x] Implement Reciprocal Rank Fusion (RRF) to merge dense + sparse results
-- [x] Implement graceful fallback to BM25 when dense vectors are offline
-- [x] Add metadata filtering (by law name, chapter)
-- [x] Write unit tests for RRF scoring logic (passed)
-
-### 4.2 Reranking (`src/infrastructure/retrieval/cross_encoder_reranker.py`)
-- [x] Implement Cross-Encoder reranker adapter (`BAAI/bge-reranker-large` / sentence-transformers)
-- [x] Accept top-K from hybrid search, return reranked top-N
-- [x] Add score-based fallback if model is not loaded locally
-
-### 4.3 LLM Generation (`src/application/use_cases/answer_legal_qa.py` & `src/infrastructure/ai/openai_llm.py`)
-- [x] Design legal system prompt enforcing mandatory article citations
-- [x] Implement `OpenAILLM` adapter with GPT-4o / GPT-4o-mini
-- [x] Implement citation parsing and verification against retrieved context articles
-- [x] Write unit tests with verified & unverified citation detection (passed)
+### 5b.3 Extraction and chunking
+- [x] `LimonPdfExtractor`: page ranges, page-number removal, headings on own lines, wrapped lines re-joined
+- [x] Exclude tables of contents (Civil pp. 476–487, Criminal pp. 248–292) and the promulgation block
+- [x] Khmer chunker: `មាត្រា N.- title` headers, titles, Book/Title/Chapter/Section metadata
+- [x] Skip TOC repeats and cross-references; stop article content at the next heading; reset stale lower headings
+- [x] Result: Civil Code 1,304 articles (1–1304), Criminal Code 672 (1–672), all titled; unit tests added
+- [x] Re-attach wrapped article titles by alignment and syntax (198 titles completed across both codes); confirmed from context that the 8 matches for `[ក-៓]- [ក-៓]` are authentic Khmer alphabetical sub-clause list markers (`ឆ-`), not hyphen breaks
+- [x] Keep Limon words intact across zero-gap placeholder spaces (fixed broken words such as *ផ ន្ត្ទាទោស*, *នីតិប្បញ្ញត ្តិ*) while keeping real word spaces; normalise non-breaking and double spaces
+- [ ] Commit `data/04_chunks/*_kh_chunks.json` and the manifest
 
 ---
 
-## Phase 5: API & User Interface
+## Phase 6: Deep Learning Study (graded core) 🔴
 
-### 5.1 FastAPI Backend (`src/interfaces/api/`)
-- [x] Implement `/api/v1/retrieve` endpoint: hybrid search + reranking
-- [x] Implement `/api/v1/qa` endpoint: grounded question answering with verified citations
-- [x] Implement `/health` liveness endpoint
-- [x] Implement dependency injection wiring (`dependencies.py`)
-- [x] Add CORS middleware and Pydantic v2 schemas
-- [x] Write API integration tests (`tests/integration/test_api_routes.py` - passed)
+### 6.0 Topic approval (before final experiments)
+- [ ] One-slide pitch: Khmer problem, corpus (1,976 articles), A1–A3, Recall@5 / MRR@10
+- [ ] Lecturer approval by **Week 7**; record the date in README
 
-### 5.2 Streamlit UI (`src/interfaces/ui/app.py`)
-- [x] Build interactive Legal Q&A Assistant tab with example questions
-- [x] Build Statutory Article Explorer tab with live keyword & article search
-- [x] Display answers with verified/unverified citation badges
-- [x] Display expandable source article cards with statutory hierarchy and relevance scores
-- [x] Add sidebar statute filters (Civil Code, Commercial Arbitration, All Laws)
+### 6.1 Khmer test set and splits
+- [ ] Translate the 41 Civil Code questions in `tests/evaluation/ground_truth_qa.json` into Khmer; re-verify `expected_articles` against the Khmer text
+- [ ] Write new Civil Code and Criminal Code questions to reach ~200 (T-Q); store as `tests/evaluation/ground_truth_qa_kh.json` with `question_kh`, `expected_articles`, `law_name`, `author/verifier`
+- [ ] (Optional) Generate ~3 Khmer questions per article with DeepSeek; hand-check ≥ 100 random pairs; mark as synthetic
+- [ ] `src/dl/prepare_splits.py`: title→body pairs for the 1,706 unique-title articles; strip the title line from passages
+- [ ] Leakage guard: drop pairs whose article is relevant to any T-Q question
+- [ ] Split by article 80/10/10 (seed 42) → `train`, `val`, `test_titles`; save `data/05_splits/*.jsonl` + `manifest.json` (counts, seed, SHA-256)
+- [ ] Report split sizes and per-code distribution in README §2
+
+### 6.2 Shared infrastructure (`src/dl/`)
+- [ ] Add pinned `torch`, `transformers`, `khmer-nltk`, `pandas`, `matplotlib`, `pyyaml` to `requirements.txt`
+- [ ] `seed.py`: `set_seed()` for `random`, `numpy`, `torch`, `torch.cuda`, cuDNN deterministic
+- [ ] `text.py`: NFC normalisation, zero-width space removal, `khmer-nltk` segmentation (cached)
+- [ ] `data.py`: PyTorch `Dataset` / `DataLoader` for pairs, corpus and test queries
+- [ ] `losses.py`: InfoNCE with in-batch negatives (temperature τ)
+- [ ] `train.py`: YAML-driven loop; per-epoch train loss, val loss, val MRR@10 → `results/logs/<run>.csv`
+- [ ] Checkpointing: `torch.save` of model/optimiser/scheduler/epoch/RNG → `last.pt`, `best.pt`; `--resume`
+- [ ] Log trainable params, wall-clock time, device, peak GPU memory → `results/metrics/<run>.json`
+- [ ] `evaluate.py`: **one** harness — encode the full 1,976-article corpus, rank, Recall@1/5/10, MRR@10, nDCG@10, Hit@5, bootstrap 95% CI
+- [ ] Unit tests for metrics, InfoNCE and segmentation on toy inputs
+
+### 6.3 Baselines (not counted as approaches)
+- [ ] BM25 on `khmer-nltk` tokens through the shared harness
+- [ ] `multilingual-e5-base` zero-shot through the shared harness
+
+### 6.4 Approach A1 — BiLSTM dual encoder, from scratch
+- [ ] Vocabulary from the train split (min frequency, `<unk>`); random 300-d embeddings; 1-layer BiLSTM (256/dir); mean pooling; shared towers
+- [ ] Train with InfoNCE; save curves and checkpoints
+- [ ] Tune LR {1e-3, 3e-3} × dropout {0.1, 0.3}
+
+### 6.5 Approach A2 — XLM-R encoder frozen + linear probe
+- [ ] Freeze all backbone params; verify trainable params ≈ 0.59 M
+- [ ] Linear head 768→768 initialised to identity, shared by both towers
+- [ ] Cache frozen embeddings to speed up training
+- [ ] Tune LR {1e-3, 1e-2} × weight decay {0, 0.01}
+
+### 6.6 Approach A3 — XLM-R encoder, full fine-tuning
+- [ ] All layers trainable; AdamW + warm-up; fp16 on T4; max length 256 (report truncation rate)
+- [ ] Grid: LR {1e-5, 2e-5, 3e-5} × weight decay {0, 0.01} (× τ {0.02, 0.05} if time allows)
+- [ ] Save tuning table → `results/tuning/a3.csv`; select by val MRR@10 only
+- [ ] Upload best checkpoint to HF Hub/Drive; link in README §6.4
+
+### 6.7 Final evaluation & comparison
+- [ ] Evaluate each selected model **once** on T-Q and T-T
+- [ ] `report.py` → `results/metrics/summary.csv` and README §5.1 table (params, time, hardware)
+- [ ] Figures: metrics bar chart with CIs; overlaid learning curves; Recall@k curve; per-code breakdown
+- [ ] Discuss over/under-fitting per curve; explain the winner with course concepts
+
+### 6.8 Error analysis & limitations
+- [ ] Per approach: T-Q misses at k=5 with retrieved vs expected articles → `results/error_analysis/`
+- [ ] Categorise: vocabulary mismatch, segmentation errors, multi-article, shared titles, Civil/Criminal confusion, near-miss
+- [ ] 3–5 worked examples for slides; limitations + prioritised future work in README §5.5
 
 ---
 
-## Phase 6: Evaluation & Optimization
-
-### 6.1 Evaluation Pipeline (`src/evaluation/`)
-- [ ] Create golden Q&A dataset (50+ question-answer-article triples)
-- [ ] Implement evaluation using RAGAS metrics:
-  - Context Precision, Context Recall, Faithfulness, Answer Relevancy
-- [ ] Generate evaluation report with scores per metric
-- [ ] Identify and log failure cases (missed articles, hallucinations)
-
-### 6.2 Optimization
-- [ ] Tune chunk overlap and size for edge-case articles
-- [ ] Experiment with different embedding models
-- [ ] Tune hybrid search weights (dense vs. sparse ratio)
-- [ ] Optimize reranker top-K and threshold
-- [ ] Profile and optimize query latency
+## Phase 7: Repository Deliverables
+- [ ] README: every required section filled from `results/` (no hand-typed numbers)
+- [ ] `requirements.txt` pinned from the final environment
+- [ ] `results/`, `configs/`, `notebooks/` (one Colab notebook per approach), `slides/`
+- [ ] Fresh-clone reproducibility test: install → download → extract → chunk → splits → train one approach → evaluate
+- [ ] Commit regularly with meaningful messages (several times per week)
 
 ---
 
-## Phase 7: Khmer Language Support (Stretch)
+## Phase 8: Slides & Presentation (10–20 slides, 10 min + 5 min Q&A)
+- [ ] Problem & motivation (Khmer, official text, input → output)
+- [ ] Dataset & pipeline (ODC PDFs, Limon problem and conversion, article chunking, sizes, splits, leakage guard)
+- [ ] Architectures & strategies (A1–A3 diagrams, tokenization contrast, justification)
+- [ ] Experimental setup (metrics, search ranges, optimiser, hardware, runtimes)
+- [ ] Results (single table, learning curves, metric chart)
+- [ ] Discussion & error analysis (why the winner won, Khmer failure cases, limitations)
+- [ ] Conclusion & future work; appendix (tuning table, examples, parameter counts)
+- [ ] Export to `slides/final_presentation.pdf`; rehearse to ≤ 10 minutes
+- [ ] Q&A prep: Limon reordering, InfoNCE, in-batch negatives, pooling, freezing, checkpoint/resume, each metric, every line of `src/dl/`
 
-### 7.1 Khmer Text Processing
-- [ ] Integrate Khmer word segmenter (`khmercut` or `khmersegment`)
-- [ ] Test multilingual embeddings (`multilingual-e5-large`) on Khmer text
-- [ ] Implement OCR pipeline for scanned Khmer PDFs (Tesseract `khm`)
-- [ ] Validate retrieval quality on Khmer-language queries
+---
 
-### 7.2 Bilingual Support
-- [ ] Cross-language retrieval: query in English, retrieve Khmer articles (and vice versa)
-- [ ] Language detection for incoming queries
-- [ ] Parallel article display (English + Khmer side by side)
+## Phase 9: Khmer RAG Prototype
+- [ ] `TorchEncoderEmbedding` adapter implementing `EmbeddingPort` with the best checkpoint
+- [ ] Index `*_kh_chunks.json` (dense + Khmer-segmented BM25) and switch the app to the Khmer corpus
+- [ ] Remove the Khmer→English dictionary query mapping once retrieval is native Khmer
+- [ ] Re-run app evaluation on T-Q; latency < 5 s target
+
+---
+
+## Phase 10: Stretch / Optional
+- [ ] OCR the Khmer Labour Law (Tesseract `khm`) and measure its quality before adding it to the corpus
+- [ ] English app data fixes (stale section metadata, missing EN articles 553–556 and 983–986), kept separate from the Khmer study
+- [ ] Trained cross-encoder re-ranker as a fourth approach
