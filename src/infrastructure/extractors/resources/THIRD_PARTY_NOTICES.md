@@ -16,5 +16,7 @@
 The only affected mapping is Limon `0x20 0xB3` → " ៖"; a normal space keeps tokenization consistent.
 
 **Licence note:** the KhmerConverter source headers reference the GNU GPL v2 or later, but the
-project ships an LGPL-2.1 `LICENSE.TXT`. Until that is clarified, treat `limon_converter.py` as
-GPL-2.0-or-later. Keep this in mind if a licence is chosen for the rest of this repository.
+project ships an LGPL-2.1 `LICENSE.TXT`. This repository takes the stricter reading:
+`limon_converter.py` is GPL-2.0-or-later code, distributed here under **GPL-3.0-or-later** (the
+repository licence, see `/LICENSE`), which the "or later" clause permits. The LGPL-2.1 mapping data
+may likewise be distributed as part of a GPL-licensed program (LGPL-2.1 section 3).

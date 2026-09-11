@@ -362,6 +362,21 @@ docker compose up --build                       # UI + API + PostgreSQL/pgvector
 
 ---
 
+## License
+
+| Part | License |
+|------|---------|
+| **Code** (everything under `src/`, `tests/` and scripts) | GNU General Public License v3.0 or later (`GPL-3.0-or-later`); see [`LICENSE`](LICENSE) |
+| **Legal text data** (`data/04_chunks/`, and the indexes in `data/indices/` built from it) | CC-BY-SA-4.0, derived from Open Development Cambodia; see [`data/04_chunks/DATA_LICENSE.md`](data/04_chunks/DATA_LICENSE.md) |
+| **Pre-trained models** | Their own licenses (e.g. `intfloat/multilingual-e5-base`: MIT) |
+
+The whole codebase uses the GPL because `src/infrastructure/extractors/limon_converter.py` contains a
+port of KhmerConverter's reordering code (GPL-2.0-or-later, which allows GPL-3.0) and bundles its
+LGPL-2.1 mapping data. See
+[`THIRD_PARTY_NOTICES.md`](src/infrastructure/extractors/resources/THIRD_PARTY_NOTICES.md).
+
+---
+
 ## ⚠️ Legal Disclaimer
 
 This is a research and educational project. It is **not** legal advice. Consult a qualified legal

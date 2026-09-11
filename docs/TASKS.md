@@ -60,7 +60,7 @@
 - [x] Bundle `resources/khmer_legacy_fontdata.xml`, license and `THIRD_PARTY_NOTICES.md`
 - [x] Unit tests: KhmerConverter reorder cases + real Limon strings (35 tests)
 - [ ] **Manual spot-check:** a Khmer reader compares 20–30 random converted articles with the PDF pages and records the error rate in README §2.2 (not done yet — the earlier automated audit only counted regex patterns)
-- [ ] Decide the licence for the repo given the GPL-2.0-or-later port (see THIRD_PARTY_NOTICES)
+- [x] Licence: code GPL-3.0-or-later (`LICENSE`), legal-text data CC-BY-SA-4.0 (`data/04_chunks/DATA_LICENSE.md`)
 
 ### 5b.3 Extraction and chunking
 - [x] `LimonPdfExtractor`: page ranges, page-number removal, headings on own lines, wrapped lines re-joined
