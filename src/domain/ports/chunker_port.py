@@ -14,7 +14,13 @@ class ChunkerPort(ABC):
     """
 
     @abstractmethod
-    def chunk(self, text: str, law_name: str, language: str = "en") -> list[LegalChunk]:
+    def chunk(
+        self,
+        text: str,
+        law_name: str,
+        language: str = "en",
+        law_name_kh: str | None = None,
+    ) -> list[LegalChunk]:
         """
         Split legal text into Article-level chunks with metadata.
 
@@ -22,6 +28,7 @@ class ChunkerPort(ABC):
             text: Cleaned full text of a legal document.
             law_name: Name of the law for metadata tagging.
             language: Language code ("en" or "kh").
+            law_name_kh: Khmer name of the law, used in Khmer chunk context.
 
         Returns:
             List of LegalChunk objects with hierarchical metadata.

@@ -78,6 +78,52 @@ class TestLegalHierarchicalChunker:
         )
         assert len(chunks) == 2  # មាត្រា ១ and មាត្រា ២
 
+    def test_khmer_skips_toc_repeats_and_cross_references(self, sample_extracted_text_kh: str) -> None:
+        """Table-of-contents repeats and inline 'មាត្រា ៣៣៦ នៃ...' references are not articles."""
+        chunks = self.chunker.chunk(text=sample_extracted_text_kh, law_name="Civil Code 2007", language="kh")
+        assert [c.metadata.article_number for c in chunks] == [1, 2, 3, 4]
+
+    def test_khmer_body_sentence_citing_a_book_is_not_a_heading(self, sample_extracted_text_kh: str) -> None:
+        """'គន្ថីទី ១ (...) នៃក្រមនេះ ... ។' is article text, not a Book heading."""
+        chunks = self.chunker.chunk(text=sample_extracted_text_kh, law_name="Civil Code 2007", language="kh")
+        assert "គន្ថីទី ១ (បទប្បញ្ញត្តិទូទៅ) នៃក្រមនេះ ត្រូវយកមកអនុវត្ត ។" in chunks[3].content
+
+    def test_khmer_lower_headings_reset_under_new_book(self, sample_extracted_text_kh: str) -> None:
+        """A section from an earlier book must not carry over into a new book."""
+        chunks = self.chunker.chunk(text=sample_extracted_text_kh, law_name="Civil Code 2007", language="kh")
+        assert chunks[3].metadata.book == "គន្ថីទី ៣ កាតព្វកិច្ច"
+        assert chunks[3].metadata.chapter == "ជំពូកទោល បទប្បញ្ញត្តិទូទៅ"
+        assert chunks[3].metadata.section is None
+
+    def test_khmer_article_titles_extracted(self, sample_extracted_text_kh: str) -> None:
+        """The text after 'មាត្រា N.-' is the article title."""
+        chunks = self.chunker.chunk(text=sample_extracted_text_kh, law_name="Civil Code 2007", language="kh")
+        assert chunks[0].metadata.article_title == "ច្បាប់ទូទៅនៃនីតិឯកជន"
+        assert chunks[2].metadata.article_title == "គោលការណ៍ស្វ័យភាពនៃបុគ្គលឯកជន"
+
+    def test_khmer_hierarchy_metadata(self, sample_extracted_text_kh: str) -> None:
+        """Khmer articles inherit Book / Chapter / Section headings, including ជំពូកទោល."""
+        chunks = self.chunker.chunk(text=sample_extracted_text_kh, law_name="Civil Code 2007", language="kh")
+        assert chunks[0].metadata.book == "គន្ថីទី ១ បទប្បញ្ញត្តិទូទៅ"
+        assert chunks[0].metadata.chapter == "ជំពូកទោល បទប្បញ្ញត្តិទូទៅ"
+        assert chunks[2].metadata.book == "គន្ថីទី ២ បុគ្គល"
+        assert chunks[2].metadata.chapter == "ជំពូកទី ១ បុគ្គលរូបវន្ត"
+        assert chunks[2].metadata.section == "ផ្នែកទី ១ សមត្ថភាពសិទ្ធិ"
+
+    def test_khmer_content_stops_before_next_heading(self, sample_extracted_text_kh: str) -> None:
+        """Headings between articles belong to the next article, not the previous one's content."""
+        chunks = self.chunker.chunk(text=sample_extracted_text_kh, law_name="Civil Code 2007", language="kh")
+        assert chunks[1].content.endswith("២-មិនអនុញ្ញាតឱ្យរំលោភសិទ្ធិ ។")
+        assert "គន្ថីទី ២" not in chunks[1].content
+
+    def test_khmer_law_name_in_context(self, sample_extracted_text_kh: str) -> None:
+        """Khmer chunks carry the Khmer law name in metadata and context prefix."""
+        chunks = self.chunker.chunk(
+            text=sample_extracted_text_kh, law_name="Civil Code 2007", language="kh", law_name_kh="ក្រមរដ្ឋប្បវេណី"
+        )
+        assert chunks[0].metadata.law_name_kh == "ក្រមរដ្ឋប្បវេណី"
+        assert chunks[0].content_with_context.startswith("[ក្រមរដ្ឋប្បវេណី]")
+
     def test_empty_text_raises_error(self) -> None:
         """Should raise ChunkingError for empty input."""
         import pytest
