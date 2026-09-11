@@ -245,8 +245,8 @@ Show 3–5 worked examples with retrieved vs expected article text.
 ### 6.1 Install
 
 ```bash
-git clone https://github.com/mengchheanglong/rag_cambodia_civil_commercial_law.git
-cd rag_cambodia_civil_commercial_law
+git clone https://github.com/mengchheanglong/khmer-legal-retrieval.git
+cd khmer-legal-retrieval
 pip install -r requirements.txt
 cp .env.example .env   # only needed for the demo app: DEEPSEEK_API_KEY (+ optional OPENAI_API_KEY)
 ```
@@ -290,7 +290,7 @@ pytest tests/ -v
 ## 7. Repository Structure
 
 ```
-rag_cambodia_civil_commercial_law/
+khmer-legal-retrieval/
 ├── data/
 │   ├── 01_raw/kh/              # Official Khmer PDFs (git-ignored; re-download with the pipeline)
 │   ├── 01_raw/en/              # English PDFs used by the current demo app
