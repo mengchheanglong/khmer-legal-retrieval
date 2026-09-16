@@ -48,4 +48,13 @@ structlog>=24.2.0
 tenacity>=8.4.0
 typer>=0.12.3
 tqdm>=4.66.4
-numpy>=1.24.0
+# =====================================================================
+# Deep Learning & Evaluation (Course Project)
+# =====================================================================
+torch>=2.10.0
+transformers>=4.40.0
+khmer-nltk>=1.6
+pandas>=2.0.0
+matplotlib>=3.8.0
+pyyaml>=6.0.0
+

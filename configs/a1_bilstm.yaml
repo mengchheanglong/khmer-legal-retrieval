@@ -1,0 +1,35 @@
+# Configuration for Approach A1: BiLSTM Dual Encoder from scratch
+run_name: a1_bilstm
+approach: A1
+model_type: bilstm
+
+# Data Paths
+train_path: data/05_splits/train.jsonl
+val_path: data/05_splits/val.jsonl
+corpus_path: data/05_splits/corpus.jsonl
+qa_path: tests/evaluation/ground_truth_qa_kh.json
+test_titles_path: data/05_splits/test_titles.jsonl
+vocab_path: data/05_splits/vocab_kh.json
+
+# Model Architecture
+embed_dim: 300
+hidden_dim: 256       # BiLSTM produces 256 * 2 = 512 dimensions
+dropout: 0.1
+max_seq_len: 256
+min_freq: 1
+
+# Optimization & Training
+batch_size: 32
+lr: 0.001
+weight_decay: 0.0
+temperature: 0.05
+epochs: 15
+patience: 4
+max_grad_norm: 1.0
+warmup_ratio: 0.1
+seed: 42
+
+# Logging & Checkpointing
+logs_dir: results/logs
+checkpoints_dir: results/checkpoints/a1_bilstm
+metrics_dir: results/metrics

@@ -1,0 +1,2068 @@
+[
+  {
+    "id": "tq-civ-001",
+    "question_kh": "តើគោលការណ៍ស្វ័យភាពនៃបុគ្គលឯកជនមានន័យដូចម្តេច?",
+    "expected_articles": [
+      3
+    ],
+    "expected_law": "Civil Code 2007",
+    "chapter_hint": "គោលការណ៍ទូទៅ",
+    "verifier": "human-verified"
+  },
+  {
+    "id": "tq-civ-002",
+    "question_kh": "តើច្បាប់ហាមឃាត់ការប្រើប្រាស់សិទ្ធិដោយបំពានយ៉ាងដូចម្តេច?",
+    "expected_articles": [
+      4
+    ],
+    "expected_law": "Civil Code 2007",
+    "chapter_hint": "គោលការណ៍ទូទៅ",
+    "verifier": "human-verified"
+  },
+  {
+    "id": "tq-civ-003",
+    "question_kh": "តើគោលការណ៍នៃសេចក្តីស្មោះត្រង់និងសុចរិតក្នុងច្បាប់រដ្ឋប្បវេណីមានន័យដូចម្តេច?",
+    "expected_articles": [
+      5
+    ],
+    "expected_law": "Civil Code 2007",
+    "chapter_hint": "គោលការណ៍ទូទៅ",
+    "verifier": "human-verified"
+  },
+  {
+    "id": "tq-civ-004",
+    "question_kh": "តើជនបរទេសអាចមានកម្រិតក្នុងការទទួលសិទ្ធិក្នុងករណីណាខ្លះ?",
+    "expected_articles": [
+      7
+    ],
+    "expected_law": "Civil Code 2007",
+    "chapter_hint": "សមត្ថភាពទទួលសិទ្ធិ",
+    "verifier": "human-verified"
+  },
+  {
+    "id": "tq-civ-005",
+    "question_kh": "តើសមត្ថភាពទទួលសិទ្ធិរបស់មនុស្សចាប់ផ្តើមនិងបញ្ចប់នៅពេលណា?",
+    "expected_articles": [
+      8
+    ],
+    "expected_law": "Civil Code 2007",
+    "chapter_hint": "សមត្ថភាពទទួលសិទ្ធិ",
+    "verifier": "human-verified"
+  },
+  {
+    "id": "tq-civ-006",
+    "question_kh": "តើទារកក្នុងផ្ទៃមានសមត្ថភាពទទួលសិទ្ធិដែរឬទេ?",
+    "expected_articles": [
+      9
+    ],
+    "expected_law": "Civil Code 2007",
+    "chapter_hint": "សមត្ថភាពទទួលសិទ្ធិ",
+    "verifier": "human-verified"
+  },
+  {
+    "id": "tq-civ-007",
+    "question_kh": "តើអនីតិជនអាចធ្វើសកម្មភាពគតិយុត្តដោយខ្លួនឯងបានក្នុងកម្រិតណា?",
+    "expected_articles": [
+      17,
+      18
+    ],
+    "expected_law": "Civil Code 2007",
+    "chapter_hint": "សមត្ថភាពខាងសកម្មភាព",
+    "verifier": "human-verified"
+  },
+  {
+    "id": "tq-civ-008",
+    "question_kh": "តើសកម្មភាពគតិយុត្តដែលអនីតិជនបានធ្វើដោយគ្មានការយល់ព្រមពីអ្នកតំណាងស្របច្បាប់អាចលុបចោលបានទេ?",
+    "expected_articles": [
+      19
+    ],
+    "expected_law": "Civil Code 2007",
+    "chapter_hint": "សមត្ថភាពខាងសកម្មភាព",
+    "verifier": "human-verified"
+  },
+  {
+    "id": "tq-civ-009",
+    "question_kh": "តើនរណាខ្លះអាចស្នើសុំឱ្យតុលាការប្រកាសបើកអាណាព្យាបាលទូទៅ?",
+    "expected_articles": [
+      24
+    ],
+    "expected_law": "Civil Code 2007",
+    "chapter_hint": "ជននៅក្រោមអាណាព្យាបាលទូទៅ",
+    "verifier": "human-verified"
+  },
+  {
+    "id": "tq-civ-010",
+    "question_kh": "តើការប្រកាសអំពីការបាត់ខ្លួនរបស់បុគ្គលអាចធ្វើឡើងក្រោយពេលបាត់ខ្លួនប៉ុន្មានឆ្នាំ?",
+    "expected_articles": [
+      41,
+      42
+    ],
+    "expected_law": "Civil Code 2007",
+    "chapter_hint": "ការប្រកាសអំពីការបាត់ខ្លួន",
+    "verifier": "human-verified"
+  },
+  {
+    "id": "tq-civ-011",
+    "question_kh": "តើអានុភាពនៃការប្រកាសអំពីការបាត់ខ្លួនចាត់ទុកថាបុគ្គលនោះស្លាប់នៅពេលណា?",
+    "expected_articles": [
+      43
+    ],
+    "expected_law": "Civil Code 2007",
+    "chapter_hint": "ការប្រកាសអំពីការបាត់ខ្លួន",
+    "verifier": "human-verified"
+  },
+  {
+    "id": "tq-civ-012",
+    "question_kh": "តើនីតិបុគ្គលបង្កើតឡើងដោយរបៀបណា?",
+    "expected_articles": [
+      46,
+      47
+    ],
+    "expected_law": "Civil Code 2007",
+    "chapter_hint": "នីតិបុគ្គល",
+    "verifier": "human-verified"
+  },
+  {
+    "id": "tq-civ-013",
+    "question_kh": "តើនីតិបុគ្គលមានសមត្ថភាពទទួលសិទ្ធិនិងសមត្ថភាពខាងសកម្មភាពកម្រិតណា?",
+    "expected_articles": [
+      49,
+      50
+    ],
+    "expected_law": "Civil Code 2007",
+    "chapter_hint": "នីតិបុគ្គល",
+    "verifier": "human-verified"
+  },
+  {
+    "id": "tq-civ-014",
+    "question_kh": "តើនរណាជាអ្នកទទួលខុសត្រូវចំពោះការខូចខាតដែលបណ្តាលមកពីអំពើរបស់អភិបាលនីតិបុគ្គល?",
+    "expected_articles": [
+      52
+    ],
+    "expected_law": "Civil Code 2007",
+    "chapter_hint": "នីតិបុគ្គល",
+    "verifier": "human-verified"
+  },
+  {
+    "id": "tq-civ-015",
+    "question_kh": "តើលក្ខន្តិកៈរបស់នីតិបុគ្គលត្រូវមានចំណុចចាំបាច់អ្វីខ្លះ?",
+    "expected_articles": [
+      55
+    ],
+    "expected_law": "Civil Code 2007",
+    "chapter_hint": "នីតិបុគ្គល",
+    "verifier": "human-verified"
+  },
+  {
+    "id": "tq-civ-016",
+    "question_kh": "តើមូលហេតុអ្វីខ្លះដែលនាំឱ្យមានការរំលាយនីតិបុគ្គល?",
+    "expected_articles": [
+      64
+    ],
+    "expected_law": "Civil Code 2007",
+    "chapter_hint": "ការរំលាយនីតិបុគ្គល",
+    "verifier": "human-verified"
+  },
+  {
+    "id": "tq-civ-017",
+    "question_kh": "តើទ្រព្យសម្បត្តិដែលនៅសល់ក្រោយការទូទាត់បំណុលរបស់នីតិបុគ្គលត្រូវបែងចែកយ៉ាងដូចម្តេច?",
+    "expected_articles": [
+      71
+    ],
+    "expected_law": "Civil Code 2007",
+    "chapter_hint": "ការជម្រះបញ្ជីនីតិបុគ្គល",
+    "verifier": "human-verified"
+  },
+  {
+    "id": "tq-civ-018",
+    "question_kh": "តើអ្វីទៅជាអចលនវត្ថុ និងចលនវត្ថុ?",
+    "expected_articles": [
+      120,
+      121
+    ],
+    "expected_law": "Civil Code 2007",
+    "chapter_hint": "វត្ថុ",
+    "verifier": "human-verified"
+  },
+  {
+    "id": "tq-civ-019",
+    "question_kh": "តើប្រភេទនៃសិទ្ធិប្រត្យក្សមានអ្វីខ្លះនៅក្នុងក្រមរដ្ឋប្បវេណី?",
+    "expected_articles": [
+      130,
+      131
+    ],
+    "expected_law": "Civil Code 2007",
+    "chapter_hint": "សិទ្ធិប្រត្យក្ស",
+    "verifier": "human-verified"
+  },
+  {
+    "id": "tq-civ-020",
+    "question_kh": "តើការបង្កើតនិងការផ្ទេរសិទ្ធិប្រត្យក្សមានអានុភាពនៅពេលណា?",
+    "expected_articles": [
+      133,
+      134
+    ],
+    "expected_law": "Civil Code 2007",
+    "chapter_hint": "សិទ្ធិប្រត្យក្ស",
+    "verifier": "human-verified"
+  },
+  {
+    "id": "tq-civ-021",
+    "question_kh": "តើលក្ខខណ្ឌតតាំងនៃការបង្កើតនិងការផ្ទេរសិទ្ធិលើអចលនវត្ថុត្រូវធ្វើដូចម្តេច?",
+    "expected_articles": [
+      135
+    ],
+    "expected_law": "Civil Code 2007",
+    "chapter_hint": "សិទ្ធិប្រត្យក្ស",
+    "verifier": "human-verified"
+  },
+  {
+    "id": "tq-civ-022",
+    "question_kh": "តើលក្ខខណ្ឌតតាំងនៃការផ្ទេរសិទ្ធិលើចលនវត្ថុត្រូវធ្វើដូចម្តេច?",
+    "expected_articles": [
+      136
+    ],
+    "expected_law": "Civil Code 2007",
+    "chapter_hint": "សិទ្ធិប្រត្យក្ស",
+    "verifier": "human-verified"
+  },
+  {
+    "id": "tq-civ-023",
+    "question_kh": "តើកម្មសិទ្ធិករមានសិទ្ធិអ្វីខ្លះលើទ្រព្យសម្បត្តិរបស់ខ្លួន?",
+    "expected_articles": [
+      138
+    ],
+    "expected_law": "Civil Code 2007",
+    "chapter_hint": "កម្មសិទ្ធិ",
+    "verifier": "human-verified"
+  },
+  {
+    "id": "tq-civ-024",
+    "question_kh": "តើកម្មសិទ្ធិករមានសិទ្ធិទាមទារឱ្យប្រគល់វត្ថុត្រឡប់មកវិញក្នុងករណីណា?",
+    "expected_articles": [
+      139
+    ],
+    "expected_law": "Civil Code 2007",
+    "chapter_hint": "សិទ្ធិទាមទារដោយផ្អែកលើកម្មសិទ្ធិ",
+    "verifier": "human-verified"
+  },
+  {
+    "id": "tq-civ-025",
+    "question_kh": "តើកម្មសិទ្ធិករមានសិទ្ធិទាមទារឱ្យលុបបំបាត់ការរំខានដល់កម្មសិទ្ធិយ៉ាងដូចម្តេច?",
+    "expected_articles": [
+      140
+    ],
+    "expected_law": "Civil Code 2007",
+    "chapter_hint": "សិទ្ធិទាមទារដោយផ្អែកលើកម្មសិទ្ធិ",
+    "verifier": "human-verified"
+  },
+  {
+    "id": "tq-civ-026",
+    "question_kh": "តើអចលនវត្ថុព័ទ្ធជុំជិតមានសិទ្ធិឆ្លងកាត់ដីព័ទ្ធជុំវិញយ៉ាងដូចម្តេច?",
+    "expected_articles": [
+      145,
+      146
+    ],
+    "expected_law": "Civil Code 2007",
+    "chapter_hint": "ទំនាក់ទំនងរវាងដីជាប់គ្នា",
+    "verifier": "human-verified"
+  },
+  {
+    "id": "tq-civ-027",
+    "question_kh": "តើការទទួលបានកម្មសិទ្ធិដោយអាជ្ញាយុកាលលើអចលនវត្ថុត្រូវចំណាយពេលប៉ុន្មានឆ្នាំ?",
+    "expected_articles": [
+      162
+    ],
+    "expected_law": "Civil Code 2007",
+    "chapter_hint": "អាជ្ញាយុកាលនៃលទ្ធកម្ម",
+    "verifier": "human-verified"
+  },
+  {
+    "id": "tq-civ-028",
+    "question_kh": "តើការទទួលបានកម្មសិទ្ធិដោយអាជ្ញាយុកាលលើចលនវត្ថុត្រូវចំណាយពេលប៉ុន្មានឆ្នាំ?",
+    "expected_articles": [
+      163
+    ],
+    "expected_law": "Civil Code 2007",
+    "chapter_hint": "អាជ្ញាយុកាលនៃលទ្ធកម្ម",
+    "verifier": "human-verified"
+  },
+  {
+    "id": "tq-civ-029",
+    "question_kh": "តើការកាន់កាប់ដោយសុចរិតនិងគ្មានកំហុសការពារអ្នកទិញចលនវត្ថុយ៉ាងដូចម្តេច?",
+    "expected_articles": [
+      193
+    ],
+    "expected_law": "Civil Code 2007",
+    "chapter_hint": "លទ្ធកម្មភ្លាមៗនៃកម្មសិទ្ធិ",
+    "verifier": "human-verified"
+  },
+  {
+    "id": "tq-civ-030",
+    "question_kh": "តើអ្វីទៅជាសិទ្ធិជួលអចិន្ត្រៃយ៍ ហើយមានរយៈពេលកំណត់យ៉ាងដូចម្តេច?",
+    "expected_articles": [
+      244,
+      247
+    ],
+    "expected_law": "Civil Code 2007",
+    "chapter_hint": "សិទ្ធិជួលអចិន្ត្រៃយ៍",
+    "verifier": "human-verified"
+  },
+  {
+    "id": "tq-civ-031",
+    "question_kh": "តើអ្វីទៅជាផលុបភោគ ហើយផលុបភោគីមានសិទ្ធិនិងកាតព្វកិច្ចអ្វីខ្លះ?",
+    "expected_articles": [
+      256,
+      257
+    ],
+    "expected_law": "Civil Code 2007",
+    "chapter_hint": "ផលុបភោគ",
+    "verifier": "human-verified"
+  },
+  {
+    "id": "tq-civ-032",
+    "question_kh": "តើអ្វីទៅជាសេវភាព ហើយបង្កើតឡើងដោយរបៀបណា?",
+    "expected_articles": [
+      285,
+      286
+    ],
+    "expected_law": "Civil Code 2007",
+    "chapter_hint": "សេវភាព",
+    "verifier": "human-verified"
+  },
+  {
+    "id": "tq-civ-033",
+    "question_kh": "តើអ្វីទៅជានិយមន័យនៃកាតព្វកិច្ច?",
+    "expected_articles": [
+      308
+    ],
+    "expected_law": "Civil Code 2007",
+    "chapter_hint": "កាតព្វកិច្ច",
+    "verifier": "human-verified"
+  },
+  {
+    "id": "tq-civ-034",
+    "question_kh": "តើកិច្ចសន្យាត្រូវបង្កើតឡើងដោយធាតុសំខាន់ៗអ្វីខ្លះ?",
+    "expected_articles": [
+      336,
+      337,
+      340
+    ],
+    "expected_law": "Civil Code 2007",
+    "chapter_hint": "ការបង្កើតកិច្ចសន្យា",
+    "verifier": "human-verified"
+  },
+  {
+    "id": "tq-civ-035",
+    "question_kh": "តើការបង្ហាញឆន្ទៈដោយការភ័ន្តច្រឡំមានអានុភាពយ៉ាងដូចម្តេច?",
+    "expected_articles": [
+      346
+    ],
+    "expected_law": "Civil Code 2007",
+    "chapter_hint": "វិការៈនៃការបង្ហាញឆន្ទៈ",
+    "verifier": "human-verified"
+  },
+  {
+    "id": "tq-civ-036",
+    "question_kh": "តើកិច្ចសន្យាដែលកើតឡើងដោយការឆបោកអាចលុបចោលបានទេ?",
+    "expected_articles": [
+      347
+    ],
+    "expected_law": "Civil Code 2007",
+    "chapter_hint": "វិការៈនៃការបង្ហាញឆន្ទៈ",
+    "verifier": "human-verified"
+  },
+  {
+    "id": "tq-civ-037",
+    "question_kh": "តើកិច្ចសន្យាដែលធ្វើឡើងដោយការគំរាមកំហែងអាចលុបចោលបានទេ?",
+    "expected_articles": [
+      350
+    ],
+    "expected_law": "Civil Code 2007",
+    "chapter_hint": "វិការៈនៃការបង្ហាញឆន្ទៈ",
+    "verifier": "human-verified"
+  },
+  {
+    "id": "tq-civ-038",
+    "question_kh": "តើកិច្ចសន្យាដែលផ្ទុយនឹងសណ្តាប់ធ្នាប់សាធារណៈឬទំនៀមទម្លាប់ល្អជាមោឃៈឬទេ?",
+    "expected_articles": [
+      354
+    ],
+    "expected_law": "Civil Code 2007",
+    "chapter_hint": "មោឃភាពនៃកិច្ចសន្យា",
+    "verifier": "human-verified"
+  },
+  {
+    "id": "tq-civ-039",
+    "question_kh": "តើអ្វីទៅជាអំណាចតំណាង ហើយតំណាងបង្កើតឡើងដោយរបៀបណា?",
+    "expected_articles": [
+      364,
+      365
+    ],
+    "expected_law": "Civil Code 2007",
+    "chapter_hint": "តំណាង",
+    "verifier": "human-verified"
+  },
+  {
+    "id": "tq-civ-040",
+    "question_kh": "តើអំពើដែលគ្មានអំណាចតំណាងមានអានុភាពចំពោះតំណាងីដែរឬទេ?",
+    "expected_articles": [
+      375
+    ],
+    "expected_law": "Civil Code 2007",
+    "chapter_hint": "តំណាងគ្មានអំណាច",
+    "verifier": "human-verified"
+  },
+  {
+    "id": "tq-civ-041",
+    "question_kh": "តើម្ចាស់បំណុលមានសិទ្ធិអ្វីខ្លះក្នុងករណីកូនបំណុលមិនអនុវត្តកាតព្វកិច្ច?",
+    "expected_articles": [
+      388,
+      389
+    ],
+    "expected_law": "Civil Code 2007",
+    "chapter_hint": "ការមិនអនុវត្តកាតព្វកិច្ច",
+    "verifier": "human-verified"
+  },
+  {
+    "id": "tq-civ-042",
+    "question_kh": "តើសំណងនៃការខូចខាតដោយសារការមិនអនុវត្តកាតព្វកិច្ចត្រូវគណនាយ៉ាងដូចម្តេច?",
+    "expected_articles": [
+      398,
+      399
+    ],
+    "expected_law": "Civil Code 2007",
+    "chapter_hint": "សំណងនៃការខូចខាត",
+    "verifier": "human-verified"
+  },
+  {
+    "id": "tq-civ-043",
+    "question_kh": "តើម្ចាស់បំណុលអាចរំលាយកិច្ចសន្យាដោយសារការមិនអនុវត្តបានក្នុងករណីណា?",
+    "expected_articles": [
+      407,
+      408
+    ],
+    "expected_law": "Civil Code 2007",
+    "chapter_hint": "ការរំលាយកិច្ចសន្យា",
+    "verifier": "human-verified"
+  },
+  {
+    "id": "tq-civ-044",
+    "question_kh": "តើអានុភាពនៃការរំលាយកិច្ចសន្យាតម្រូវឱ្យភាគីធ្វើអ្វីខ្លះ?",
+    "expected_articles": [
+      411
+    ],
+    "expected_law": "Civil Code 2007",
+    "chapter_hint": "អានុភាពនៃការរំលាយ",
+    "verifier": "human-verified"
+  },
+  {
+    "id": "tq-civ-045",
+    "question_kh": "តើអ្វីទៅជាកាតព្វកិច្ចសាមគ្គី?",
+    "expected_articles": [
+      418
+    ],
+    "expected_law": "Civil Code 2007",
+    "chapter_hint": "កាតព្វកិច្ចសាមគ្គី",
+    "verifier": "human-verified"
+  },
+  {
+    "id": "tq-civ-046",
+    "question_kh": "តើម្ចាស់បំណុលអាចទាមទារពីកូនបំណុលសាមគ្គីម្នាក់ៗយ៉ាងដូចម្តេច?",
+    "expected_articles": [
+      419
+    ],
+    "expected_law": "Civil Code 2007",
+    "chapter_hint": "កាតព្វកិច្ចសាមគ្គី",
+    "verifier": "human-verified"
+  },
+  {
+    "id": "tq-civ-047",
+    "question_kh": "តើការផ្ទេរសិទ្ធិលើបំណុលត្រូវមានលក្ខខណ្ឌតតាំងអ្វីខ្លះ?",
+    "expected_articles": [
+      436,
+      437
+    ],
+    "expected_law": "Civil Code 2007",
+    "chapter_hint": "ការផ្ទេរសិទ្ធិលើបំណុល",
+    "verifier": "human-verified"
+  },
+  {
+    "id": "tq-civ-048",
+    "question_kh": "តើការទូទាត់បំណុលរលត់ទៅដោយការសងយ៉ាងដូចម្តេច?",
+    "expected_articles": [
+      440,
+      441
+    ],
+    "expected_law": "Civil Code 2007",
+    "chapter_hint": "ការសង",
+    "verifier": "human-verified"
+  },
+  {
+    "id": "tq-civ-049",
+    "question_kh": "តើការទូទាត់កាត់កងបំណុល (Set-off) អាចធ្វើទៅបានក្នុងលក្ខខណ្ឌណា?",
+    "expected_articles": [
+      466,
+      467
+    ],
+    "expected_law": "Civil Code 2007",
+    "chapter_hint": "ការទូទាត់កាត់កង",
+    "verifier": "human-verified"
+  },
+  {
+    "id": "tq-civ-050",
+    "question_kh": "តើអាជ្ញាយុកាលនៃការរំលត់សិទ្ធិលើបំណុលទូទៅមានរយៈពេលប៉ុន្មានឆ្នាំ?",
+    "expected_articles": [
+      475
+    ],
+    "expected_law": "Civil Code 2007",
+    "chapter_hint": "អាជ្ញាយុកាលនៃការរំលត់",
+    "verifier": "human-verified"
+  },
+  {
+    "id": "tq-civ-051",
+    "question_kh": "តើមូលហេតុអ្វីខ្លះដែលនាំឱ្យផ្អាកឬកាត់ផ្តាច់អាជ្ញាយុកាល?",
+    "expected_articles": [
+      486,
+      487
+    ],
+    "expected_law": "Civil Code 2007",
+    "chapter_hint": "ការកាត់ផ្តាច់អាជ្ញាយុកាល",
+    "verifier": "human-verified"
+  },
+  {
+    "id": "tq-civ-052",
+    "question_kh": "តើកិច្ចសន្យាទិញលក់មាននិយមន័យដូចម្តេច?",
+    "expected_articles": [
+      515
+    ],
+    "expected_law": "Civil Code 2007",
+    "chapter_hint": "កិច្ចសន្យាទិញលក់",
+    "verifier": "human-verified"
+  },
+  {
+    "id": "tq-civ-053",
+    "question_kh": "តើអ្នកលក់មានកាតព្វកិច្ចអ្វីខ្លះចំពោះអ្នកទិញ?",
+    "expected_articles": [
+      524,
+      525
+    ],
+    "expected_law": "Civil Code 2007",
+    "chapter_hint": "កាតព្វកិច្ចរបស់អ្នកលក់",
+    "verifier": "human-verified"
+  },
+  {
+    "id": "tq-civ-054",
+    "question_kh": "តើអ្នកទិញមានសិទ្ធិអ្វីខ្លះនៅពេលទំនិញមានវិការៈកំបាំង?",
+    "expected_articles": [
+      540,
+      541
+    ],
+    "expected_law": "Civil Code 2007",
+    "chapter_hint": "ការទទួលខុសត្រូវចំពោះវិការៈ",
+    "verifier": "human-verified"
+  },
+  {
+    "id": "tq-civ-055",
+    "question_kh": "តើអ្នកទិញត្រូវជូនដំណឹងអំពីវិការៈក្នុងអំឡុងពេលណា?",
+    "expected_articles": [
+      542
+    ],
+    "expected_law": "Civil Code 2007",
+    "chapter_hint": "ការទទួលខុសត្រូវចំពោះវិការៈ",
+    "verifier": "human-verified"
+  },
+  {
+    "id": "tq-civ-056",
+    "question_kh": "តើកិច្ចសន្យាប្រទានកម្មមាននិយមន័យដូចម្តេច?",
+    "expected_articles": [
+      561
+    ],
+    "expected_law": "Civil Code 2007",
+    "chapter_hint": "ប្រទានកម្ម",
+    "verifier": "human-verified"
+  },
+  {
+    "id": "tq-civ-057",
+    "question_kh": "តើប្រទានកម្មដែលមិនធ្វើជាលាយលក្ខណ៍អក្សរអាចដកហូតវិញបានទេ?",
+    "expected_articles": [
+      563
+    ],
+    "expected_law": "Civil Code 2007",
+    "chapter_hint": "ប្រទានកម្ម",
+    "verifier": "human-verified"
+  },
+  {
+    "id": "tq-civ-058",
+    "question_kh": "តើកិច្ចសន្យាភតិសន្យា (ជួល) មាននិយមន័យដូចម្តេច?",
+    "expected_articles": [
+      596
+    ],
+    "expected_law": "Civil Code 2007",
+    "chapter_hint": "ភតិសន្យា",
+    "verifier": "human-verified"
+  },
+  {
+    "id": "tq-civ-059",
+    "question_kh": "តើភតិបតី (ម្ចាស់ផ្ទះជួល) មានកាតព្វកិច្ចជួសជុលទ្រព្យជួលយ៉ាងដូចម្តេច?",
+    "expected_articles": [
+      602
+    ],
+    "expected_law": "Civil Code 2007",
+    "chapter_hint": "ភតិសន្យា",
+    "verifier": "human-verified"
+  },
+  {
+    "id": "tq-civ-060",
+    "question_kh": "តើភតិកៈ (អ្នកជួល) អាចជួលបន្ត ឬផ្ទេរសិទ្ធិជួលដោយគ្មានការយល់ព្រមបានទេ?",
+    "expected_articles": [
+      612
+    ],
+    "expected_law": "Civil Code 2007",
+    "chapter_hint": "ការជួលបន្ត",
+    "verifier": "human-verified"
+  },
+  {
+    "id": "tq-civ-061",
+    "question_kh": "តើកិច្ចសន្យាខ្ចីប្រើមាននិយមន័យដូចម្តេច ហើយខុសពីកិច្ចសន្យាខ្ចីបរិភោគយ៉ាងដូចម្តេច?",
+    "expected_articles": [
+      644,
+      650
+    ],
+    "expected_law": "Civil Code 2007",
+    "chapter_hint": "កិច្ចសន្យាខ្ចី",
+    "verifier": "human-verified"
+  },
+  {
+    "id": "tq-civ-062",
+    "question_kh": "តើកិច្ចសន្យាខ្ចីបរិភោគដោយមានការប្រាក់ត្រូវកំណត់អត្រាការប្រាក់យ៉ាងដូចម្តេច?",
+    "expected_articles": [
+      652
+    ],
+    "expected_law": "Civil Code 2007",
+    "chapter_hint": "កិច្ចសន្យាខ្ចីបរិភោគ",
+    "verifier": "human-verified"
+  },
+  {
+    "id": "tq-civ-063",
+    "question_kh": "តើកិច្ចសន្យាជួលកម្លាំងពលកម្មមាននិយមន័យដូចម្តេច?",
+    "expected_articles": [
+      664
+    ],
+    "expected_law": "Civil Code 2007",
+    "chapter_hint": "កិច្ចសន្យាការងារ",
+    "verifier": "human-verified"
+  },
+  {
+    "id": "tq-civ-064",
+    "question_kh": "តើកិច្ចសន្យាម៉ៅការមាននិយមន័យដូចម្តេច ហើយអ្នកម៉ៅការទទួលខុសត្រូវកម្រិតណា?",
+    "expected_articles": [
+      672,
+      673
+    ],
+    "expected_law": "Civil Code 2007",
+    "chapter_hint": "កិច្ចសន្យាម៉ៅការ",
+    "verifier": "human-verified"
+  },
+  {
+    "id": "tq-civ-065",
+    "question_kh": "តើអតិថិជនមានសិទ្ធិទាមទារឱ្យអ្នកម៉ៅការជួសជុលវិការៈនៃសំណង់ឬទេ?",
+    "expected_articles": [
+      677
+    ],
+    "expected_law": "Civil Code 2007",
+    "chapter_hint": "ការទទួលខុសត្រូវចំពោះវិការៈម៉ៅការ",
+    "verifier": "human-verified"
+  },
+  {
+    "id": "tq-civ-066",
+    "question_kh": "តើកិច្ចសន្យាអាណត្តិ (Mandate) បង្កើតកាតព្វកិច្ចអ្វីខ្លះដល់អណត្តិទាហក?",
+    "expected_articles": [
+      687,
+      688
+    ],
+    "expected_law": "Civil Code 2007",
+    "chapter_hint": "អាណត្តិ",
+    "verifier": "human-verified"
+  },
+  {
+    "id": "tq-civ-067",
+    "question_kh": "តើកិច្ចសន្យាផ្ញើទុកមាននិយមន័យដូចម្តេច ហើយអ្នកទទួលបញ្ញើមានកាតព្វកិច្ចយ៉ាងដូចម្តេច?",
+    "expected_articles": [
+      703,
+      704
+    ],
+    "expected_law": "Civil Code 2007",
+    "chapter_hint": "កិច្ចសន្យាផ្ញើទុក",
+    "verifier": "human-verified"
+  },
+  {
+    "id": "tq-civ-068",
+    "question_kh": "តើកិច្ចសន្យាសង្គម (Partnership) មាននិយមន័យដូចម្តេច?",
+    "expected_articles": [
+      718
+    ],
+    "expected_law": "Civil Code 2007",
+    "chapter_hint": "កិច្ចសន្យាសង្គម",
+    "verifier": "human-verified"
+  },
+  {
+    "id": "tq-civ-069",
+    "question_kh": "តើកិច្ចសន្យាសះជា (Compromise) មានអានុភាពយ៉ាងដូចម្តេចចំពោះវិវាទ?",
+    "expected_articles": [
+      727
+    ],
+    "expected_law": "Civil Code 2007",
+    "chapter_hint": "កិច្ចសន្យាសះជា",
+    "verifier": "human-verified"
+  },
+  {
+    "id": "tq-civ-070",
+    "question_kh": "តើអ្វីទៅជាការគ្រប់គ្រងការងារដោយគ្មានអាណត្តិ?",
+    "expected_articles": [
+      734
+    ],
+    "expected_law": "Civil Code 2007",
+    "chapter_hint": "ការគ្រប់គ្រងការងារដោយគ្មានអាណត្តិ",
+    "verifier": "human-verified"
+  },
+  {
+    "id": "tq-civ-071",
+    "question_kh": "តើអ្វីទៅជាអត្ថន័យនៃលាភមិនត្រឹមត្រូវតាមច្បាប់ (Unjust Enrichment)?",
+    "expected_articles": [
+      740
+    ],
+    "expected_law": "Civil Code 2007",
+    "chapter_hint": "លាភមិនត្រឹមត្រូវតាមច្បាប់",
+    "verifier": "human-verified"
+  },
+  {
+    "id": "tq-civ-072",
+    "question_kh": "តើបុគ្គលដែលទទួលលាភមិនត្រឹមត្រូវត្រូវសងត្រឡប់មកវិញក្នុងកម្រិតណា?",
+    "expected_articles": [
+      741,
+      742
+    ],
+    "expected_law": "Civil Code 2007",
+    "chapter_hint": "លាភមិនត្រឹមត្រូវតាមច្បាប់",
+    "verifier": "human-verified"
+  },
+  {
+    "id": "tq-civ-073",
+    "question_kh": "តើធាតុផ្សំនៃអំពើអនីត្យានុកូល (Tort Liability) មានអ្វីខ្លះ?",
+    "expected_articles": [
+      743
+    ],
+    "expected_law": "Civil Code 2007",
+    "chapter_hint": "អំពើអនីត្យានុកូល",
+    "verifier": "human-verified"
+  },
+  {
+    "id": "tq-civ-074",
+    "question_kh": "តើជនរងគ្រោះដោយអំពើអនីត្យានុកូលអាចទាមទារសំណងការខូចខាតអ្វីខ្លះ?",
+    "expected_articles": [
+      746,
+      747
+    ],
+    "expected_law": "Civil Code 2007",
+    "chapter_hint": "សំណងអំពើអនីត្យានុកូល",
+    "verifier": "human-verified"
+  },
+  {
+    "id": "tq-civ-075",
+    "question_kh": "តើនិយោជកត្រូវទទួលខុសត្រូវចំពោះអំពើអនីត្យានុកូលដែលបង្កឡើងដោយនិយោជិតយ៉ាងដូចម្តេច?",
+    "expected_articles": [
+      753
+    ],
+    "expected_law": "Civil Code 2007",
+    "chapter_hint": "ការទទួលខុសត្រូវរបស់អ្នកប្រើប្រាស់",
+    "verifier": "human-verified"
+  },
+  {
+    "id": "tq-civ-076",
+    "question_kh": "តើឪពុកម្តាយត្រូវទទួលខុសត្រូវចំពោះការខូចខាតដែលបង្កឡើងដោយកូនអនីតិជនដែរឬទេ?",
+    "expected_articles": [
+      751
+    ],
+    "expected_law": "Civil Code 2007",
+    "chapter_hint": "ការទទួលខុសត្រូវរបស់ជនមានកាតព្វកិច្ចត្រួតពិនិត្យ",
+    "verifier": "human-verified"
+  },
+  {
+    "id": "tq-civ-077",
+    "question_kh": "តើម្ចាស់សំណង់ឬអាគារទទួលខុសត្រូវយ៉ាងដូចម្តេចប្រសិនបើសំណង់បាក់រលំបង្កការខូចខាត?",
+    "expected_articles": [
+      755
+    ],
+    "expected_law": "Civil Code 2007",
+    "chapter_hint": "ការទទួលខុសត្រូវចំពោះវិការៈនៃសំណង់",
+    "verifier": "human-verified"
+  },
+  {
+    "id": "tq-civ-078",
+    "question_kh": "តើសហជនបង្កហេតុ (Joint Tortfeasors) ត្រូវទទួលខុសត្រូវចំពោះជនរងគ្រោះយ៉ាងដូចម្តេច?",
+    "expected_articles": [
+      758
+    ],
+    "expected_law": "Civil Code 2007",
+    "chapter_hint": "អំពើអនីត្យានុកូលរួម",
+    "verifier": "human-verified"
+  },
+  {
+    "id": "tq-civ-079",
+    "question_kh": "តើសិទ្ធិទាមទារសំណងការខូចខាតដោយអំពើអនីត្យានុកូលរលត់ដោយអាជ្ញាយុកាលនៅពេលណា?",
+    "expected_articles": [
+      761
+    ],
+    "expected_law": "Civil Code 2007",
+    "chapter_hint": "អាជ្ញាយុកាលនៃអំពើអនីត្យានុកូល",
+    "verifier": "human-verified"
+  },
+  {
+    "id": "tq-civ-080",
+    "question_kh": "តើកិច្ចសន្យាធានា (Guaranty) មាននិយមន័យដូចម្តេច?",
+    "expected_articles": [
+      896
+    ],
+    "expected_law": "Civil Code 2007",
+    "chapter_hint": "ការធានា",
+    "verifier": "human-verified"
+  },
+  {
+    "id": "tq-civ-081",
+    "question_kh": "តើអ្នកធានាមានសិទ្ធិតវ៉ាឱ្យដេញដោលនិងទារពីកូនបំណុលដើមជាមុនដែរឬទេ?",
+    "expected_articles": [
+      901,
+      902
+    ],
+    "expected_law": "Civil Code 2007",
+    "chapter_hint": "សិទ្ធិតវ៉ារបស់អ្នកធានា",
+    "verifier": "human-verified"
+  },
+  {
+    "id": "tq-civ-082",
+    "question_kh": "តើអ្វីទៅជាការធានាសាមគ្គី?",
+    "expected_articles": [
+      904
+    ],
+    "expected_law": "Civil Code 2007",
+    "chapter_hint": "ការធានាសាមគ្គី",
+    "verifier": "human-verified"
+  },
+  {
+    "id": "tq-civ-083",
+    "question_kh": "តើអ្នកធានាដែលបានសងបំណុលជំនួសកូនបំណុលមានសិទ្ធិទាមទារសំណងត្រឡប់វិញយ៉ាងដូចម្តេច?",
+    "expected_articles": [
+      908
+    ],
+    "expected_law": "Civil Code 2007",
+    "chapter_hint": "សិទ្ធិទាមទារសំណងរបស់អ្នកធានា",
+    "verifier": "human-verified"
+  },
+  {
+    "id": "tq-civ-084",
+    "question_kh": "តើសិទ្ធិលើការបញ្ចាំ (Pledge) បង្កើតឡើងយ៉ាងដូចម្តេច?",
+    "expected_articles": [
+      815,
+      816
+    ],
+    "expected_law": "Civil Code 2007",
+    "chapter_hint": "ការបញ្ចាំ",
+    "verifier": "human-verified"
+  },
+  {
+    "id": "tq-civ-085",
+    "question_kh": "តើម្ចាស់បំណុលមានការបញ្ចាំមានសិទ្ធិកាន់កាប់វត្ថុបញ្ចាំយ៉ាងដូចម្តេច?",
+    "expected_articles": [
+      820
+    ],
+    "expected_law": "Civil Code 2007",
+    "chapter_hint": "ការបញ្ចាំ",
+    "verifier": "human-verified"
+  },
+  {
+    "id": "tq-civ-086",
+    "question_kh": "តើហ៊ីប៉ូតែក (Hypothec/Mortgage) អាចបង្កើតឡើងលើទ្រព្យសម្បត្តិណាខ្លះ?",
+    "expected_articles": [
+      843,
+      844
+    ],
+    "expected_law": "Civil Code 2007",
+    "chapter_hint": "ហ៊ីប៉ូតែក",
+    "verifier": "human-verified"
+  },
+  {
+    "id": "tq-civ-087",
+    "question_kh": "តើលំដាប់អទិភាពរវាងម្ចាស់បំណុលហ៊ីប៉ូតែកច្រើននាក់ត្រូវកំណត់យ៉ាងដូចម្តេច?",
+    "expected_articles": [
+      851
+    ],
+    "expected_law": "Civil Code 2007",
+    "chapter_hint": "លំដាប់នៃហ៊ីប៉ូតែក",
+    "verifier": "human-verified"
+  },
+  {
+    "id": "tq-civ-088",
+    "question_kh": "តើម្ចាស់បំណុលហ៊ីប៉ូតែកមានសិទ្ធិអនុវត្តការលក់ដោយបង្ខំតាមតុលាការយ៉ាងដូចម្តេច?",
+    "expected_articles": [
+      866
+    ],
+    "expected_law": "Civil Code 2007",
+    "chapter_hint": "ការអនុវត្តហ៊ីប៉ូតែក",
+    "verifier": "human-verified"
+  },
+  {
+    "id": "tq-civ-089",
+    "question_kh": "តើបុរសនិងស្ត្រីអាចរៀបអាពាហ៍ពិពាហ៍បាននៅអាយុប៉ុន្មាន?",
+    "expected_articles": [
+      948
+    ],
+    "expected_law": "Civil Code 2007",
+    "chapter_hint": "លក្ខខណ្ឌអាពាហ៍ពិពាហ៍",
+    "verifier": "human-verified"
+  },
+  {
+    "id": "tq-civ-090",
+    "question_kh": "តើការហាមឃាត់អាពាហ៍ពិពាហ៍រវាងសាច់ញាតិជិតស្និទ្ធកំណត់កម្រិតណា?",
+    "expected_articles": [
+      950,
+      951
+    ],
+    "expected_law": "Civil Code 2007",
+    "chapter_hint": "ការហាមឃាត់អាពាហ៍ពិពាហ៍",
+    "verifier": "human-verified"
+  },
+  {
+    "id": "tq-civ-091",
+    "question_kh": "តើទ្រព្យសម្បត្តិរួមរវាងប្តីប្រពន្ធរួមមានអ្វីខ្លះ?",
+    "expected_articles": [
+      972,
+      973
+    ],
+    "expected_law": "Civil Code 2007",
+    "chapter_hint": "ទ្រព្យសម្បត្តិប្តីប្រពន្ធ",
+    "verifier": "human-verified"
+  },
+  {
+    "id": "tq-civ-092",
+    "question_kh": "តើទ្រព្យសម្បត្តិដោយឡែករបស់ប្តីឬប្រពន្ធមានអ្វីខ្លះ?",
+    "expected_articles": [
+      974
+    ],
+    "expected_law": "Civil Code 2007",
+    "chapter_hint": "ទ្រព្យសម្បត្តិដោយឡែក",
+    "verifier": "human-verified"
+  },
+  {
+    "id": "tq-civ-093",
+    "question_kh": "តើមូលហេតុអ្វីខ្លះដែលអនុញ្ញាតឱ្យប្តីឬប្រពន្ធប្តឹងសុំលែងលះតាមតុលាការ?",
+    "expected_articles": [
+      979
+    ],
+    "expected_law": "Civil Code 2007",
+    "chapter_hint": "ការលែងលះ",
+    "verifier": "human-verified"
+  },
+  {
+    "id": "tq-civ-094",
+    "question_kh": "តើទ្រព្យសម្បត្តិរួមត្រូវបែងចែកយ៉ាងដូចម្តេចនៅពេលលែងលះ?",
+    "expected_articles": [
+      984
+    ],
+    "expected_law": "Civil Code 2007",
+    "chapter_hint": "ការបែងចែកទ្រព្យសម្បត្តិ",
+    "verifier": "human-verified"
+  },
+  {
+    "id": "tq-civ-095",
+    "question_kh": "តើការបង្កើតស្មុំកូនពេញលេញតម្រូវឱ្យមានលក្ខខណ្ឌអ្វីខ្លះ?",
+    "expected_articles": [
+      1014,
+      1015
+    ],
+    "expected_law": "Civil Code 2007",
+    "chapter_hint": "ស្មុំកូន",
+    "verifier": "human-verified"
+  },
+  {
+    "id": "tq-civ-096",
+    "question_kh": "តើសន្តតិកម្មចាប់ផ្តើមបើកនៅពេលណា?",
+    "expected_articles": [
+      1145
+    ],
+    "expected_law": "Civil Code 2007",
+    "chapter_hint": "ការបើកសន្តតិកម្ម",
+    "verifier": "human-verified"
+  },
+  {
+    "id": "tq-civ-097",
+    "question_kh": "តើនរណាខ្លះជាសន្តតិជនតាមច្បាប់លំដាប់ទីមួយនៃមតកជន?",
+    "expected_articles": [
+      1156
+    ],
+    "expected_law": "Civil Code 2007",
+    "chapter_hint": "សន្តតិជនតាមច្បាប់",
+    "verifier": "human-verified"
+  },
+  {
+    "id": "tq-civ-098",
+    "question_kh": "តើប្តីឬប្រពន្ធដែលនៅរស់មានសិទ្ធិទទួលមតកកម្រិតណា?",
+    "expected_articles": [
+      1160
+    ],
+    "expected_law": "Civil Code 2007",
+    "chapter_hint": "សិទ្ធិរបស់សហព័ទ្ធ",
+    "verifier": "human-verified"
+  },
+  {
+    "id": "tq-civ-099",
+    "question_kh": "តើមតកសាសន៍ (Will) អាចធ្វើឡើងតាមទម្រង់ណាខ្លះ?",
+    "expected_articles": [
+      1174,
+      1175
+    ],
+    "expected_law": "Civil Code 2007",
+    "chapter_hint": "ទម្រង់នៃមតកសាសន៍",
+    "verifier": "human-verified"
+  },
+  {
+    "id": "tq-civ-100",
+    "question_kh": "តើអ្វីទៅជាភាគបម្រុង (Legally Secured Portion) នៃមតក?",
+    "expected_articles": [
+      1230,
+      1231
+    ],
+    "expected_law": "Civil Code 2007",
+    "chapter_hint": "ភាគបម្រុង",
+    "verifier": "human-verified"
+  },
+  {
+    "id": "tq-crim-001",
+    "question_kh": "តើច្បាប់ព្រហ្មទណ្ឌកម្ពុជាអនុវត្តទៅលើដែនដីណាខ្លះ?",
+    "expected_articles": [
+      12,
+      13
+    ],
+    "expected_law": "Criminal Code 2009",
+    "chapter_hint": "ដែនអនុវត្តនៃច្បាប់ព្រហ្មទណ្ឌ",
+    "verifier": "human-verified"
+  },
+  {
+    "id": "tq-crim-002",
+    "question_kh": "តើគោលការណ៍គ្មានទោសបើគ្មានច្បាប់ចែង (Principle of Legality) មានន័យដូចម្តេច?",
+    "expected_articles": [
+      3,
+      4
+    ],
+    "expected_law": "Criminal Code 2009",
+    "chapter_hint": "គោលការណ៍ស្របច្បាប់",
+    "verifier": "human-verified"
+  },
+  {
+    "id": "tq-crim-003",
+    "question_kh": "តើច្បាប់ព្រហ្មទណ្ឌមានអានុភាពប្រតិសកម្មក្នុងករណីណា?",
+    "expected_articles": [
+      10
+    ],
+    "expected_law": "Criminal Code 2009",
+    "chapter_hint": "អានុភាពនៃច្បាប់តាមពេលវេលា",
+    "verifier": "human-verified"
+  },
+  {
+    "id": "tq-crim-004",
+    "question_kh": "តើបទល្មើសព្រហ្មទណ្ឌត្រូវបែងចែកជាប៉ុន្មានថ្នាក់?",
+    "expected_articles": [
+      46
+    ],
+    "expected_law": "Criminal Code 2009",
+    "chapter_hint": "ការបែងចែកបទល្មើស",
+    "verifier": "human-verified"
+  },
+  {
+    "id": "tq-crim-005",
+    "question_kh": "តើអ្វីទៅជាបទឧក្រិដ្ឋ បទមជ្ឈិម និងបទលហុ?",
+    "expected_articles": [
+      47,
+      48,
+      49
+    ],
+    "expected_law": "Criminal Code 2009",
+    "chapter_hint": "ការបែងចែកបទល្មើស",
+    "verifier": "human-verified"
+  },
+  {
+    "id": "tq-crim-006",
+    "question_kh": "តើការប៉ុនប៉ងប្រព្រឹត្តបទល្មើសត្រូវផ្តន្ទាទោសក្នុងលក្ខខណ្ឌណា?",
+    "expected_articles": [
+      27,
+      28
+    ],
+    "expected_law": "Criminal Code 2009",
+    "chapter_hint": "ការប៉ុនប៉ង",
+    "verifier": "human-verified"
+  },
+  {
+    "id": "tq-crim-007",
+    "question_kh": "តើនរណាខ្លះចាត់ទុកថាជាអ្នកសមគំនិតក្នុងបទល្មើសព្រហ្មទណ្ឌ?",
+    "expected_articles": [
+      29
+    ],
+    "expected_law": "Criminal Code 2009",
+    "chapter_hint": "អ្នកសមគំនិត",
+    "verifier": "human-verified"
+  },
+  {
+    "id": "tq-crim-008",
+    "question_kh": "តើអ្នកសមគំនិតត្រូវផ្តន្ទាទោសដូចម្តេចធៀបនឹងចារី?",
+    "expected_articles": [
+      29
+    ],
+    "expected_law": "Criminal Code 2009",
+    "chapter_hint": "ទោសរបស់អ្នកសមគំនិត",
+    "verifier": "human-verified"
+  },
+  {
+    "id": "tq-crim-009",
+    "question_kh": "តើលក្ខខណ្ឌនៃការការពារស្របច្បាប់ (Self-Defense) មានអ្វីខ្លះ?",
+    "expected_articles": [
+      31,
+      32
+    ],
+    "expected_law": "Criminal Code 2009",
+    "chapter_hint": "ការការពារស្របច្បាប់",
+    "verifier": "human-verified"
+  },
+  {
+    "id": "tq-crim-010",
+    "question_kh": "តើកាលៈទេសៈចាំបាច់ (State of Necessity) អាចលើកលែងការទទួលខុសត្រូវព្រហ្មទណ្ឌបានទេ?",
+    "expected_articles": [
+      33
+    ],
+    "expected_law": "Criminal Code 2009",
+    "chapter_hint": "កាលៈទេសៈចាំបាច់",
+    "verifier": "human-verified"
+  },
+  {
+    "id": "tq-crim-011",
+    "question_kh": "តើវិបល្លាសស្មារតីអាចលើកលែងការទទួលខុសត្រូវព្រហ្មទណ្ឌបានក្នុងករណីណា?",
+    "expected_articles": [
+      34
+    ],
+    "expected_law": "Criminal Code 2009",
+    "chapter_hint": "វិបល្លាសស្មារតី",
+    "verifier": "human-verified"
+  },
+  {
+    "id": "tq-crim-012",
+    "question_kh": "តើកំហិតអាយុនៃការទទួលខុសត្រូវព្រហ្មទណ្ឌរបស់អនីតិជនកំណត់យ៉ាងដូចម្តេច?",
+    "expected_articles": [
+      38,
+      39
+    ],
+    "expected_law": "Criminal Code 2009",
+    "chapter_hint": "ការទទួលខុសត្រូវរបស់អនីតិជន",
+    "verifier": "human-verified"
+  },
+  {
+    "id": "tq-crim-013",
+    "question_kh": "តើនីតិបុគ្គលអាចទទួលខុសត្រូវព្រហ្មទណ្ឌបានដែរឬទេ?",
+    "expected_articles": [
+      42,
+      43
+    ],
+    "expected_law": "Criminal Code 2009",
+    "chapter_hint": "ការទទួលខុសត្រូវរបស់នីតិបុគ្គល",
+    "verifier": "human-verified"
+  },
+  {
+    "id": "tq-crim-014",
+    "question_kh": "តើទោសសំខាន់ៗដែលអនុវត្តចំពោះរូបវន្តបុគ្គលមានអ្វីខ្លះ?",
+    "expected_articles": [
+      44
+    ],
+    "expected_law": "Criminal Code 2009",
+    "chapter_hint": "ទោសចំពោះរូបវន្តបុគ្គល",
+    "verifier": "human-verified"
+  },
+  {
+    "id": "tq-crim-015",
+    "question_kh": "តើទោសដាក់ពន្ធនាគារសម្រាប់បទឧក្រិដ្ឋមានកម្រិតណាខ្លះ?",
+    "expected_articles": [
+      47
+    ],
+    "expected_law": "Criminal Code 2009",
+    "chapter_hint": "ទោសសម្រាប់បទឧក្រិដ្ឋ",
+    "verifier": "human-verified"
+  },
+  {
+    "id": "tq-crim-016",
+    "question_kh": "តើទោសដាក់ពន្ធនាគារសម្រាប់បទមជ្ឈិមមានរយៈពេលពីប៉ុន្មានដល់ប៉ុន្មាន?",
+    "expected_articles": [
+      48
+    ],
+    "expected_law": "Criminal Code 2009",
+    "chapter_hint": "ទោសសម្រាប់បទមជ្ឈិម",
+    "verifier": "human-verified"
+  },
+  {
+    "id": "tq-crim-017",
+    "question_kh": "តើទោសបន្ថែមមានប្រភេទអ្វីខ្លះដែលអាចប្រកាសចំពោះបុគ្គលល្មើស?",
+    "expected_articles": [
+      53
+    ],
+    "expected_law": "Criminal Code 2009",
+    "chapter_hint": "ទោសបន្ថែម",
+    "verifier": "human-verified"
+  },
+  {
+    "id": "tq-crim-018",
+    "question_kh": "តើការអនុវត្តទោសព្យួរធម្មតាមានលក្ខខណ្ឌអ្វីខ្លះ?",
+    "expected_articles": [
+      106,
+      107
+    ],
+    "expected_law": "Criminal Code 2009",
+    "chapter_hint": "ការព្យួរទោសធម្មតា",
+    "verifier": "human-verified"
+  },
+  {
+    "id": "tq-crim-019",
+    "question_kh": "តើការអនុវត្តទោសព្យួរមានការសាកល្បងមានន័យដូចម្តេច?",
+    "expected_articles": [
+      115,
+      116
+    ],
+    "expected_law": "Criminal Code 2009",
+    "chapter_hint": "ការព្យួរទោសមានការសាកល្បង",
+    "verifier": "human-verified"
+  },
+  {
+    "id": "tq-crim-020",
+    "question_kh": "តើការដោះលែងដោយមានលក្ខខណ្ឌអាចអនុវត្តបាននៅពេលណា?",
+    "expected_articles": [
+      127,
+      128
+    ],
+    "expected_law": "Criminal Code 2009",
+    "chapter_hint": "ការដោះលែងដោយមានលក្ខខណ្ឌ",
+    "verifier": "human-verified"
+  },
+  {
+    "id": "tq-crim-021",
+    "question_kh": "តើការមិនរាងចាល (Recidivism) មានអានុភាពបង្កើនទោសយ៉ាងដូចម្តេច?",
+    "expected_articles": [
+      86,
+      87
+    ],
+    "expected_law": "Criminal Code 2009",
+    "chapter_hint": "ការមិនរាងចាល",
+    "verifier": "human-verified"
+  },
+  {
+    "id": "tq-crim-022",
+    "question_kh": "តើអាជ្ញាយុកាលនៃបណ្តឹងអាជ្ញាសម្រាប់បទឧក្រិដ្ឋមានរយៈពេលប៉ុន្មានឆ្នាំ?",
+    "expected_articles": [
+      10
+    ],
+    "expected_law": "Criminal Code 2009",
+    "chapter_hint": "អាជ្ញាយុកាលនៃបណ្តឹងអាជ្ញា",
+    "verifier": "human-verified"
+  },
+  {
+    "id": "tq-crim-023",
+    "question_kh": "តើអាជ្ញាយុកាលនៃការអនុវត្តទោសសម្រាប់បទមជ្ឈិមមានរយៈពេលប៉ុន្មានឆ្នាំ?",
+    "expected_articles": [
+      145
+    ],
+    "expected_law": "Criminal Code 2009",
+    "chapter_hint": "អាជ្ញាយុកាលនៃការអនុវត្តទោស",
+    "verifier": "human-verified"
+  },
+  {
+    "id": "tq-crim-024",
+    "question_kh": "តើបទមនុស្សឃាតគិតទុកជាមុន (Murder) ត្រូវផ្តន្ទាទោសកម្រិតណា?",
+    "expected_articles": [
+      200
+    ],
+    "expected_law": "Criminal Code 2009",
+    "chapter_hint": "បទមនុស្សឃាតគិតទុកជាមុន",
+    "verifier": "human-verified"
+  },
+  {
+    "id": "tq-crim-025",
+    "question_kh": "តើបទឃាតកម្មធម្មតាត្រូវផ្តន្ទាទោសដាក់ពន្ធនាគារប៉ុន្មានឆ្នាំ?",
+    "expected_articles": [
+      199
+    ],
+    "expected_law": "Criminal Code 2009",
+    "chapter_hint": "បទឃាតកម្ម",
+    "verifier": "human-verified"
+  },
+  {
+    "id": "tq-crim-026",
+    "question_kh": "តើស្ថានទម្ងន់ទោសនៃបទឃាតកម្មមានករណីណាខ្លះ?",
+    "expected_articles": [
+      201,
+      202
+    ],
+    "expected_law": "Criminal Code 2009",
+    "chapter_hint": "ស្ថានទម្ងន់ទោសនៃបទឃាតកម្ម",
+    "verifier": "human-verified"
+  },
+  {
+    "id": "tq-crim-027",
+    "question_kh": "តើបទមនុស្សឃាតដោយអចេតនាត្រូវផ្តន្ទាទោសកម្រិតណា?",
+    "expected_articles": [
+      207
+    ],
+    "expected_law": "Criminal Code 2009",
+    "chapter_hint": "បទមនុស្សឃាតដោយអចេតនា",
+    "verifier": "human-verified"
+  },
+  {
+    "id": "tq-crim-028",
+    "question_kh": "តើបទហិង្សាដោយចេតនាត្រូវផ្តន្ទាទោសកម្រិតណា?",
+    "expected_articles": [
+      217
+    ],
+    "expected_law": "Criminal Code 2009",
+    "chapter_hint": "បទហិង្សាដោយចេតនា",
+    "verifier": "human-verified"
+  },
+  {
+    "id": "tq-crim-029",
+    "question_kh": "តើបទហិង្សាដោយចេតនាមានស្ថានទម្ងន់ទោសក្នុងករណីណាខ្លះ?",
+    "expected_articles": [
+      218,
+      219
+    ],
+    "expected_law": "Criminal Code 2009",
+    "chapter_hint": "ស្ថានទម្ងន់ទោសនៃអំពើហិង្សា",
+    "verifier": "human-verified"
+  },
+  {
+    "id": "tq-crim-030",
+    "question_kh": "តើបទហិង្សាដោយចេតនាបណ្តាលឱ្យជនរងគ្រោះស្លាប់ត្រូវផ្តន្ទាទោសប៉ុន្មានឆ្នាំ?",
+    "expected_articles": [
+      224
+    ],
+    "expected_law": "Criminal Code 2009",
+    "chapter_hint": "អំពើហិង្សាបណ្តាលឱ្យស្លាប់",
+    "verifier": "human-verified"
+  },
+  {
+    "id": "tq-crim-031",
+    "question_kh": "តើបទហិង្សាដោយអចេតនាត្រូវផ្តន្ទាទោសកម្រិតណា?",
+    "expected_articles": [
+      236
+    ],
+    "expected_law": "Criminal Code 2009",
+    "chapter_hint": "បទហិង្សាដោយអចេតនា",
+    "verifier": "human-verified"
+  },
+  {
+    "id": "tq-crim-032",
+    "question_kh": "តើបទគំរាមកំហែងថានឹងសម្លាប់ត្រូវផ្តន្ទាទោសយ៉ាងដូចម្តេច?",
+    "expected_articles": [
+      233
+    ],
+    "expected_law": "Criminal Code 2009",
+    "chapter_hint": "បទគំរាមកំហែង",
+    "verifier": "human-verified"
+  },
+  {
+    "id": "tq-crim-033",
+    "question_kh": "តើបទធ្វើទារុណកម្មនិងអំពើឃោរឃៅត្រូវផ្តន្ទាទោសកម្រិតណា?",
+    "expected_articles": [
+      210
+    ],
+    "expected_law": "Criminal Code 2009",
+    "chapter_hint": "ទារុណកម្ម",
+    "verifier": "human-verified"
+  },
+  {
+    "id": "tq-crim-034",
+    "question_kh": "តើបទរំលោភសេពសន្ថវៈ (Rape) ត្រូវផ្តន្ទាទោសដាក់ពន្ធនាគារប៉ុន្មានឆ្នាំ?",
+    "expected_articles": [
+      239
+    ],
+    "expected_law": "Criminal Code 2009",
+    "chapter_hint": "បទរំលោភសេពសន្ថវៈ",
+    "verifier": "human-verified"
+  },
+  {
+    "id": "tq-crim-035",
+    "question_kh": "តើស្ថានទម្ងន់ទោសនៃបទរំលោភសេពសន្ថវៈមានករណីណាខ្លះ?",
+    "expected_articles": [
+      240,
+      241
+    ],
+    "expected_law": "Criminal Code 2009",
+    "chapter_hint": "ស្ថានទម្ងន់ទោសនៃការរំលោភសេពសន្ថវៈ",
+    "verifier": "human-verified"
+  },
+  {
+    "id": "tq-crim-036",
+    "question_kh": "តើបទបៀតបៀនកេរ្តិ៍ខ្មាសត្រូវផ្តន្ទាទោសយ៉ាងដូចម្តេច?",
+    "expected_articles": [
+      246
+    ],
+    "expected_law": "Criminal Code 2009",
+    "chapter_hint": "បទបៀតបៀនកេរ្តិ៍ខ្មាស",
+    "verifier": "human-verified"
+  },
+  {
+    "id": "tq-crim-037",
+    "question_kh": "តើបទរំលោភលើសេចក្តីទុកចិត្តខាងផ្លូវភេទ (Sexual Harassment) មានទោសកម្រិតណា?",
+    "expected_articles": [
+      250
+    ],
+    "expected_law": "Criminal Code 2009",
+    "chapter_hint": "ការបៀតបៀនផ្លូវភេទ",
+    "verifier": "human-verified"
+  },
+  {
+    "id": "tq-crim-038",
+    "question_kh": "តើបទចាប់ពង្រត់ឬឃុំឃាំងមនុស្សដោយខុសច្បាប់ត្រូវផ្តន្ទាទោសប៉ុន្មានឆ្នាំ?",
+    "expected_articles": [
+      253
+    ],
+    "expected_law": "Criminal Code 2009",
+    "chapter_hint": "ការបង្ខាំងមនុស្សដោយខុសច្បាប់",
+    "verifier": "human-verified"
+  },
+  {
+    "id": "tq-crim-039",
+    "question_kh": "តើបទជួញដូរមនុស្សត្រូវផ្តន្ទាទោសកម្រិតណា?",
+    "expected_articles": [
+      254
+    ],
+    "expected_law": "Criminal Code 2009",
+    "chapter_hint": "ការជួញដូរមនុស្ស",
+    "verifier": "human-verified"
+  },
+  {
+    "id": "tq-crim-040",
+    "question_kh": "តើបទមិនជួយសង្គ្រោះជនរងគ្រោះក្នុងគ្រោះថ្នាក់ត្រូវផ្តន្ទាទោសយ៉ាងដូចម្តេច?",
+    "expected_articles": [
+      257
+    ],
+    "expected_law": "Criminal Code 2009",
+    "chapter_hint": "ការមិនជួយសង្គ្រោះ",
+    "verifier": "human-verified"
+  },
+  {
+    "id": "tq-civ-041_c",
+    "question_kh": "តើបទបរិហារកេរ្តិ៍ជាសាធារណៈ (Defamation) ត្រូវផ្តន្ទាទោសកម្រិតណា?",
+    "expected_articles": [
+      305
+    ],
+    "expected_law": "Criminal Code 2009",
+    "chapter_hint": "ការបរិហារកេរ្តិ៍",
+    "verifier": "human-verified"
+  },
+  {
+    "id": "tq-crim-042",
+    "question_kh": "តើបទជេរប្រមាថជាសាធារណៈត្រូវផ្តន្ទាទោសពិន័យជាប្រាក់កម្រិតណា?",
+    "expected_articles": [
+      307
+    ],
+    "expected_law": "Criminal Code 2009",
+    "chapter_hint": "ការជេរប្រមាថ",
+    "verifier": "human-verified"
+  },
+  {
+    "id": "tq-crim-043",
+    "question_kh": "តើការលួចស្តាប់ឬថតសំឡេងការសន្ទនាឯកជនដោយគ្មានការយល់ព្រមជាបទល្មើសដែរឬទេ?",
+    "expected_articles": [
+      301
+    ],
+    "expected_law": "Criminal Code 2009",
+    "chapter_hint": "ការរំលោភលើជីវិតឯកជន",
+    "verifier": "human-verified"
+  },
+  {
+    "id": "tq-crim-044",
+    "question_kh": "តើបទរំលោភលើលំនៅឋានត្រូវផ្តន្ទាទោសកម្រិតណា?",
+    "expected_articles": [
+      299
+    ],
+    "expected_law": "Criminal Code 2009",
+    "chapter_hint": "ការរំលោភលើលំនៅឋាន",
+    "verifier": "human-verified"
+  },
+  {
+    "id": "tq-crim-045",
+    "question_kh": "តើបទបោះបង់ចោលកូនអនីតិជនត្រូវផ្តន្ទាទោសយ៉ាងដូចម្តេច?",
+    "expected_articles": [
+      321
+    ],
+    "expected_law": "Criminal Code 2009",
+    "chapter_hint": "ការបោះបង់ចោលអនីតិជន",
+    "verifier": "human-verified"
+  },
+  {
+    "id": "tq-crim-046",
+    "question_kh": "តើអំពើលួច (Theft) មាននិយមន័យដូចម្តេច ហើយត្រូវផ្តន្ទាទោសកម្រិតណា?",
+    "expected_articles": [
+      353,
+      356
+    ],
+    "expected_law": "Criminal Code 2009",
+    "chapter_hint": "បទលួច",
+    "verifier": "human-verified"
+  },
+  {
+    "id": "tq-crim-047",
+    "question_kh": "តើបទលួចមានស្ថានទម្ងន់ទោសក្នុងករណីណាខ្លះ?",
+    "expected_articles": [
+      357,
+      358
+    ],
+    "expected_law": "Criminal Code 2009",
+    "chapter_hint": "ស្ថានទម្ងន់ទោសនៃបទលួច",
+    "verifier": "human-verified"
+  },
+  {
+    "id": "tq-crim-048",
+    "question_kh": "តើបទលួចដោយប្រើអំពើហិង្សាឬប្លន់ត្រូវផ្តន្ទាទោសប៉ុន្មានឆ្នាំ?",
+    "expected_articles": [
+      360
+    ],
+    "expected_law": "Criminal Code 2009",
+    "chapter_hint": "បទប្លន់",
+    "verifier": "human-verified"
+  },
+  {
+    "id": "tq-crim-049",
+    "question_kh": "តើបទជំរិតទារប្រាក់ (Extortion) មាននិយមន័យដូចម្តេច ហើយត្រូវផ្តន្ទាទោសកម្រិតណា?",
+    "expected_articles": [
+      363,
+      364
+    ],
+    "expected_law": "Criminal Code 2009",
+    "chapter_hint": "បទជំរិតទារប្រាក់",
+    "verifier": "human-verified"
+  },
+  {
+    "id": "tq-crim-050",
+    "question_kh": "តើបទឆបោក (Fraud) មាននិយមន័យដូចម្តេច ហើយត្រូវផ្តន្ទាទោសកម្រិតណា?",
+    "expected_articles": [
+      377,
+      378
+    ],
+    "expected_law": "Criminal Code 2009",
+    "chapter_hint": "បទឆបោក",
+    "verifier": "human-verified"
+  },
+  {
+    "id": "tq-crim-051",
+    "question_kh": "តើស្ថានទម្ងន់ទោសនៃបទឆបោកមានករណីណាខ្លះ?",
+    "expected_articles": [
+      380
+    ],
+    "expected_law": "Criminal Code 2009",
+    "chapter_hint": "ស្ថានទម្ងន់ទោសនៃបទឆបោក",
+    "verifier": "human-verified"
+  },
+  {
+    "id": "tq-crim-052",
+    "question_kh": "តើបទរំលោភលើទំនុកចិត្ត (Breach of Trust) មាននិយមន័យដូចម្តេច ហើយត្រូវផ្តន្ទាទោសកម្រិតណា?",
+    "expected_articles": [
+      391,
+      392
+    ],
+    "expected_law": "Criminal Code 2009",
+    "chapter_hint": "បទរំលោភលើទំនុកចិត្ត",
+    "verifier": "human-verified"
+  },
+  {
+    "id": "tq-crim-053",
+    "question_kh": "តើបទទទួលផលចោរកម្ម (Receiving Stolen Goods) ត្រូវផ្តន្ទាទោសកម្រិតណា?",
+    "expected_articles": [
+      399,
+      400
+    ],
+    "expected_law": "Criminal Code 2009",
+    "chapter_hint": "បទទទួលផលចោរកម្ម",
+    "verifier": "human-verified"
+  },
+  {
+    "id": "tq-crim-054",
+    "question_kh": "តើបទបំផ្លិចបំផ្លាញឬធ្វើឱ្យខូចខាតទ្រព្យសម្បត្តិអ្នកដទៃដោយចេតនាត្រូវផ្តន្ទាទោសកម្រិតណា?",
+    "expected_articles": [
+      410
+    ],
+    "expected_law": "Criminal Code 2009",
+    "chapter_hint": "ការបំផ្លិចបំផ្លាញទ្រព្យសម្បត្តិ",
+    "verifier": "human-verified"
+  },
+  {
+    "id": "tq-crim-055",
+    "question_kh": "តើបទបង្កឱ្យមានអគ្គិភ័យដោយចេតនាលើទ្រព្យសម្បត្តិអ្នកដទៃត្រូវផ្តន្ទាទោសប៉ុន្មានឆ្នាំ?",
+    "expected_articles": [
+      414
+    ],
+    "expected_law": "Criminal Code 2009",
+    "chapter_hint": "ការដុតបំផ្លាញ",
+    "verifier": "human-verified"
+  },
+  {
+    "id": "tq-crim-056",
+    "question_kh": "តើបទចូលទៅក្នុងប្រព័ន្ធប្រព្រឹត្តិកម្មស្វ័យប្រវត្តិនៃទិន្នន័យ (Hacking) ដោយខុសច្បាប់ត្រូវផ្តន្ទាទោសកម្រិតណា?",
+    "expected_articles": [
+      427
+    ],
+    "expected_law": "Criminal Code 2009",
+    "chapter_hint": "បទល្មើសបច្ចេកវិទ្យា",
+    "verifier": "human-verified"
+  },
+  {
+    "id": "tq-crim-057",
+    "question_kh": "តើបទបំផ្លាញទិន្នន័យកុំព្យូទ័រត្រូវផ្តន្ទាទោសកម្រិតណា?",
+    "expected_articles": [
+      429
+    ],
+    "expected_law": "Criminal Code 2009",
+    "chapter_hint": "បទល្មើសបច្ចេកវិទ្យា",
+    "verifier": "human-verified"
+  },
+  {
+    "id": "tq-crim-058",
+    "question_kh": "តើបទក្បត់ជាតិ (Treason) ចំពោះព្រះរាជាណាចក្រកម្ពុជាមាននិយមន័យដូចម្តេច?",
+    "expected_articles": [
+      439
+    ],
+    "expected_law": "Criminal Code 2009",
+    "chapter_hint": "បទក្បត់ជាតិ",
+    "verifier": "human-verified"
+  },
+  {
+    "id": "tq-crim-059",
+    "question_kh": "តើបទចារកម្ម (Espionage) ត្រូវផ្តន្ទាទោសកម្រិតណា?",
+    "expected_articles": [
+      445,
+      446
+    ],
+    "expected_law": "Criminal Code 2009",
+    "chapter_hint": "បទចារកម្ម",
+    "verifier": "human-verified"
+  },
+  {
+    "id": "tq-crim-060",
+    "question_kh": "តើបទបំផ្លិចបំផ្លាញសម្ភារៈការពារជាតិត្រូវផ្តន្ទាទោសកម្រិតណា?",
+    "expected_articles": [
+      447
+    ],
+    "expected_law": "Criminal Code 2009",
+    "chapter_hint": "ការការពារជាតិ",
+    "verifier": "human-verified"
+  },
+  {
+    "id": "tq-crim-061",
+    "question_kh": "តើបទញុះញង់ឱ្យមានអំពើក្បត់ជាតិត្រូវផ្តន្ទាទោសប៉ុន្មានឆ្នាំ?",
+    "expected_articles": [
+      451
+    ],
+    "expected_law": "Criminal Code 2009",
+    "chapter_hint": "បទល្មើសប្រឆាំងនឹងរដ្ឋ",
+    "verifier": "human-verified"
+  },
+  {
+    "id": "tq-crim-062",
+    "question_kh": "តើបទចលាចលប្រដាប់អាវុធប្រឆាំងនឹងអាជ្ញាធររដ្ឋត្រូវផ្តន្ទាទោសកម្រិតណា?",
+    "expected_articles": [
+      456
+    ],
+    "expected_law": "Criminal Code 2009",
+    "chapter_hint": "ចលាចលប្រដាប់អាវុធ",
+    "verifier": "human-verified"
+  },
+  {
+    "id": "tq-crim-063",
+    "question_kh": "តើបទភេរវកម្ម (Terrorism) មាននិយមន័យដូចម្តេច?",
+    "expected_articles": [
+      480
+    ],
+    "expected_law": "Criminal Code 2009",
+    "chapter_hint": "បទភេរវកម្ម",
+    "verifier": "human-verified"
+  },
+  {
+    "id": "tq-crim-064",
+    "question_kh": "តើការចូលរួមក្នុងក្រុមភេរវករត្រូវផ្តន្ទាទោសកម្រិតណា?",
+    "expected_articles": [
+      482
+    ],
+    "expected_law": "Criminal Code 2009",
+    "chapter_hint": "បទភេរវកម្ម",
+    "verifier": "human-verified"
+  },
+  {
+    "id": "tq-crim-065",
+    "question_kh": "តើបទផ្តល់ហិរញ្ញប្បទានដល់ភេរវកម្មត្រូវផ្តន្ទាទោសកម្រិតណា?",
+    "expected_articles": [
+      484
+    ],
+    "expected_law": "Criminal Code 2009",
+    "chapter_hint": "ការផ្តល់ហិរញ្ញប្បទានដល់ភេរវកម្ម",
+    "verifier": "human-verified"
+  },
+  {
+    "id": "tq-crim-066",
+    "question_kh": "តើបទកាន់កាប់ឬប្រើប្រាស់អាវុធខុសច្បាប់ត្រូវផ្តន្ទាទោសកម្រិតណា?",
+    "expected_articles": [
+      490
+    ],
+    "expected_law": "Criminal Code 2009",
+    "chapter_hint": "ការកាន់កាប់អាវុធខុសច្បាប់",
+    "verifier": "human-verified"
+  },
+  {
+    "id": "tq-crim-067",
+    "question_kh": "តើបទជួញដូរអាវុធឬគ្រឿងផ្ទុះខុសច្បាប់ត្រូវផ្តន្ទាទោសប៉ុន្មានឆ្នាំ?",
+    "expected_articles": [
+      488
+    ],
+    "expected_law": "Criminal Code 2009",
+    "chapter_hint": "ការជួញដូរអាវុធ",
+    "verifier": "human-verified"
+  },
+  {
+    "id": "tq-crim-068",
+    "question_kh": "តើបទញុះញង់ឱ្យប្រព្រឹត្តបទឧក្រិដ្ឋជាអាទិ៍ត្រូវផ្តន្ទាទោសកម្រិតណា?",
+    "expected_articles": [
+      494,
+      495
+    ],
+    "expected_law": "Criminal Code 2009",
+    "chapter_hint": "បទញុះញង់",
+    "verifier": "human-verified"
+  },
+  {
+    "id": "tq-crim-069",
+    "question_kh": "តើបទញុះញង់ឱ្យមានការរើសអើងពូជសាសន៍ឬសាសនាត្រូវផ្តន្ទាទោសកម្រិតណា?",
+    "expected_articles": [
+      496
+    ],
+    "expected_law": "Criminal Code 2009",
+    "chapter_hint": "ការញុះញង់ឱ្យរើសអើង",
+    "verifier": "human-verified"
+  },
+  {
+    "id": "tq-crim-070",
+    "question_kh": "តើបទរៀបចំកន្លែងល្បែងស៊ីសងខុសច្បាប់ត្រូវផ្តន្ទាទោសកម្រិតណា?",
+    "expected_articles": [
+      501
+    ],
+    "expected_law": "Criminal Code 2009",
+    "chapter_hint": "ល្បែងស៊ីសង",
+    "verifier": "human-verified"
+  },
+  {
+    "id": "tq-crim-071",
+    "question_kh": "តើបទធ្វើឱ្យខូចខាតដល់បូជនីយដ្ឋានសាសនាត្រូវផ្តន្ទាទោសយ៉ាងដូចម្តេច?",
+    "expected_articles": [
+      510
+    ],
+    "expected_law": "Criminal Code 2009",
+    "chapter_hint": "បទល្មើសខាងសាសនា",
+    "verifier": "human-verified"
+  },
+  {
+    "id": "tq-crim-072",
+    "question_kh": "តើបទរំលោភលើសពឬផ្នូរត្រូវផ្តន្ទាទោសកម្រិតណា?",
+    "expected_articles": [
+      512
+    ],
+    "expected_law": "Criminal Code 2009",
+    "chapter_hint": "ការរំលោភលើសព",
+    "verifier": "human-verified"
+  },
+  {
+    "id": "tq-crim-073",
+    "question_kh": "តើបទប្រឆាំងនឹងអ្នករាជការសាធារណៈ (Rebellion) មាននិយមន័យដូចម្តេច?",
+    "expected_articles": [
+      502,
+      503
+    ],
+    "expected_law": "Criminal Code 2009",
+    "chapter_hint": "ការប្រឆាំងនឹងអ្នករាជការសាធារណៈ",
+    "verifier": "human-verified"
+  },
+  {
+    "id": "tq-crim-074",
+    "question_kh": "តើបទរារាំងដល់កិច្ចប្រតិបត្តិការជួយសង្គ្រោះត្រូវផ្តន្ទាទោសយ៉ាងដូចម្តេច?",
+    "expected_articles": [
+      521
+    ],
+    "expected_law": "Criminal Code 2009",
+    "chapter_hint": "ការរារាំងការសង្គ្រោះ",
+    "verifier": "human-verified"
+  },
+  {
+    "id": "tq-crim-075",
+    "question_kh": "តើបទលួចរត់ចេញពីពន្ធនាគារឬកន្លែងឃុំឃាំងត្រូវផ្តន្ទាទោសកម្រិតណា?",
+    "expected_articles": [
+      560
+    ],
+    "expected_law": "Criminal Code 2009",
+    "chapter_hint": "ការលួចរត់",
+    "verifier": "human-verified"
+  },
+  {
+    "id": "tq-crim-076",
+    "question_kh": "តើអំពើជួយសម្រួលដល់ការលួចរត់របស់ទណ្ឌិតត្រូវផ្តន្ទាទោសកម្រិតណា?",
+    "expected_articles": [
+      564,
+      565
+    ],
+    "expected_law": "Criminal Code 2009",
+    "chapter_hint": "ការជួយសម្រួលដល់ការលួចរត់",
+    "verifier": "human-verified"
+  },
+  {
+    "id": "tq-crim-077",
+    "question_kh": "តើបទស៊ីសំណូក (Passive Bribery) ដោយអ្នករាជការសាធារណៈត្រូវផ្តន្ទាទោសកម្រិតណា?",
+    "expected_articles": [
+      592,
+      593
+    ],
+    "expected_law": "Criminal Code 2009",
+    "chapter_hint": "អំពើពុករលួយ",
+    "verifier": "human-verified"
+  },
+  {
+    "id": "tq-crim-078",
+    "question_kh": "តើបទសូកប៉ាន់ (Active Bribery) ចំពោះអ្នករាជការសាធារណៈត្រូវផ្តន្ទាទោសប៉ុន្មានឆ្នាំ?",
+    "expected_articles": [
+      605
+    ],
+    "expected_law": "Criminal Code 2009",
+    "chapter_hint": "អំពើពុករលួយ",
+    "verifier": "human-verified"
+  },
+  {
+    "id": "tq-crim-079",
+    "question_kh": "តើបទកេងយកផលប្រយោជន៍ដោយខុសច្បាប់ដោយមន្ត្រីរាជការត្រូវផ្តន្ទាទោសកម្រិតណា?",
+    "expected_articles": [
+      597
+    ],
+    "expected_law": "Criminal Code 2009",
+    "chapter_hint": "ការកេងប្រវ័ញ្ច",
+    "verifier": "human-verified"
+  },
+  {
+    "id": "tq-crim-080",
+    "question_kh": "តើបទរំលោភអំណាចដោយអ្នករាជការសាធារណៈមានទោសកម្រិតណា?",
+    "expected_articles": [
+      586
+    ],
+    "expected_law": "Criminal Code 2009",
+    "chapter_hint": "ការរំលោភអំណាច",
+    "verifier": "human-verified"
+  },
+  {
+    "id": "tq-crim-081",
+    "question_kh": "តើបទបដិសេធមិនព្រមធ្វើតាមសេចក្តីសម្រេចរបស់តុលាការត្រូវផ្តន្ទាទោសកម្រិតណា?",
+    "expected_articles": [
+      523
+    ],
+    "expected_law": "Criminal Code 2009",
+    "chapter_hint": "ការមិនគោរពតុលាការ",
+    "verifier": "human-verified"
+  },
+  {
+    "id": "tq-crim-082",
+    "question_kh": "តើបទក្លែងបន្លំឯកសារសាធារណៈ (Forgery of Public Documents) ត្រូវផ្តន្ទាទោសប៉ុន្មានឆ្នាំ?",
+    "expected_articles": [
+      629
+    ],
+    "expected_law": "Criminal Code 2009",
+    "chapter_hint": "ការក្លែងបន្លំឯកសារ",
+    "verifier": "human-verified"
+  },
+  {
+    "id": "tq-crim-083",
+    "question_kh": "តើបទប្រើប្រាស់ឯកសារសាធារណៈក្លែងត្រូវផ្តន្ទាទោសកម្រិតណា?",
+    "expected_articles": [
+      630
+    ],
+    "expected_law": "Criminal Code 2009",
+    "chapter_hint": "ការប្រើប្រាស់ឯកសារក្លែង",
+    "verifier": "human-verified"
+  },
+  {
+    "id": "tq-crim-084",
+    "question_kh": "តើបទក្លែងបន្លំឯកសារឯកជនត្រូវផ្តន្ទាទោសកម្រិតណា?",
+    "expected_articles": [
+      626,
+      627
+    ],
+    "expected_law": "Criminal Code 2009",
+    "chapter_hint": "ការក្លែងបន្លំឯកសារឯកជន",
+    "verifier": "human-verified"
+  },
+  {
+    "id": "tq-crim-085",
+    "question_kh": "តើបទប្រើប្រាស់ឯកសារឯកជនក្លែងត្រូវផ្តន្ទាទោសប៉ុន្មានឆ្នាំ?",
+    "expected_articles": [
+      628
+    ],
+    "expected_law": "Criminal Code 2009",
+    "chapter_hint": "ការប្រើប្រាស់ឯកសារក្លែង",
+    "verifier": "human-verified"
+  },
+  {
+    "id": "tq-crim-086",
+    "question_kh": "តើបទធ្វើសក្ខីកម្មក្លែងក្លាយ (Perjury) នៅចំពោះមុខតុលាការត្រូវផ្តន្ទាទោសកម្រិតណា?",
+    "expected_articles": [
+      545
+    ],
+    "expected_law": "Criminal Code 2009",
+    "chapter_hint": "សក្ខីកម្មក្លែងក្លាយ",
+    "verifier": "human-verified"
+  },
+  {
+    "id": "tq-crim-087",
+    "question_kh": "តើបទសូកប៉ាន់សាក្សីកុំឱ្យផ្តល់សក្ខីកម្មត្រូវផ្តន្ទាទោសប៉ុន្មានឆ្នាំ?",
+    "expected_articles": [
+      548
+    ],
+    "expected_law": "Criminal Code 2009",
+    "chapter_hint": "ការសូកប៉ាន់សាក្សី",
+    "verifier": "human-verified"
+  },
+  {
+    "id": "tq-crim-088",
+    "question_kh": "តើបទក្លែងបន្លំប្រាក់រៀលឬរូបិយប័ណ្ណជាតិត្រូវផ្តន្ទាទោសកម្រិតណា?",
+    "expected_articles": [
+      645,
+      646
+    ],
+    "expected_law": "Criminal Code 2009",
+    "chapter_hint": "ការក្លែងបន្លំរូបិយប័ណ្ណ",
+    "verifier": "human-verified"
+  },
+  {
+    "id": "tq-crim-089",
+    "question_kh": "តើបទនាំចូល ឬចែកចាយប្រាក់ក្លែងក្លាយត្រូវផ្តន្ទាទោសប៉ុន្មានឆ្នាំ?",
+    "expected_articles": [
+      647
+    ],
+    "expected_law": "Criminal Code 2009",
+    "chapter_hint": "ការចាយប្រាក់ក្លែង",
+    "verifier": "human-verified"
+  },
+  {
+    "id": "tq-crim-090",
+    "question_kh": "តើបទក្លែងត្រាផ្លូវការរបស់រដ្ឋឬក្រសួងត្រូវផ្តន្ទាទោសកម្រិតណា?",
+    "expected_articles": [
+      661
+    ],
+    "expected_law": "Criminal Code 2009",
+    "chapter_hint": "ការក្លែងត្រាផ្លូវការ",
+    "verifier": "human-verified"
+  },
+  {
+    "id": "tq-crim-091",
+    "question_kh": "តើបទប្រើប្រាស់ត្រាក្លែងក្លាយរបស់រដ្ឋត្រូវផ្តន្ទាទោសប៉ុន្មានឆ្នាំ?",
+    "expected_articles": [
+      662
+    ],
+    "expected_law": "Criminal Code 2009",
+    "chapter_hint": "ការប្រើប្រាស់ត្រាក្លែង",
+    "verifier": "human-verified"
+  },
+  {
+    "id": "tq-crim-092",
+    "question_kh": "តើបទក្លែងបន្លំអត្តសញ្ញាណប័ណ្ណសញ្ជាតិខ្មែរត្រូវផ្តន្ទាទោសកម្រិតណា?",
+    "expected_articles": [
+      635
+    ],
+    "expected_law": "Criminal Code 2009",
+    "chapter_hint": "ការក្លែងប័ណ្ណសម្គាល់ខ្លួន",
+    "verifier": "human-verified"
+  },
+  {
+    "id": "tq-crim-093",
+    "question_kh": "តើបទក្លែងបន្លំប័ណ្ណបើកបរត្រូវផ្តន្ទាទោសកម្រិតណា?",
+    "expected_articles": [
+      636
+    ],
+    "expected_law": "Criminal Code 2009",
+    "chapter_hint": "ការក្លែងប័ណ្ណបើកបរ",
+    "verifier": "human-verified"
+  },
+  {
+    "id": "tq-crim-094",
+    "question_kh": "តើបទប្រើប្រាស់ដោយខុសច្បាប់នូវឯកសណ្ឋានប៉ូលិសឬយោធាត្រូវផ្តន្ទាទោសប៉ុន្មានខែ?",
+    "expected_articles": [
+      612,
+      616
+    ],
+    "expected_law": "Criminal Code 2009",
+    "chapter_hint": "ការក្លែងឯកសណ្ឋាន",
+    "verifier": "human-verified"
+  },
+  {
+    "id": "tq-crim-095",
+    "question_kh": "តើបទជ្រៀតជ្រែកដោយខុសច្បាប់ទៅក្នុងការបំពេញមុខងារសាធារណៈមានទោសកម្រិតណា?",
+    "expected_articles": [
+      609
+    ],
+    "expected_law": "Criminal Code 2009",
+    "chapter_hint": "ការជ្រៀតជ្រែកមុខងារសាធារណៈ",
+    "verifier": "human-verified"
+  },
+  {
+    "id": "tq-crim-096",
+    "question_kh": "តើបទគំរាមកំហែងចៅក្រមឬព្រះរាជអាជ្ញាត្រូវផ្តន្ទាទោសប៉ុន្មានឆ្នាំ?",
+    "expected_articles": [
+      524
+    ],
+    "expected_law": "Criminal Code 2009",
+    "chapter_hint": "ការគំរាមកំហែងតុលាការ",
+    "verifier": "human-verified"
+  },
+  {
+    "id": "tq-crim-097",
+    "question_kh": "តើបទប្រមាថចំពោះអង្គព្រះមហាក្សត្រត្រូវផ្តន្ទាទោសកម្រិតណា?",
+    "expected_articles": [
+      437
+    ],
+    "expected_law": "Criminal Code 2009",
+    "chapter_hint": "បទប្រមាថព្រះមហាក្សត្រ",
+    "verifier": "human-verified"
+  },
+  {
+    "id": "tq-crim-098",
+    "question_kh": "តើបទប្រមាថចំពោះអ្នករាជការសាធារណៈក្នុងពេលបំពេញការងារត្រូវផ្តន្ទាទោសកម្រិតណា?",
+    "expected_articles": [
+      502
+    ],
+    "expected_law": "Criminal Code 2009",
+    "chapter_hint": "ការប្រមាថអ្នករាជការ",
+    "verifier": "human-verified"
+  },
+  {
+    "id": "tq-crim-099",
+    "question_kh": "តើបទបំបាត់ឬបំផ្លាញភស្តុតាងក្នុងសំណុំរឿងព្រហ្មទណ្ឌត្រូវផ្តន្ទាទោសកម្រិតណា?",
+    "expected_articles": [
+      533
+    ],
+    "expected_law": "Criminal Code 2009",
+    "chapter_hint": "ការបំផ្លាញភស្តុតាង",
+    "verifier": "human-verified"
+  },
+  {
+    "id": "tq-crim-100",
+    "question_kh": "តើបទមិនប្តឹងបរិហារបទឧក្រិដ្ឋដែលខ្លួនបានដឹងត្រូវផ្តន្ទាទោសយ៉ាងដូចម្តេច?",
+    "expected_articles": [
+      528
+    ],
+    "expected_law": "Criminal Code 2009",
+    "chapter_hint": "ការមិនប្តឹងបរិហារ",
+    "verifier": "human-verified"
+  }
+]
