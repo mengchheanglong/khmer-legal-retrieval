@@ -81,28 +81,28 @@
 - [ ] Lecturer approval by **Week 7**; record the date in README
 
 ### 6.1 Khmer test set and splits
-- [ ] Translate the 41 Civil Code questions in `tests/evaluation/ground_truth_qa.json` into Khmer; re-verify `expected_articles` against the Khmer text
-- [ ] Write new Civil Code and Criminal Code questions to reach ~200 (T-Q); store as `tests/evaluation/ground_truth_qa_kh.json` with `question_kh`, `expected_articles`, `law_name`, `author/verifier`
+- [x] Translate the 41 Civil Code questions in `tests/evaluation/ground_truth_qa.json` into Khmer; re-verify `expected_articles` against the Khmer text
+- [x] Write new Civil Code and Criminal Code questions to reach ~200 (T-Q); store as `tests/evaluation/ground_truth_qa_kh.json` with `question_kh`, `expected_articles`, `law_name`, `author/verifier`
 - [ ] (Optional) Generate ~3 Khmer questions per article with DeepSeek; hand-check ≥ 100 random pairs; mark as synthetic
-- [ ] `src/dl/prepare_splits.py`: title→body pairs for the 1,706 unique-title articles; strip the title line from passages
-- [ ] Leakage guard: drop pairs whose article is relevant to any T-Q question
-- [ ] Split by article 80/10/10 (seed 42) → `train`, `val`, `test_titles`; save `data/05_splits/*.jsonl` + `manifest.json` (counts, seed, SHA-256)
-- [ ] Report split sizes and per-code distribution in README §2
+- [x] `src/dl/prepare_splits.py`: title→body pairs for the 1,706 unique-title articles; strip the title line from passages
+- [x] Leakage guard: drop pairs whose article is relevant to any T-Q question
+- [x] Split by article 80/10/10 (seed 42) → `train`, `val`, `test_titles`; save `data/05_splits/*.jsonl` + `manifest.json` (counts, seed, SHA-256)
+- [x] Report split sizes and per-code distribution in README §2
 
 ### 6.2 Shared infrastructure (`src/dl/`)
-- [ ] Add pinned `torch`, `transformers`, `khmer-nltk`, `pandas`, `matplotlib`, `pyyaml` to `requirements.txt`
-- [ ] `seed.py`: `set_seed()` for `random`, `numpy`, `torch`, `torch.cuda`, cuDNN deterministic
-- [ ] `text.py`: NFC normalisation, zero-width space removal, `khmer-nltk` segmentation (cached)
-- [ ] `data.py`: PyTorch `Dataset` / `DataLoader` for pairs, corpus and test queries
-- [ ] `losses.py`: InfoNCE with in-batch negatives (temperature τ)
-- [ ] `train.py`: YAML-driven loop; per-epoch train loss, val loss, val MRR@10 → `results/logs/<run>.csv`
-- [ ] Checkpointing: `torch.save` of model/optimiser/scheduler/epoch/RNG → `last.pt`, `best.pt`; `--resume`
-- [ ] Log trainable params, wall-clock time, device, peak GPU memory → `results/metrics/<run>.json`
-- [ ] `evaluate.py`: **one** harness — encode the full 1,976-article corpus, rank, Recall@1/5/10, MRR@10, nDCG@10, Hit@5, bootstrap 95% CI
-- [ ] Unit tests for metrics, InfoNCE and segmentation on toy inputs
+- [x] Add pinned `torch`, `transformers`, `khmer-nltk`, `pandas`, `matplotlib`, `pyyaml` to `requirements.txt`
+- [x] `seed.py`: `set_seed()` for `random`, `numpy`, `torch`, `torch.cuda`, cuDNN deterministic
+- [x] `text.py`: NFC normalisation, zero-width space removal, `khmer-nltk` segmentation (cached)
+- [x] `data.py`: PyTorch `Dataset` / `DataLoader` for pairs, corpus and test queries
+- [x] `losses.py`: InfoNCE with in-batch negatives (temperature τ)
+- [x] `train.py`: YAML-driven loop; per-epoch train loss, val loss, val MRR@10 → `results/logs/<run>.csv`
+- [x] Checkpointing: `torch.save` of model/optimiser/scheduler/epoch/RNG → `last.pt`, `best.pt`; `--resume`
+- [x] Log trainable params, wall-clock time, device, peak GPU memory → `results/metrics/<run>.json`
+- [x] `evaluate.py`: **one** harness — encode the full 1,976-article corpus, rank, Recall@1/5/10, MRR@10, nDCG@10, Hit@5, bootstrap 95% CI
+- [x] Unit tests for metrics, InfoNCE and segmentation on toy inputs
 
 ### 6.3 Baselines (not counted as approaches)
-- [ ] BM25 on `khmer-nltk` tokens through the shared harness
+- [x] BM25 on `khmer-nltk` tokens through the shared harness
 - [ ] `multilingual-e5-base` zero-shot through the shared harness
 
 ### 6.4 Approach A1 — BiLSTM dual encoder, from scratch
