@@ -1,0 +1,59 @@
+{
+  "created_at": "2026-09-16T02:02:55.104332+00:00",
+  "seed": 42,
+  "parameters": {
+    "train_ratio": 0.8,
+    "val_ratio": 0.1,
+    "test_ratio": 0.1
+  },
+  "sources": {
+    "civil_chunks": "data\\04_chunks\\civil_code_2007_kh_chunks.json",
+    "criminal_chunks": "data\\04_chunks\\criminal_code_2009_kh_chunks.json",
+    "qa_benchmark": "tests\\evaluation\\ground_truth_qa_kh.json"
+  },
+  "statistics": {
+    "total_corpus_articles": 1976,
+    "civil_code_articles": 1304,
+    "criminal_code_articles": 672,
+    "unique_title_articles": 1706,
+    "qa_protected_articles_count": 261,
+    "candidates_after_leakage_guard": 1471,
+    "split_counts": {
+      "train": 1176,
+      "val": 147,
+      "test_titles": 148
+    },
+    "law_distribution": {
+      "train": {
+        "Criminal Code 2009": 286,
+        "Civil Code 2007": 890
+      },
+      "val": {
+        "Criminal Code 2009": 40,
+        "Civil Code 2007": 107
+      },
+      "test_titles": {
+        "Criminal Code 2009": 49,
+        "Civil Code 2007": 99
+      }
+    }
+  },
+  "files": {
+    "corpus.jsonl": {
+      "records_count": 1976,
+      "sha256": "b55f6840b8cc83f7d1c1965b83044d8b778dbd19c298e0b993bc68d49da2eb5e"
+    },
+    "train.jsonl": {
+      "records_count": 1176,
+      "sha256": "2d7f28e4f01fc296bed6513faf32e318d0d8a2c634fd3518b21447f62e3f724f"
+    },
+    "val.jsonl": {
+      "records_count": 147,
+      "sha256": "0081a2c23b18a4d2f30967d5909372cb72ca37b2f4eb2c5088490ed36f2788c9"
+    },
+    "test_titles.jsonl": {
+      "records_count": 148,
+      "sha256": "adf0ee56a8b8d629a4e734ea3479c94ad3772667a19a2d3e68a624f0d6009684"
+    }
+  }
+}

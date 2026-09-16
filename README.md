@@ -111,8 +111,16 @@ Output files: `data/04_chunks/civil_code_2007_kh_chunks.json` and `criminal_code
 
 Generated once by `src/dl/prepare_splits.py` (seed 42) and saved with file hashes to `data/05_splits/`:
 1. **Corpus:** all 1,976 articles are indexed for every approach and every test set.
-2. **Leakage guard:** articles relevant to any T-Q question are removed from the training pairs.
-3. **Split:** the remaining unique-title pairs are split **by article** 80/10/10 into `train` / `val` / `test_titles`.
+2. **Leakage guard:** articles relevant to any T-Q question (261 protected articles) are strictly removed from candidate pairs.
+3. **Split:** the remaining 1,471 unique-title pairs are split **by article** 80/10/10 into `train` / `val` / `test_titles`.
+
+| Split / File | Purpose | Civil Code 2007 | Criminal Code 2009 | Total Pairs / Records | Share (%) | SHA-256 Digest |
+|---|---|---:|---:|---:|---:|---|
+| `corpus.jsonl` | Complete retrieval corpus | 1,304 | 672 | 1,976 | 100.0% | `b55f6840b8cc...` |
+| `train.jsonl` | Bi-encoder training pairs | 890 | 286 | 1,176 | 79.95% | `2d7f28e4f01f...` |
+| `val.jsonl` | Validation & hyperparameter tuning | 107 | 40 | 147 | 9.99% | `0081a2c23b18...` |
+| `test_titles.jsonl` | T-T held-out title test set | 99 | 49 | 148 | 10.06% | `adf0ee56a8b8...` |
+| `ground_truth_qa_kh.json` | T-Q primary benchmark questions | 100 | 100 | 200 | — | *(cites 261 arts)* |
 
 ### 2.6 Preprocessing (same test-time preprocessing for every approach)
 
