@@ -513,7 +513,7 @@ def main() -> None:
         "--model",
         type=str,
         default="bm25",
-        choices=["bm25", "e5_zero_shot", "a1", "a2"],
+        choices=["bm25", "e5_zero_shot", "a1", "a2", "a3"],
         help="Model to evaluate (default: bm25).",
     )
     parser.add_argument(
@@ -578,6 +578,20 @@ def main() -> None:
 
         device = get_device()
         model = XLMRLinearProbeRetriever(device=device)
+        load_checkpoint(ckpt_path, model=model, device=device)
+
+        retriever = DenseRetriever(model, harness.corpus, device=device, batch_size=32)
+        harness.run_full_evaluation(retriever, run_name=run_name, output_dir=args.output_dir)
+    elif args.model == "a3":
+        from src.dl.checkpoint import load_checkpoint
+        from src.dl.models.xlmr_finetune import XLMRFullFinetuneRetriever
+
+        ckpt_path = args.checkpoint or Path("results/checkpoints/a3_xlmr_finetune/best.pt")
+        if not ckpt_path.exists():
+            raise FileNotFoundError(f"A3 checkpoint not found: {ckpt_path}")
+
+        device = get_device()
+        model = XLMRFullFinetuneRetriever(device=device)
         load_checkpoint(ckpt_path, model=model, device=device)
 
         retriever = DenseRetriever(model, harness.corpus, device=device, batch_size=32)
