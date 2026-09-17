@@ -1,0 +1,213 @@
+{
+  "run_name": "a3_xlmr",
+  "tq_benchmark": {
+    "total_questions": 200,
+    "overall": {
+      "Recall@1": {
+        "mean": 0.315,
+        "ci_lower": 0.2575,
+        "ci_upper": 0.3701
+      },
+      "Recall@5": {
+        "mean": 0.4942,
+        "ci_lower": 0.4267,
+        "ci_upper": 0.5567
+      },
+      "Recall@10": {
+        "mean": 0.5608,
+        "ci_lower": 0.4983,
+        "ci_upper": 0.6267
+      },
+      "MRR@10": {
+        "mean": 0.4499,
+        "ci_lower": 0.3866,
+        "ci_upper": 0.5106
+      },
+      "nDCG@10": {
+        "mean": 0.4539,
+        "ci_lower": 0.3959,
+        "ci_upper": 0.509
+      },
+      "Hit@5": {
+        "mean": 0.555,
+        "ci_lower": 0.485,
+        "ci_upper": 0.62
+      }
+    },
+    "civil_code": {
+      "count": 100,
+      "metrics": {
+        "Recall@1": {
+          "mean": 0.255,
+          "ci_lower": 0.18,
+          "ci_upper": 0.33
+        },
+        "Recall@5": {
+          "mean": 0.43,
+          "ci_lower": 0.34,
+          "ci_upper": 0.52
+        },
+        "Recall@10": {
+          "mean": 0.4933,
+          "ci_lower": 0.3983,
+          "ci_upper": 0.58
+        },
+        "MRR@10": {
+          "mean": 0.3744,
+          "ci_lower": 0.2898,
+          "ci_upper": 0.4547
+        },
+        "nDCG@10": {
+          "mean": 0.3859,
+          "ci_lower": 0.3072,
+          "ci_upper": 0.4613
+        },
+        "Hit@5": {
+          "mean": 0.48,
+          "ci_lower": 0.38,
+          "ci_upper": 0.57
+        }
+      }
+    },
+    "criminal_code": {
+      "count": 100,
+      "metrics": {
+        "Recall@1": {
+          "mean": 0.375,
+          "ci_lower": 0.29,
+          "ci_upper": 0.465
+        },
+        "Recall@5": {
+          "mean": 0.5583,
+          "ci_lower": 0.47,
+          "ci_upper": 0.65
+        },
+        "Recall@10": {
+          "mean": 0.6283,
+          "ci_lower": 0.5433,
+          "ci_upper": 0.7233
+        },
+        "MRR@10": {
+          "mean": 0.5254,
+          "ci_lower": 0.4398,
+          "ci_upper": 0.6163
+        },
+        "nDCG@10": {
+          "mean": 0.5218,
+          "ci_lower": 0.447,
+          "ci_upper": 0.6051
+        },
+        "Hit@5": {
+          "mean": 0.63,
+          "ci_lower": 0.54,
+          "ci_upper": 0.73
+        }
+      }
+    }
+  },
+  "tt_benchmark": {
+    "total_pairs": 148,
+    "overall": {
+      "Recall@1": {
+        "mean": 0.9189,
+        "ci_lower": 0.8716,
+        "ci_upper": 0.9595
+      },
+      "Recall@5": {
+        "mean": 0.9865,
+        "ci_lower": 0.9662,
+        "ci_upper": 1.0
+      },
+      "Recall@10": {
+        "mean": 0.9932,
+        "ci_lower": 0.973,
+        "ci_upper": 1.0
+      },
+      "MRR@10": {
+        "mean": 0.9467,
+        "ci_lower": 0.915,
+        "ci_upper": 0.9736
+      },
+      "nDCG@10": {
+        "mean": 0.9583,
+        "ci_lower": 0.9328,
+        "ci_upper": 0.9792
+      },
+      "Hit@5": {
+        "mean": 0.9865,
+        "ci_lower": 0.9662,
+        "ci_upper": 1.0
+      }
+    },
+    "civil_code": {
+      "count": 99,
+      "metrics": {
+        "Recall@1": {
+          "mean": 0.9091,
+          "ci_lower": 0.8485,
+          "ci_upper": 0.9596
+        },
+        "Recall@5": {
+          "mean": 0.9899,
+          "ci_lower": 0.9697,
+          "ci_upper": 1.0
+        },
+        "Recall@10": {
+          "mean": 0.9899,
+          "ci_lower": 0.9697,
+          "ci_upper": 1.0
+        },
+        "MRR@10": {
+          "mean": 0.9419,
+          "ci_lower": 0.8998,
+          "ci_upper": 0.9747
+        },
+        "nDCG@10": {
+          "mean": 0.9541,
+          "ci_lower": 0.9183,
+          "ci_upper": 0.98
+        },
+        "Hit@5": {
+          "mean": 0.9899,
+          "ci_lower": 0.9697,
+          "ci_upper": 1.0
+        }
+      }
+    },
+    "criminal_code": {
+      "count": 49,
+      "metrics": {
+        "Recall@1": {
+          "mean": 0.9388,
+          "ci_lower": 0.8571,
+          "ci_upper": 1.0
+        },
+        "Recall@5": {
+          "mean": 0.9796,
+          "ci_lower": 0.9388,
+          "ci_upper": 1.0
+        },
+        "Recall@10": {
+          "mean": 1.0,
+          "ci_lower": 1.0,
+          "ci_upper": 1.0
+        },
+        "MRR@10": {
+          "mean": 0.9565,
+          "ci_lower": 0.8993,
+          "ci_upper": 1.0
+        },
+        "nDCG@10": {
+          "mean": 0.9668,
+          "ci_lower": 0.9224,
+          "ci_upper": 1.0
+        },
+        "Hit@5": {
+          "mean": 0.9796,
+          "ci_lower": 0.9388,
+          "ci_upper": 1.0
+        }
+      }
+    }
+  }
+}

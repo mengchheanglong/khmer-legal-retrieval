@@ -1,0 +1,33 @@
+# Configuration for Approach A3: XLM-R Full Fine-Tuning Dual Encoder
+run_name: a3_xlmr_finetune
+approach: A3
+model_type: xlmr_full_finetune
+
+# Data Paths
+train_path: data/05_splits/train.jsonl
+val_path: data/05_splits/val.jsonl
+corpus_path: data/05_splits/corpus.jsonl
+qa_path: tests/evaluation/ground_truth_qa_kh.json
+test_titles_path: data/05_splits/test_titles.jsonl
+
+# Model Architecture
+model_name: intfloat/multilingual-e5-base
+embed_dim: 768
+max_length: 256
+
+# Optimization & Training
+batch_size: 16
+lr: 2.0e-5
+weight_decay: 0.01
+temperature: 0.05
+epochs: 5
+patience: 3
+max_grad_norm: 1.0
+warmup_ratio: 0.1
+fp16: true
+seed: 42
+
+# Logging & Checkpointing
+logs_dir: results/logs
+checkpoints_dir: results/checkpoints/a3_xlmr_finetune
+metrics_dir: results/metrics
