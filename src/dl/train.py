@@ -142,7 +142,10 @@ class RetrieverTrainer:
 
             self.optimizer.zero_grad()
 
-            if hasattr(self.model, "encode_queries") and hasattr(self.model, "encode_passages"):
+            if "query_ids" in batch and "passage_ids" in batch:
+                q_emb = self.model(batch["query_ids"].to(self.device), batch["query_mask"].to(self.device))
+                p_emb = self.model(batch["passage_ids"].to(self.device), batch["passage_mask"].to(self.device))
+            elif hasattr(self.model, "encode_queries") and hasattr(self.model, "encode_passages"):
                 q_emb = self.model.encode_queries(queries, device=self.device)
                 p_emb = self.model.encode_passages(passages, device=self.device)
             else:
@@ -189,7 +192,10 @@ class RetrieverTrainer:
                 queries = batch["queries"]
                 passages = batch["passages"]
 
-                if hasattr(self.model, "encode_queries") and hasattr(self.model, "encode_passages"):
+                if "query_ids" in batch and "passage_ids" in batch:
+                    q_emb = self.model(batch["query_ids"].to(self.device), batch["query_mask"].to(self.device))
+                    p_emb = self.model(batch["passage_ids"].to(self.device), batch["passage_mask"].to(self.device))
+                elif hasattr(self.model, "encode_queries") and hasattr(self.model, "encode_passages"):
                     q_emb = self.model.encode_queries(queries, device=self.device)
                     p_emb = self.model.encode_passages(passages, device=self.device)
                 else:
