@@ -1,0 +1,5 @@
+run_name,lr,weight_decay,trainable_params,best_epoch,best_val_mrr10,val_loss,train_loss,train_time_sec,checkpoint_path
+a2_lr1e-3_wd0.01,0.001,0.01,590592,13,0.7894,1.0081,0.022,5.92,results\checkpoints\a2_lr1e-3_wd0.01\best.pt
+a2_lr1e-3_wd0.0,0.001,0.0,590592,14,0.7867,1.0035,0.0254,5.57,results\checkpoints\a2_lr1e-3_wd0.0\best.pt
+a2_lr1e-2_wd0.0,0.01,0.0,590592,13,0.6923,1.7282,0.0572,5.93,results\checkpoints\a2_lr1e-2_wd0.0\best.pt
+a2_lr1e-2_wd0.01,0.01,0.01,590592,13,0.6922,1.725,0.0565,6.0,results\checkpoints\a2_lr1e-2_wd0.01\best.pt
