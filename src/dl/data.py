@@ -51,18 +51,24 @@ class LegalPairsDataset(Dataset):
         self,
         jsonl_path: Path | str,
         normalize_text: bool = True,
+        vocab: Optional[Any] = None,
+        max_seq_len: int = 256,
     ) -> None:
         """Initialize the dataset.
 
         Args:
             jsonl_path: Path to the split JSONL file (train.jsonl, val.jsonl, etc.).
             normalize_text: Whether to apply NFC and zero-width space normalization.
+            vocab: Optional KhmerVocab instance to pre-encode text into integer tensors.
+            max_seq_len: Maximum sequence length for pre-encoded tensors.
         """
         self.path = Path(jsonl_path)
         if not self.path.exists():
             raise FileNotFoundError(f"Split file not found: {self.path}")
 
         self.normalize_text = normalize_text
+        self.vocab = vocab
+        self.max_seq_len = max_seq_len
         self.records: list[dict[str, Any]] = []
 
         with open(self.path, "r", encoding="utf-8") as f:
@@ -76,6 +82,16 @@ class LegalPairsDataset(Dataset):
                     item["passage"] = normalize_khmer_text(item["passage"])
                 self.records.append(item)
 
+        if self.vocab is not None:
+            logger.info(f"Pre-encoding {len(self.records)} pairs with vocabulary for rapid batching...")
+            for item in self.records:
+                q_ids, q_mask = self.vocab.encode(item["query"], max_seq_len=self.max_seq_len)
+                p_ids, p_mask = self.vocab.encode(item["passage"], max_seq_len=self.max_seq_len)
+                item["query_ids"] = torch.tensor(q_ids, dtype=torch.long)
+                item["query_mask"] = torch.tensor(q_mask, dtype=torch.float32)
+                item["passage_ids"] = torch.tensor(p_ids, dtype=torch.long)
+                item["passage_mask"] = torch.tensor(p_mask, dtype=torch.float32)
+
         logger.info(f"Loaded {len(self.records)} pairs from {self.path.name}")
 
     def __len__(self) -> int:
@@ -83,7 +99,7 @@ class LegalPairsDataset(Dataset):
 
     def __getitem__(self, idx: int) -> dict[str, Any]:
         item = self.records[idx]
-        return {
+        record = {
             "id": item["id"],
             "query": item["query"],
             "passage": item["passage"],
@@ -92,6 +108,12 @@ class LegalPairsDataset(Dataset):
             "article_number": item["article_number"],
             "title": item.get("title", ""),
         }
+        if "query_ids" in item:
+            record["query_ids"] = item["query_ids"]
+            record["query_mask"] = item["query_mask"]
+            record["passage_ids"] = item["passage_ids"]
+            record["passage_mask"] = item["passage_mask"]
+        return record
 
 
 class CorpusDataset(Dataset):
@@ -243,9 +265,10 @@ def collate_pairs(batch: list[dict[str, Any]]) -> dict[str, Any]:
         batch: List of dictionaries from LegalPairsDataset[idx].
 
     Returns:
-        Batched dictionary containing lists of queries, passages, and metadata.
+        Batched dictionary containing lists of queries, passages, metadata,
+        and optionally stacked token ID and mask tensors.
     """
-    return {
+    res = {
         "ids": [item["id"] for item in batch],
         "queries": [item["query"] for item in batch],
         "passages": [item["passage"] for item in batch],
@@ -253,6 +276,12 @@ def collate_pairs(batch: list[dict[str, Any]]) -> dict[str, Any]:
         "law_names": [item["law_name"] for item in batch],
         "article_numbers": [item["article_number"] for item in batch],
     }
+    if batch and "query_ids" in batch[0]:
+        res["query_ids"] = torch.stack([item["query_ids"] for item in batch])
+        res["query_mask"] = torch.stack([item["query_mask"] for item in batch])
+        res["passage_ids"] = torch.stack([item["passage_ids"] for item in batch])
+        res["passage_mask"] = torch.stack([item["passage_mask"] for item in batch])
+    return res
 
 
 def create_dataloader(

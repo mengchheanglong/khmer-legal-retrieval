@@ -74,9 +74,9 @@ def run_tuning(
         vocab = KhmerVocab.build_from_train_file(train_path, min_freq=1)
         vocab.save(vocab_path)
 
-    # 2. Load datasets
-    train_dataset = LegalPairsDataset(train_path)
-    val_dataset = LegalPairsDataset(val_path)
+    # 2. Load datasets with pre-encoding for rapid batching
+    train_dataset = LegalPairsDataset(train_path, vocab=vocab)
+    val_dataset = LegalPairsDataset(val_path, vocab=vocab)
     corpus_dataset = CorpusDataset(corpus_path)
 
     # 3. Tuning grid: LR {1e-3, 3e-3} x Dropout {0.1, 0.3}

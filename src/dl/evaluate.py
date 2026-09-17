@@ -25,7 +25,7 @@ import torch
 from src.config.logging import get_logger, setup_logging
 from src.dl.data import CorpusDataset, LegalPairsDataset, QABenchmarkDataset
 from src.dl.metrics import evaluate_rankings
-from src.dl.seed import set_seed
+from src.dl.seed import get_device, set_seed
 from src.dl.text import tokenize_khmer
 
 setup_logging()
@@ -184,6 +184,105 @@ class BM25KhmerRetriever(BaseRetriever):
             scores = self.bm25.get_scores(tokenized_q)
             top_indices = np.argsort(-scores)[:top_k]
             rankings.append([self._doc_ids[idx] for idx in top_indices])
+        return rankings
+
+
+class MultilingualE5Retriever(BaseRetriever):
+    """Zero-shot retriever wrapper for intfloat/multilingual-e5-base."""
+
+    def __init__(
+        self,
+        corpus: CorpusDataset,
+        model_name: str = "intfloat/multilingual-e5-base",
+        device: Optional[torch.device] = None,
+        batch_size: int = 16,
+        max_length: int = 512,
+        use_context: bool = False,
+    ) -> None:
+        """Initialize zero-shot Multilingual-E5 retriever.
+
+        Args:
+            corpus: CorpusDataset instance.
+            model_name: Hugging Face model identifier.
+            device: Computing device (CUDA or CPU).
+            batch_size: Batch size for encoding passages and queries.
+            max_length: Maximum sequence length.
+            use_context: Whether to prepend hierarchical legal context.
+        """
+        from transformers import AutoModel, AutoTokenizer
+
+        self.corpus = corpus
+        self._doc_ids = corpus.doc_ids
+        self.device = device or get_device()
+        self.batch_size = batch_size
+        self.max_length = max_length
+        self.use_context = use_context
+
+        logger.info(f"Loading {model_name} on {self.device}...")
+        self.tokenizer = AutoTokenizer.from_pretrained(model_name)
+        self.model = AutoModel.from_pretrained(model_name).to(self.device)
+        self.model.eval()
+
+        self.corpus_embeddings: Optional[np.ndarray] = None
+
+    def _encode_texts(self, texts: Sequence[str], prefix: str) -> np.ndarray:
+        """Encode texts with the required E5 prefix using mean pooling and L2 normalization."""
+        prefixed = [f"{prefix}{t}" for t in texts]
+        all_embeddings: list[np.ndarray] = []
+
+        with torch.no_grad():
+            for i in range(0, len(prefixed), self.batch_size):
+                batch_texts = prefixed[i : i + self.batch_size]
+                batch_dict = self.tokenizer(
+                    batch_texts,
+                    max_length=self.max_length,
+                    padding=True,
+                    truncation=True,
+                    return_tensors="pt",
+                ).to(self.device)
+
+                outputs = self.model(**batch_dict)
+                last_hidden = outputs.last_hidden_state
+                mask = batch_dict["attention_mask"]
+
+                # Masked mean pooling over valid tokens
+                masked_hidden = last_hidden.masked_fill(~mask[..., None].bool(), 0.0)
+                sum_hidden = masked_hidden.sum(dim=1)
+                sum_mask = mask.sum(dim=1)[..., None].clamp(min=1e-9)
+                pooled = sum_hidden / sum_mask
+
+                # L2 normalize
+                normalized = torch.nn.functional.normalize(pooled, p=2, dim=1)
+                all_embeddings.append(normalized.cpu().numpy())
+
+        return np.vstack(all_embeddings)
+
+    def index_corpus(self) -> None:
+        """Encode full corpus with 'passage: ' prefix into embedding matrix."""
+        logger.info(f"Encoding full corpus ({len(self.corpus)} articles) with multilingual-e5-base...")
+        passages = self.corpus.get_texts(use_context=self.use_context)
+        self.corpus_embeddings = self._encode_texts(passages, prefix="passage: ")
+        logger.info(f"Corpus indexed. Embedding matrix shape: {self.corpus_embeddings.shape}")
+
+    def search(
+        self,
+        queries: Sequence[str],
+        top_k: int = 10,
+    ) -> list[list[str]]:
+        """Retrieve top-k documents by cosine similarity against corpus embeddings."""
+        if self.corpus_embeddings is None:
+            self.index_corpus()
+
+        query_embeddings = self._encode_texts(queries, prefix="query: ")
+        # Cosine similarity matrix: (Q, N) where both vectors are L2-normalized
+        similarity_matrix = np.dot(query_embeddings, self.corpus_embeddings.T)
+
+        rankings: list[list[str]] = []
+        for i in range(len(queries)):
+            scores = similarity_matrix[i]
+            top_indices = np.argsort(-scores)[:top_k]
+            rankings.append([self._doc_ids[idx] for idx in top_indices])
+
         return rankings
 
 
@@ -414,7 +513,7 @@ def main() -> None:
         "--model",
         type=str,
         default="bm25",
-        choices=["bm25", "a1"],
+        choices=["bm25", "e5_zero_shot", "a1"],
         help="Model to evaluate (default: bm25).",
     )
     parser.add_argument(
@@ -443,11 +542,14 @@ def main() -> None:
     if args.model == "bm25":
         retriever = BM25KhmerRetriever(harness.corpus)
         harness.run_full_evaluation(retriever, run_name=run_name, output_dir=args.output_dir)
+    elif args.model in ("e5_zero_shot", "e5"):
+        device = get_device()
+        retriever = MultilingualE5Retriever(harness.corpus, device=device)
+        harness.run_full_evaluation(retriever, run_name=run_name, output_dir=args.output_dir)
     elif args.model == "a1":
         from src.dl.checkpoint import load_checkpoint
         from src.dl.models.bilstm import BiLSTMEncoder
         from src.dl.models.vocab import KhmerVocab
-        from src.dl.seed import get_device
 
         ckpt_path = args.checkpoint or Path("results/checkpoints/a1_bilstm/best.pt")
         if not ckpt_path.exists():
