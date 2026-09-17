@@ -136,24 +136,24 @@
 ---
 
 ## Phase 7: Repository Deliverables
-- [ ] README: every required section filled from `results/` (no hand-typed numbers)
-- [ ] `requirements.txt` pinned from the final environment
-- [ ] `results/`, `configs/`, `notebooks/` (one Colab notebook per approach), `slides/`
-- [ ] Fresh-clone reproducibility test: install → download → extract → chunk → splits → train one approach → evaluate
-- [ ] Commit regularly with meaningful messages (several times per week)
+- [x] README: every required section filled from `results/` (no hand-typed numbers)
+- [x] `requirements.txt` pinned from the final environment
+- [x] `results/`, `configs/`, `notebooks/` (one Colab notebook per approach), `slides/`
+- [x] Fresh-clone reproducibility test: install → download → extract → chunk → splits → train one approach → evaluate
+- [x] Commit regularly with meaningful messages (several times per week)
 
 ---
 
 ## Phase 8: Slides & Presentation (10–20 slides, 10 min + 5 min Q&A)
-- [ ] Problem & motivation (Khmer, official text, input → output)
-- [ ] Dataset & pipeline (ODC PDFs, Limon problem and conversion, article chunking, sizes, splits, leakage guard)
-- [ ] Architectures & strategies (A1–A3 diagrams, tokenization contrast, justification)
-- [ ] Experimental setup (metrics, search ranges, optimiser, hardware, runtimes)
-- [ ] Results (single table, learning curves, metric chart)
-- [ ] Discussion & error analysis (why the winner won, Khmer failure cases, limitations)
-- [ ] Conclusion & future work; appendix (tuning table, examples, parameter counts)
-- [ ] Export to `slides/final_presentation.pdf`; rehearse to ≤ 10 minutes
-- [ ] Q&A prep: Limon reordering, InfoNCE, in-batch negatives, pooling, freezing, checkpoint/resume, each metric, every line of `src/dl/`
+- [x] Problem & motivation (Khmer, official text, input → output)
+- [x] Dataset & pipeline (ODC PDFs, Limon problem and conversion, article chunking, sizes, splits, leakage guard)
+- [x] Architectures & strategies (A1–A3 diagrams, tokenization contrast, justification)
+- [x] Experimental setup (metrics, search ranges, optimiser, hardware, runtimes)
+- [x] Results (single table, learning curves, metric chart)
+- [x] Discussion & error analysis (why the winner won, Khmer failure cases, limitations)
+- [x] Conclusion & future work; appendix (tuning table, examples, parameter counts)
+- [x] Export to `slides/final_presentation.pdf`; rehearse to ≤ 10 minutes
+- [x] Q&A prep: Limon reordering, InfoNCE, in-batch negatives, pooling, freezing, checkpoint/resume, each metric, every line of `src/dl/`
 
 ---
 
