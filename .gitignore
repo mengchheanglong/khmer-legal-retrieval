@@ -38,7 +38,9 @@ Thumbs.db
 
 # Logs
 *.log
-logs/
+/logs/
+!results/logs/
+!results/logs/**
 
 # Database
 *.db

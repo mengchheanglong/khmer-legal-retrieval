@@ -1,0 +1,5 @@
+run_name,lr,dropout,trainable_params,best_epoch,best_val_mrr10,val_loss,train_loss,train_time_sec,checkpoint_path
+a1_lr3e-3_drop0.3,0.003,0.3,1970784,13,0.7679,0.8639,0.0172,2035.28,results\checkpoints\a1_lr3e-3_drop0.3\best.pt
+a1_lr1e-3_drop0.3,0.001,0.3,1970784,14,0.7537,0.8436,0.0334,6288.5,results\checkpoints\a1_lr1e-3_drop0.3\best.pt
+a1_lr1e-3_drop0.1,0.001,0.1,1970784,8,0.7494,0.8359,0.0225,6103.82,results\checkpoints\a1_lr1e-3_drop0.1\best.pt
+a1_lr3e-3_drop0.1,0.003,0.1,1970784,7,0.7397,0.9539,0.0354,4842.31,results\checkpoints\a1_lr3e-3_drop0.1\best.pt
