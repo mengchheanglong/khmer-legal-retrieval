@@ -42,9 +42,11 @@ class AnswerLegalQAUseCase:
         self,
         retriever: HybridRetrieveUseCase,
         llm: LLMPort,
+        native_khmer: bool = True,
     ) -> None:
         self._retriever = retriever
         self._llm = llm
+        self._native_khmer = native_khmer
 
     def execute(self, request: LegalQARequest) -> LegalQAResponse:
         """
@@ -132,9 +134,13 @@ class AnswerLegalQAUseCase:
         """
         Prepare search query for retrieval.
 
-        If the question is in Khmer script and the corpus is in English,
-        translates key legal terms to English search keywords to ensure high recall.
+        In native Khmer retrieval mode (default), the original query is passed directly
+        to the fine-tuned Khmer dual encoder and Khmer-segmented BM25.
+        If native_khmer is False, translates key legal terms to English search keywords.
         """
+        if self._native_khmer:
+            return question
+
         is_khmer = bool(re.search(r"[\u1780-\u17ff]", question))
         if not is_khmer:
             return question

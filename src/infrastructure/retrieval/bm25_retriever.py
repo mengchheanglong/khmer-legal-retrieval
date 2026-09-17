@@ -25,9 +25,22 @@ def tokenize_legal_text(text: str) -> list[str]:
     """
     Tokenize legal text for BM25 keyword matching.
 
+    Supports both Khmer (via khmer-nltk word segmentation) and English/alphanumeric text.
     Preserves numbers (like article numbers "315") and legal terms.
-    Normalizes case and removes punctuation.
     """
+    if not text:
+        return []
+
+    # If text contains Khmer characters, use khmer-nltk word segmentation
+    if re.search(r"[\u1780-\u17ff]", text):
+        try:
+            from src.dl.text import tokenize_khmer
+            tokens = tokenize_khmer(text)
+            if tokens:
+                return tokens
+        except Exception:
+            pass
+
     cleaned = text.lower()
     # Extract alphanumeric tokens, keeping legal identifiers intact
     tokens = re.findall(r"\b[a-z0-9_\u1780-\u17ff]+\b", cleaned)
