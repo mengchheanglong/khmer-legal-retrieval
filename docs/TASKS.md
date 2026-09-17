@@ -158,10 +158,10 @@
 ---
 
 ## Phase 9: Khmer RAG Prototype
-- [ ] `TorchEncoderEmbedding` adapter implementing `EmbeddingPort` with the best checkpoint
-- [ ] Index `*_kh_chunks.json` (dense + Khmer-segmented BM25) and switch the app to the Khmer corpus
-- [ ] Remove the Khmer→English dictionary query mapping once retrieval is native Khmer
-- [ ] Re-run app evaluation on T-Q; latency < 5 s target
+- [x] `TorchEncoderEmbedding` adapter implementing `EmbeddingPort` with the best checkpoint
+- [x] Index `*_kh_chunks.json` (dense + Khmer-segmented BM25) and switch the app to the Khmer corpus
+- [x] Remove the Khmer→English dictionary query mapping once retrieval is native Khmer
+- [x] Re-run app evaluation on T-Q; latency < 5 s target
 
 ---
 
