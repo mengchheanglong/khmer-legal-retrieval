@@ -117,9 +117,9 @@
 - [x] Tune LR {1e-3, 1e-2} × weight decay {0, 0.01}
 
 ### 6.6 Approach A3 — XLM-R encoder, full fine-tuning
-- [ ] All layers trainable; AdamW + warm-up; fp16 on T4; max length 256 (report truncation rate)
-- [ ] Grid: LR {1e-5, 2e-5, 3e-5} × weight decay {0, 0.01} (× τ {0.02, 0.05} if time allows)
-- [ ] Save tuning table → `results/tuning/a3.csv`; select by val MRR@10 only
+- [x] All layers trainable; AdamW + warm-up; fp16 on T4; max length 256 (report truncation rate)
+- [x] Grid: LR {1e-5, 2e-5, 3e-5} × weight decay {0, 0.01} (× τ {0.02, 0.05} if time allows)
+- [x] Save tuning table → `results/tuning/a3.csv`; select by val MRR@10 only
 - [ ] Upload best checkpoint to HF Hub/Drive; link in README §6.4
 
 ### 6.7 Final evaluation & comparison

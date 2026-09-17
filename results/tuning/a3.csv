@@ -1,0 +1,2 @@
+run_name,lr,weight_decay,trainable_params,best_epoch,best_val_mrr10,val_loss,train_loss,train_time_sec,checkpoint_path
+a3_lr2e-5_wd0.01,2e-05,0.01,278043648,5,0.9635,1.4341,1.8646,319.82,results\checkpoints\a3_lr2e-5_wd0.01\best.pt
