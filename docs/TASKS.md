@@ -103,12 +103,12 @@
 
 ### 6.3 Baselines (not counted as approaches)
 - [x] BM25 on `khmer-nltk` tokens through the shared harness
-- [ ] `multilingual-e5-base` zero-shot through the shared harness
+- [x] `multilingual-e5-base` zero-shot through the shared harness
 
 ### 6.4 Approach A1 — BiLSTM dual encoder, from scratch
-- [ ] Vocabulary from the train split (min frequency, `<unk>`); random 300-d embeddings; 1-layer BiLSTM (256/dir); mean pooling; shared towers
-- [ ] Train with InfoNCE; save curves and checkpoints
-- [ ] Tune LR {1e-3, 3e-3} × dropout {0.1, 0.3}
+- [x] Vocabulary from the train split (min frequency, `<unk>`); random 300-d embeddings; 1-layer BiLSTM (256/dir); mean pooling; shared towers
+- [x] Train with InfoNCE; save curves and checkpoints
+- [x] Tune LR {1e-3, 3e-3} × dropout {0.1, 0.3}
 
 ### 6.5 Approach A2 — XLM-R encoder frozen + linear probe
 - [ ] Freeze all backbone params; verify trainable params ≈ 0.59 M
