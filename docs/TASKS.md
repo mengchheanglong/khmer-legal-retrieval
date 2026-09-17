@@ -111,10 +111,10 @@
 - [x] Tune LR {1e-3, 3e-3} × dropout {0.1, 0.3}
 
 ### 6.5 Approach A2 — XLM-R encoder frozen + linear probe
-- [ ] Freeze all backbone params; verify trainable params ≈ 0.59 M
-- [ ] Linear head 768→768 initialised to identity, shared by both towers
-- [ ] Cache frozen embeddings to speed up training
-- [ ] Tune LR {1e-3, 1e-2} × weight decay {0, 0.01}
+- [x] Freeze all backbone params; verify trainable params ≈ 0.59 M
+- [x] Linear head 768→768 initialised to identity, shared by both towers
+- [x] Cache frozen embeddings to speed up training
+- [x] Tune LR {1e-3, 1e-2} × weight decay {0, 0.01}
 
 ### 6.6 Approach A3 — XLM-R encoder, full fine-tuning
 - [ ] All layers trainable; AdamW + warm-up; fp16 on T4; max length 256 (report truncation rate)
