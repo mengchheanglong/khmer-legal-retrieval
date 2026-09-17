@@ -1,0 +1,33 @@
+# Configuration for Approach A2: XLM-R Frozen Dual Encoder with Linear Probe
+run_name: a2_linear_probe
+approach: A2
+model_type: xlmr_linear_probe
+
+# Data Paths
+train_path: data/05_splits/train.jsonl
+val_path: data/05_splits/val.jsonl
+corpus_path: data/05_splits/corpus.jsonl
+qa_path: tests/evaluation/ground_truth_qa_kh.json
+test_titles_path: data/05_splits/test_titles.jsonl
+
+# Model Architecture
+model_name: intfloat/multilingual-e5-base
+embed_dim: 768
+projection_dim: 768
+max_length: 512
+
+# Optimization & Training
+batch_size: 32
+lr: 0.001
+weight_decay: 0.0
+temperature: 0.05
+epochs: 15
+patience: 4
+max_grad_norm: 1.0
+warmup_ratio: 0.1
+seed: 42
+
+# Logging & Checkpointing
+logs_dir: results/logs
+checkpoints_dir: results/checkpoints/a2_linear_probe
+metrics_dir: results/metrics
