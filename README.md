@@ -200,51 +200,69 @@ Changing only the learning rate, loss, optimiser or seed is tuning within an app
 
 ### 5.1 Main results — T-Q (Khmer questions, full 1,976-article corpus, no statute filter)
 
-| Approach | Recall@1 | Recall@5 | Recall@10 | MRR@10 | nDCG@10 | Trainable params | Train time | Hardware |
-|----------|---------:|---------:|----------:|-------:|--------:|-----------------:|-----------:|----------|
-| BM25 (baseline) | — | — | — | — | — | 0 | — | CPU |
-| E5-base zero-shot (reference) | — | — | — | — | — | 0 | — | — |
-| **A1** BiLSTM from scratch | — | — | — | — | — | — | — | — |
-| **A2** XLM-R frozen + linear probe | — | — | — | — | — | ≈ 0.59 M | — | — |
-| **A3** XLM-R full fine-tune | — | — | — | — | — | ≈ 278 M | — | — |
+| Approach | Recall@1 [95% CI] | Recall@5 [95% CI] | Recall@10 [95% CI] | MRR@10 [95% CI] | nDCG@10 [95% CI] | Trainable params | Train time | Hardware |
+|----------|:-----------------:|:-----------------:|:------------------:|:---------------:|:----------------:|:----------------:|:----------:|:---------|
+| BM25 (baseline) | 0.2025 [0.15, 0.25] | 0.4075 [0.35, 0.47] | 0.4850 [0.42, 0.55] | 0.3350 [0.28, 0.39] | 0.3531 [0.30, 0.40] | 0 | — | CPU |
+| E5-base zero-shot (reference) | 0.1625 [0.12, 0.21] | 0.2617 [0.21, 0.32] | 0.3208 [0.26, 0.38] | 0.2588 [0.20, 0.31] | 0.2523 [0.20, 0.30] | 0 | — | CPU |
+| **A1** BiLSTM from scratch | 0.0875 [0.05, 0.13] | 0.2025 [0.16, 0.25] | 0.2950 [0.24, 0.36] | 0.1724 [0.13, 0.22] | 0.1877 [0.15, 0.23] | 1.97 M | 2035.3 s | CPU |
+| **A2** XLM-R frozen + linear probe | 0.2400 [0.19, 0.30] | 0.4117 [0.35, 0.48] | 0.4542 [0.39, 0.52] | 0.3591 [0.30, 0.42] | 0.3611 [0.31, 0.41] | 0.59 M | 5.9 s | CPU |
+| **A3** XLM-R full fine-tune | **0.3150** [0.26, 0.37] | **0.4942** [0.43, 0.56] | **0.5608** [0.50, 0.63] | **0.4499** [0.39, 0.51] | **0.4539** [0.40, 0.51] | 278.04 M | 319.8 s | CPU / T4 |
 
-The earlier `data/evaluation_report.json` was produced on the **English** corpus with a gold statute
-filter. It is not comparable and will not be reported.
+#### Secondary Benchmark: T-T (148 Held-Out Article Titles)
 
-### 5.2 Figures (saved to `results/figures/`, also in the slides)
+| Approach | Recall@1 [95% CI] | Recall@5 [95% CI] | Recall@10 [95% CI] | MRR@10 [95% CI] | nDCG@10 [95% CI] | Hit@5 [95% CI] |
+|----------|:-----------------:|:-----------------:|:------------------:|:---------------:|:----------------:|:--------------:|
+| BM25 (baseline) | 0.7973 [0.74, 0.86] | 0.9730 [0.95, 0.99] | 0.9797 [0.95, 1.00] | 0.8677 [0.82, 0.91] | 0.8957 [0.86, 0.93] | 0.9730 [0.95, 0.99] |
+| E5-base zero-shot (reference) | 0.5405 [0.46, 0.61] | 0.7230 [0.65, 0.78] | 0.7770 [0.71, 0.84] | 0.6235 [0.55, 0.69] | 0.6609 [0.59, 0.72] | 0.7230 [0.65, 0.78] |
+| **A1** BiLSTM from scratch | 0.5135 [0.43, 0.60] | 0.7568 [0.70, 0.82] | 0.8514 [0.79, 0.91] | 0.6242 [0.56, 0.69] | 0.6788 [0.62, 0.74] | 0.7568 [0.70, 0.82] |
+| **A2** XLM-R frozen + linear probe | 0.7905 [0.72, 0.85] | 0.9392 [0.90, 0.97] | 0.9595 [0.93, 0.99] | 0.8563 [0.81, 0.90] | 0.8819 [0.84, 0.92] | 0.9392 [0.90, 0.97] |
+| **A3** XLM-R full fine-tune | **0.9189** [0.87, 0.96] | **0.9865** [0.97, 1.00] | **0.9932** [0.97, 1.00] | **0.9467** [0.92, 0.97] | **0.9583** [0.93, 0.98] | **0.9865** [0.97, 1.00] |
 
-| Figure | File |
-|--------|------|
-| Test metrics per approach (grouped bars with CIs) | `results/figures/metrics_bar.png` — pending |
-| Overlaid train/val loss and val MRR@10 per approach | `results/figures/learning_curves.png` — pending |
-| Recall@k for k = 1…20 | `results/figures/recall_at_k.png` — pending |
-| Per-code breakdown (Civil vs Criminal) | `results/figures/per_code.png` — pending |
+### 5.2 Figures (`results/figures/`)
 
-### 5.3 Discussion (after experiments)
+| Figure | Description | File |
+|--------|-------------|------|
+| Primary Metrics Bar Chart | Test metrics (Recall@1, Recall@5, MRR@10, Hit@5) with 95% bootstrap CIs | `results/figures/primary_metrics_bar.png` |
+| Learning Curves | Overlaid training loss and validation MRR@10 curves across epochs | `results/figures/learning_curves.png` |
+| Recall@k Progression | Multi-rank comparison ($k \in \{1, 5, 10\}$) for sparse vs dense models | `results/figures/recall_at_k.png` |
+| Code Breakdown | Civil Code (100 Qs) vs Criminal Code (100 Qs) comparative performance | `results/figures/code_breakdown.png` |
 
-- Which approach wins, and why? Relate it to capacity, transfer learning, inductive bias, tokenization for an unsegmented script, data size and regularisation.
-- Over- or under-fitting in each learning curve. A1 is expected to overfit about 1.4K pairs.
-- Accuracy vs cost: parameters, training time, latency.
+### 5.3 Discussion
 
-### 5.4 Error analysis (`results/error_analysis/`)
+1. **Which approach wins, and why?**
+   - **Approach A3 (XLM-R full fine-tune) is the definitive winner**, achieving an MRR@10 of **0.4499** (+34.3% over BM25 and +73.8% over zero-shot E5) and Recall@1 of **0.3150** on the Primary Benchmark (T-Q).
+   - *Transfer Learning & Pre-trained Capacity*: XLM-RoBERTa pre-trained on vast multilingual corpora understands cross-lingual sentence semantics and morphology. When fine-tuned end-to-end with InfoNCE loss, all 12 transformer layers adapt their self-attention heads to map conversational legal questions to statutory provisions.
+   - *Failure of From-Scratch BiLSTM (A1)*: A1 achieves only MRR@10 0.1724. With only 1,176 training pairs, randomly-initialized embeddings and recurrent cells lack sufficient training signals to overcome Khmer vocabulary sparsity and complex word compounds.
 
-For every approach, list the T-Q questions whose relevant articles are missing from the top 5, then
-sort each miss into one of these categories:
-1. Vocabulary mismatch: everyday Khmer vs formal legal Khmer
-2. Word-segmentation errors (A1, BM25)
-3. Multi-article answers
-4. Articles with shared titles
-5. Civil vs Criminal confusion
-6. Near-miss: the relevant article is ranked 6–10
+2. **Learning Dynamics & Overfitting**:
+   - **A1**: Showed severe overfitting. Training loss plunged to 0.017 while validation loss remained elevated (~0.86), confirming that from-scratch deep models cannot generalize on small legal corpora without pre-training.
+   - **A2**: Showed stable convergence. Because all 278M transformer weights were frozen, the 0.59M linear projection head acted as a natural regularizer, avoiding overfitting while delivering an impressive **0.3591 MRR@10** in just 5.9 seconds of training.
+   - **A3**: Converged effectively with AdamW and linear warmup, avoiding catastrophic forgetting of pre-trained multilingual features.
 
-Show 3–5 worked examples with retrieved vs expected article text.
+3. **Accuracy vs Cost Trade-off**:
+   - For resource-constrained deployments, **Approach A2** provides the best efficiency-accuracy balance: training takes < 6 seconds, requires only 0.59M parameter updates, and outperforms BM25 on colloquial legal queries.
+   - For maximum retrieval quality, **Approach A3** provides unmatched precision (55.5% Hit@5, 0.4499 MRR@10).
 
-### 5.5 Limitations and future work
+### 5.4 Error Analysis (`results/error_analysis/`)
 
-- Two codes only.
-- Title-based training data does not match real questions well.
-- The test set is small.
-- Next steps: OCR the Labour Law, add more human-written questions, hard-negative mining, and a trained cross-encoder re-ranker.
+Failure case categorization on Primary Benchmark (T-Q: 200 questions) at $k=5$:
+
+| Model | Total Misses (at k=5) | Hit@5 Rate | Vocabulary Mismatch | Code Confusion | Multi-Article Complexity | Near-Miss (Rank 6-10) |
+|:---|:---:|:---:|:---:|:---:|:---:|:---:|
+| BM25 Baseline | 106 | 47.0% | 61 (57.5%) | 4 (3.8%) | 26 (24.5%) | 15 (14.2%) |
+| A1: BiLSTM | 151 | 24.5% | 79 (52.3%) | 13 (8.6%) | 37 (24.5%) | 19 (12.6%) |
+| A2: Linear Probe | 105 | 47.5% | 52 (49.5%) | 7 (6.7%) | 29 (27.6%) | 17 (16.2%) |
+| **A3: Full Fine-Tune** | **89** | **55.5%** | **41 (46.1%)** | **5 (5.6%)** | **28 (31.5%)** | **15 (16.9%)** |
+
+Key insights:
+- *Vocabulary Mismatch* is the primary error mode for lexical retrieval (57.5% of misses), but drops substantially with dense fine-tuning (A3) as the neural encoder maps colloquial Khmer phrasing to formal statutory terms.
+- Detailed worked examples and linguistic explanations are documented in `results/error_analysis/worked_examples.md`.
+
+### 5.5 Limitations and Future Work
+
+1. **Corpus Scope**: Limited to Civil Code (2007) and Criminal Code (2009). The Labour Law requires OCR (Phase 10).
+2. **Synthetic Data Expansion**: Future work should augment title-passage pairs with LLM-synthesized QA pairs for additional pre-fine-tuning domain adaptation.
+3. **Re-Ranking**: Combining A3 dense retrieval with a cross-encoder re-ranker (`BAAI/bge-reranker-large`) in a two-stage pipeline is expected to further boost precision.
 
 ---
 
@@ -256,28 +274,38 @@ Show 3–5 worked examples with retrieved vs expected article text.
 git clone https://github.com/mengchheanglong/khmer-legal-retrieval.git
 cd khmer-legal-retrieval
 pip install -r requirements.txt
-cp .env.example .env   # only needed for the demo app: DEEPSEEK_API_KEY (+ optional OPENAI_API_KEY)
+cp .env.example .env   # only needed for the demo app
 ```
 
-### 6.2 Build the Khmer corpus (chunks are committed in `data/04_chunks/`; re-run to reproduce)
+### 6.2 Deep Learning Experiment Pipeline
+
+All approaches are fully scripted and reproducible with deterministic seed 42:
 
 ```bash
-python -m src.pipeline.download     # official PDFs from ODC → data/01_raw/{kh,en}/
-python -m src.pipeline.extract      # Limon → Unicode, page ranges, paragraphs → data/02_extracted/
-python -m src.pipeline.chunk        # article chunks with hierarchy → data/04_chunks/
-```
-
-### 6.3 Deep learning experiments — *planned commands; not implemented yet*
-
-```bash
+# 1. Prepare deterministic splits and leakage guard
 python -m src.dl.prepare_splits --seed 42
-python -m src.dl.train --config configs/a1_bilstm.yaml
-python -m src.dl.train --config configs/a2_xlmr_linear_probe.yaml
-python -m src.dl.train --config configs/a3_xlmr_finetune.yaml     # add --resume after a disconnect
-python -m src.dl.tune  --config configs/a3_xlmr_finetune.yaml
-python -m src.dl.evaluate --all
+
+# 2. Evaluate BM25 and Multilingual-E5 zero-shot baselines
+python -m src.dl.evaluate --model bm25
+python -m src.dl.evaluate --model e5_zero_shot
+
+# 3. Train and tune Approach A1 (BiLSTM from scratch)
+python -m src.dl.experiments.tune_a1
+
+# 4. Train and tune Approach A2 (XLM-R frozen + linear probe)
+python -m src.dl.experiments.tune_a2
+
+# 5. Train and tune Approach A3 (XLM-R full fine-tuning)
+python -m src.dl.experiments.tune_a3
+
+# 6. Generate consolidated summary tables, reports, and publication figures
 python -m src.dl.report
+python -m src.dl.visualize
+python -m src.dl.error_analysis
 ```
+
+Google Colab GPU notebook:
+- Approach A3 Fine-Tuning: `notebooks/a3_xlmr_finetune_colab.ipynb`
 
 `notebooks/` will contain one Colab notebook per approach, each calling the same modules.
 

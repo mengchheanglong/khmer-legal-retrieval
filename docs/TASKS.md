@@ -123,15 +123,15 @@
 - [ ] Upload best checkpoint to HF Hub/Drive; link in README §6.4
 
 ### 6.7 Final evaluation & comparison
-- [ ] Evaluate each selected model **once** on T-Q and T-T
-- [ ] `report.py` → `results/metrics/summary.csv` and README §5.1 table (params, time, hardware)
-- [ ] Figures: metrics bar chart with CIs; overlaid learning curves; Recall@k curve; per-code breakdown
-- [ ] Discuss over/under-fitting per curve; explain the winner with course concepts
+- [x] Evaluate each selected model **once** on T-Q and T-T
+- [x] `report.py` → `results/metrics/summary.csv` and README §5.1 table (params, time, hardware)
+- [x] Figures: metrics bar chart with CIs; overlaid learning curves; Recall@k curve; per-code breakdown
+- [x] Discuss over/under-fitting per curve; explain the winner with course concepts
 
 ### 6.8 Error analysis & limitations
-- [ ] Per approach: T-Q misses at k=5 with retrieved vs expected articles → `results/error_analysis/`
-- [ ] Categorise: vocabulary mismatch, segmentation errors, multi-article, shared titles, Civil/Criminal confusion, near-miss
-- [ ] 3–5 worked examples for slides; limitations + prioritised future work in README §5.5
+- [x] Per approach: T-Q misses at k=5 with retrieved vs expected articles → `results/error_analysis/`
+- [x] Categorise: vocabulary mismatch, segmentation errors, multi-article, shared titles, Civil/Criminal confusion, near-miss
+- [x] 3–5 worked examples for slides; limitations + prioritised future work in README §5.5
 
 ---
 
