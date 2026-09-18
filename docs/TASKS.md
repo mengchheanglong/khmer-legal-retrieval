@@ -31,7 +31,7 @@
 | `requirements.txt` with exact packages (§6.1) | ✅ | Exact package versions pinned in `requirements.txt` |
 | Weights > 50 MB hosted externally with link (§9) | 🟡 | A3 checkpoint (~1.1 GB) saved locally; upload instructions documented in `results/checkpoints/README.md` |
 | Regular commit history (§6.1) | ✅ | Regular, small, descriptive commits maintained across all PRs #1–#7 |
-| Slides 10–20, required structure (§6.2) | ✅ | 18 slides compiled to `slides/final_presentation.pdf` and interactive HTML viewer |
+| Slides 10–20, required structure (§6.2) | ✅ | 12 slides (10 core + 2 appendix) compiled to `slides/final_presentation.pdf` tailored for 5-minute presentation |
 
 ---
 
@@ -77,7 +77,7 @@
 ## Phase 6: Deep Learning Study (graded core) 🔴
 
 ### 6.0 Topic approval (before final experiments)
-- [x] One-slide pitch: Khmer problem, corpus (1,976 articles), A1–A3, Recall@5 / MRR@10 (18-slide deck in `slides/`)
+- [x] One-slide pitch: Khmer problem, corpus (1,976 articles), A1–A4, Recall@5 / MRR@10 (12-slide deck in `slides/`)
 - [ ] Lecturer approval by **Week 7**; record the date in README
 
 ### 6.1 Khmer test set and splits
@@ -152,15 +152,15 @@
 
 ---
 
-## Phase 8: Slides & Presentation (10–20 slides, 10 min + 5 min Q&A)
+## Phase 8: Slides & Presentation (10–20 slides, 5 min + 5 min Q&A)
 - [x] Problem & motivation (Khmer, official text, input → output)
 - [x] Dataset & pipeline (ODC PDFs, Limon problem and conversion, article chunking, sizes, splits, leakage guard)
-- [x] Architectures & strategies (A1–A3 diagrams, tokenization contrast, justification)
+- [x] Architectures & strategies (A1–A4 diagrams, tokenization contrast, justification)
 - [x] Experimental setup (metrics, search ranges, optimiser, hardware, runtimes)
 - [x] Results (single table, learning curves, metric chart)
 - [x] Discussion & error analysis (why the winner won, Khmer failure cases, limitations)
 - [x] Conclusion & future work; appendix (tuning table, examples, parameter counts)
-- [x] Export to `slides/final_presentation.pdf`; rehearse to ≤ 10 minutes
+- [x] Export to `slides/final_presentation.pdf`; rehearse to ≤ 5 minutes
 - [x] Q&A prep: Limon reordering, InfoNCE, in-batch negatives, pooling, freezing, checkpoint/resume, each metric, every line of `src/dl/`
 
 ---
