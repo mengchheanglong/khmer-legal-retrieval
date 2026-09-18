@@ -4,51 +4,59 @@
   "model_type": "xlmr_full_finetune",
   "lr": 2e-05,
   "weight_decay": 0.01,
+  "temperature": 0.05,
+  "batch_size": 16,
+  "num_train_examples": 1176,
+  "batches_per_epoch": 73,
+  "total_optimizer_steps": 365,
+  "warmup_steps": 36,
+  "scheduler": "LinearLR (10% warmup) + CosineAnnealingLR",
   "trainable_parameters": 278043648,
-  "best_epoch": 5,
-  "best_val_mrr10": 0.9635,
-  "total_wall_clock_seconds": 319.82,
+  "best_epoch": 3,
+  "best_val_mrr10": 0.9031,
+  "total_wall_clock_seconds": 7237.5,
   "device": "cpu",
+  "dry_run": false,
   "history": [
     {
       "epoch": 1,
-      "train_loss": 2.2012,
-      "val_loss": 1.9897,
-      "val_mrr10": 0.9297,
-      "learning_rate": 3.0000000000000005e-06,
-      "time_seconds": 55.68
+      "train_loss": 0.6881,
+      "val_loss": 0.1261,
+      "val_mrr10": 0.8948,
+      "learning_rate": 1.9382326422635715e-05,
+      "time_seconds": 1188.68
     },
     {
       "epoch": 2,
-      "train_loss": 2.2012,
-      "val_loss": 1.8954,
-      "val_mrr10": 0.9271,
-      "learning_rate": 4.000000000000001e-06,
-      "time_seconds": 55.38
+      "train_loss": 0.0951,
+      "val_loss": 0.1152,
+      "val_mrr10": 0.8921,
+      "learning_rate": 1.4972409378419427e-05,
+      "time_seconds": 1592.98
     },
     {
       "epoch": 3,
-      "train_loss": 1.9526,
-      "val_loss": 1.7692,
-      "val_mrr10": 0.9271,
-      "learning_rate": 5.000000000000001e-06,
-      "time_seconds": 44.94
+      "train_loss": 0.0466,
+      "val_loss": 0.1028,
+      "val_mrr10": 0.9031,
+      "learning_rate": 8.242624716566928e-06,
+      "time_seconds": 1486.88
     },
     {
       "epoch": 4,
-      "train_loss": 1.9572,
-      "val_loss": 1.6141,
-      "val_mrr10": 0.9479,
-      "learning_rate": 6.000000000000001e-06,
-      "time_seconds": 53.91
+      "train_loss": 0.0304,
+      "val_loss": 0.1049,
+      "val_mrr10": 0.8998,
+      "learning_rate": 2.3327399667700487e-06,
+      "time_seconds": 1412.62
     },
     {
       "epoch": 5,
-      "train_loss": 1.8646,
-      "val_loss": 1.4341,
-      "val_mrr10": 0.9635,
-      "learning_rate": 7e-06,
-      "time_seconds": 45.45
+      "train_loss": 0.0243,
+      "val_loss": 0.106,
+      "val_mrr10": 0.8995,
+      "learning_rate": 0.0,
+      "time_seconds": 1511.15
     }
   ]
 }

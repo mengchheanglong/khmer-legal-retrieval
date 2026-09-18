@@ -24,7 +24,7 @@ import torch
 
 from src.config.logging import get_logger, setup_logging
 from src.dl.data import CorpusDataset, LegalPairsDataset, QABenchmarkDataset
-from src.dl.metrics import evaluate_rankings
+from src.dl.metrics import compute_per_query_scores, evaluate_rankings
 from src.dl.seed import get_device, set_seed
 from src.dl.text import tokenize_khmer
 
@@ -338,6 +338,7 @@ class EvaluationHarness:
 
         # 1. Overall evaluation
         overall_metrics = evaluate_rankings(rankings, ground_truth, seed=self.seed)
+        per_query_scores = compute_per_query_scores(rankings, ground_truth)
 
         # 2. Per-code slices
         civ_indices = [i for i, r in enumerate(self.qa.records) if r["expected_law"] == "Civil Code 2007"]
@@ -354,6 +355,8 @@ class EvaluationHarness:
         return {
             "total_questions": len(questions),
             "overall": overall_metrics,
+            "per_query_scores": per_query_scores,
+            "rankings": rankings,
             "civil_code": {
                 "count": len(civ_indices),
                 "metrics": civ_metrics,
@@ -513,7 +516,7 @@ def main() -> None:
         "--model",
         type=str,
         default="bm25",
-        choices=["bm25", "e5_zero_shot", "a1", "a2", "a3"],
+        choices=["bm25", "e5_zero_shot", "a1", "a2", "a3", "a4", "a4_prahokbart"],
         help="Model to evaluate (default: bm25).",
     )
     parser.add_argument(
@@ -592,6 +595,21 @@ def main() -> None:
 
         device = get_device()
         model = XLMRFullFinetuneRetriever(device=device)
+        load_checkpoint(ckpt_path, model=model, device=device)
+
+        retriever = DenseRetriever(model, harness.corpus, device=device, batch_size=32)
+        harness.run_full_evaluation(retriever, run_name=run_name, output_dir=args.output_dir)
+    elif args.model in ("a4", "a4_prahokbart"):
+        from src.dl.checkpoint import load_checkpoint
+        from src.dl.models.prahokbart import PrahokBARTDualEncoder
+
+        run_name = args.run_name or "a4_prahokbart"
+        ckpt_path = args.checkpoint or Path("results/checkpoints/a4_prahokbart/best.pt")
+        if not ckpt_path.exists():
+            raise FileNotFoundError(f"A4 checkpoint not found: {ckpt_path}")
+
+        device = get_device()
+        model = PrahokBARTDualEncoder(device=device)
         load_checkpoint(ckpt_path, model=model, device=device)
 
         retriever = DenseRetriever(model, harness.corpus, device=device, batch_size=32)

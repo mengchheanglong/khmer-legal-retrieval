@@ -1,0 +1,11 @@
+comparison,metric,mean_a,mean_b,delta,ci_lower,ci_upper,p_value,significance,wins,losses,ties
+A3 (Fine-Tuning) vs BM25 Baseline,Recall@5,0.5142,0.4075,0.1067,0.05,0.1633,0.0002,*** (p < 0.001),41,13,146
+A3 (Fine-Tuning) vs BM25 Baseline,MRR@10,0.4827,0.335,0.1477,0.0962,0.1993,0.0001,*** (p < 0.001),72,25,103
+A3 (Fine-Tuning) vs E5 Zero-Shot,Recall@5,0.5142,0.2617,0.2525,0.1883,0.3175,0.0001,*** (p < 0.001),63,6,131
+A3 (Fine-Tuning) vs E5 Zero-Shot,MRR@10,0.4827,0.2588,0.2239,0.1683,0.2804,0.0001,*** (p < 0.001),80,15,105
+A3 (Fine-Tuning) vs A1 BiLSTM,Recall@5,0.5142,0.2025,0.3117,0.2433,0.38,0.0001,*** (p < 0.001),77,8,115
+A3 (Fine-Tuning) vs A1 BiLSTM,MRR@10,0.4827,0.1724,0.3103,0.2485,0.3717,0.0001,*** (p < 0.001),104,13,83
+A3 (Fine-Tuning) vs A2 Linear Probe,Recall@5,0.5142,0.4117,0.1025,0.0492,0.1575,0.0001,*** (p < 0.001),40,11,149
+A3 (Fine-Tuning) vs A2 Linear Probe,MRR@10,0.4827,0.3591,0.1236,0.0796,0.1697,0.0001,*** (p < 0.001),65,21,114
+A2 (Linear Probe) vs BM25 Baseline,Recall@5,0.4117,0.4075,0.0042,-0.0567,0.0625,0.9031,n.s. (not sig.),26,25,149
+A2 (Linear Probe) vs BM25 Baseline,MRR@10,0.3591,0.335,0.0241,-0.0322,0.0793,0.4006,n.s. (not sig.),51,42,107

@@ -273,6 +273,51 @@ class TestMetricsAndCI:
             assert "ci_lower" in results[metric]
             assert "ci_upper" in results[metric]
 
+    def test_compute_per_query_scores(self) -> None:
+        """compute_per_query_scores returns per-query score vectors."""
+        from src.dl.metrics import compute_per_query_scores
+
+        rankings = [["d1", "d2"], ["d2", "d1"]]
+        gt = [{"d1"}, {"d1"}]
+        scores = compute_per_query_scores(rankings, gt)
+
+        assert scores["Recall@1"] == [1.0, 0.0]
+        assert scores["Recall@5"] == [1.0, 1.0]
+        assert scores["MRR@10"] == [1.0, 0.5]
+        assert scores["Hit@5"] == [1.0, 1.0]
+
+    def test_paired_bootstrap_test_significance(self) -> None:
+        """paired_bootstrap_test detects significant differences between models."""
+        from src.dl.metrics import paired_bootstrap_test
+
+        # Model A clearly superior to Model B
+        scores_a = [1.0, 1.0, 1.0, 1.0, 0.8, 1.0, 1.0, 0.9] * 10
+        scores_b = [0.2, 0.1, 0.0, 0.3, 0.1, 0.2, 0.0, 0.1] * 10
+
+        res = paired_bootstrap_test(scores_a, scores_b, metric_name="Recall@5", n_bootstrap=1000, seed=42)
+
+        assert res["delta"] > 0.5
+        assert res["ci_lower"] > 0.4
+        assert res["ci_upper"] > res["ci_lower"]
+        assert res["p_value"] < 0.01
+        assert res["is_significant"] is True
+        assert res["wins"] > 0
+        assert res["losses"] == 0
+
+    def test_paired_bootstrap_test_null(self) -> None:
+        """Identical scores yield zero delta and p_value=1.0."""
+        from src.dl.metrics import paired_bootstrap_test
+
+        scores = [0.5, 0.6, 0.7, 0.8] * 10
+        res = paired_bootstrap_test(scores, scores, metric_name="MRR@10", n_bootstrap=1000, seed=42)
+
+        assert res["delta"] == 0.0
+        assert res["ci_lower"] == 0.0
+        assert res["ci_upper"] == 0.0
+        assert res["p_value"] == 1.0
+        assert res["is_significant"] is False
+        assert res["ties"] == 40
+
 
 # =========================================================================
 # 6. Checkpoint Tests

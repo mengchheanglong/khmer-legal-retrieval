@@ -80,12 +80,34 @@ def get_rankings_with_cache(
     queries: list[str],
     cache_dir: Path,
 ) -> list[list[str]]:
-    """Retrieve rankings or load from disk cache."""
+    """Retrieve rankings or load from disk cache or metrics JSON."""
     cache_file = cache_dir / f"{model_id}_rankings.json"
     if cache_file.exists():
         logger.info(f"Loading cached rankings for '{model_id}' from {cache_file}...")
         with open(cache_file, "r", encoding="utf-8") as f:
             return json.load(f)
+
+    # Check if pre-computed rankings exist in results/metrics/<model_id>.json
+    metric_candidates = [
+        cache_dir.parent / "metrics" / f"{model_id}.json",
+        cache_dir.parent / "metrics" / f"{model_id}_baseline.json",
+    ]
+    for m_cand in metric_candidates:
+        if m_cand.exists():
+            try:
+                with open(m_cand, "r", encoding="utf-8") as f:
+                    m_data = json.load(f)
+                rankings = m_data.get("tq_benchmark", {}).get("rankings")
+                if rankings and len(rankings) == len(queries):
+                    logger.info(f"Loading pre-computed rankings for '{model_id}' from {m_cand}...")
+                    with open(cache_file, "w", encoding="utf-8") as f:
+                        json.dump(rankings, f, ensure_ascii=False)
+                    return rankings
+            except Exception as e:
+                logger.warning(f"Could not load rankings from {m_cand}: {e}")
+
+    if retriever is None:
+        raise ValueError(f"No cached rankings found for '{model_id}' and retriever is None")
 
     logger.info(f"Computing rankings for '{model_id}'...")
     rankings = retriever.search(queries, top_k=10)

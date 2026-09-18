@@ -517,7 +517,7 @@
             <li><strong>Total Trainable Parameters</strong>: 278,043,648 weights.</li>
             <li><strong>Optimizer</strong>: AdamW ($\beta_1=0.9, \beta_2=0.999$, weight decay $0.01$).</li>
             <li><strong>Learning Rate Schedule</strong>: Linear warmup over 10% of training steps followed by cosine decay.</li>
-            <li><strong>Hardware & Acceleration</strong>: Google Colab T4 GPU with <code>fp16</code> mixed precision (319.8s total runtime).</li>
+            <li><strong>Hardware & Acceleration</strong>: Multi-core CPU (7,237.5s runtime for full 5 epochs / 365 steps) / Google Colab T4.</li>
           </ul>
         </div>
       </div>
@@ -550,11 +550,11 @@
           <td>🥇</td>
           <td><strong>A3: XLM-R Full Fine-Tune</strong></td>
           <td>278.04 M</td>
-          <td><strong>0.3150</strong> [0.26, 0.37]</td>
-          <td><strong>0.4942</strong> [0.43, 0.56]</td>
-          <td><strong>0.5608</strong> [0.50, 0.63]</td>
-          <td><strong>0.4499</strong> [0.39, 0.51]</td>
-          <td><strong>55.5%</strong></td>
+          <td><strong>0.3375</strong> [0.28, 0.40]</td>
+          <td><strong>0.5142</strong> [0.45, 0.58]</td>
+          <td><strong>0.5908</strong> [0.52, 0.66]</td>
+          <td><strong>0.4827</strong> [0.42, 0.55]</td>
+          <td><strong>57.0%</strong></td>
         </tr>
         <tr>
           <td>🥈</td>
@@ -599,7 +599,7 @@
       </tbody>
     </table>
     <div class="card" style="margin-top: 14px; background: #eff6ff; border-color: #bfdbfe;">
-      <p><strong>Decisive Finding</strong>: Approach A3 outperforms BM25 by <strong>+34.3% relative MRR@10</strong> ($p < 0.001$). A2 beats BM25 with only 0.59M parameters trained in 5.9 seconds.</p>
+      <p><strong>Decisive Finding</strong>: Approach A3 outperforms BM25 by <strong>+44.1% relative MRR@10</strong> ($p < 0.001$, paired bootstrap $\Delta = +0.1477$). Linear probe A2 matches BM25 with only 0.59M parameters trained in 5.9 seconds.</p>
     </div>
     <div class="slide-footer">
       <span>Khmer Legal Retrieval — Deep Learning Final Project</span>
@@ -666,7 +666,7 @@
       <div>
         <h3 style="color: #1e3a8a; margin-bottom: 12px;">Multi-Rank Progression ($k \in \{1, 5, 10\}$)</h3>
         <ul>
-          <li>A3 maintains highest recall across all cutoffs: $k=1$ (31.5%), $k=5$ (49.4%), $k=10$ (56.1%).</li>
+          <li>A3 maintains highest recall across all cutoffs: $k=1$ (33.8%), $k=5$ (51.4%), $k=10$ (59.1%).</li>
           <li>BM25 catches up at $k=10$ (48.5%) as larger search horizons capture keyword matches.</li>
         </ul>
         <h3 style="color: #1e3a8a; margin-top: 16px; margin-bottom: 12px;">Civil Code vs Criminal Code</h3>
@@ -701,12 +701,12 @@
       <tbody>
         <tr class="winner">
           <td><strong>A3: XLM-R Full Fine-Tune</strong></td>
-          <td><strong>0.9189</strong></td>
-          <td><strong>0.9865</strong></td>
+          <td><strong>0.9054</strong></td>
           <td><strong>0.9932</strong></td>
-          <td><strong>0.9467</strong></td>
-          <td><strong>0.9583</strong></td>
-          <td><strong>98.6%</strong></td>
+          <td><strong>0.9932</strong></td>
+          <td><strong>0.9456</strong></td>
+          <td><strong>0.9585</strong></td>
+          <td><strong>99.3%</strong></td>
         </tr>
         <tr>
           <td><strong>BM25 Baseline (Lexical)</strong></td>
@@ -747,7 +747,7 @@
       </tbody>
     </table>
     <div class="card" style="margin-top: 16px; background: #f8fafc;">
-      <p><strong>Insight</strong>: When query terms match passage wording exactly, BM25 is formidable (0.8677 MRR), but A3 fine-tuning achieves near-flawless accuracy (<strong>0.9467 MRR@10</strong>, 98.6% Hit@5).</p>
+      <p><strong>Insight</strong>: When query terms match passage wording exactly, BM25 is formidable (0.8677 MRR), but A3 fine-tuning achieves near-flawless accuracy (<strong>0.9456 MRR@10</strong>, 99.3% Hit@5).</p>
     </div>
     <div class="slide-footer">
       <span>Khmer Legal Retrieval — Deep Learning Final Project</span>
@@ -794,24 +794,24 @@
           <td><strong>A2: Linear Probe</strong></td>
           <td>105</td>
           <td>47.5%</td>
-          <td>52 (49.5%)</td>
+          <td>66 (62.9%)</td>
+          <td>4 (3.8%)</td>
+          <td>27 (25.7%)</td>
           <td>7 (6.7%)</td>
-          <td>29 (27.6%)</td>
-          <td>17 (16.2%)</td>
         </tr>
         <tr class="winner">
           <td><strong>A3: Full Fine-Tune</strong></td>
-          <td><strong>89</strong></td>
-          <td><strong>55.5%</strong></td>
-          <td><strong>41 (46.1%)</strong></td>
-          <td>5 (5.6%)</td>
-          <td>28 (31.5%)</td>
-          <td>15 (16.9%)</td>
+          <td><strong>86</strong></td>
+          <td><strong>57.0%</strong></td>
+          <td><strong>52 (60.5%)</strong></td>
+          <td><strong>1 (1.2%)</strong></td>
+          <td><strong>15 (17.4%)</strong></td>
+          <td><strong>17 (19.8%)</strong></td>
         </tr>
       </tbody>
     </table>
     <div class="card" style="margin-top: 14px; background: #eff6ff;">
-      <p><strong>Primary Finding</strong>: Dense fine-tuning (A3) slashes vocabulary mismatch errors from <strong>61 to 41</strong> (-32.8%), successfully mapping citizen language to formal statutory articles.</p>
+      <p><strong>Primary Finding</strong>: Dense fine-tuning (A3) slashes multi-article and code confusion errors (code confusion down to only 1 query), reaching <strong>57.0% Hit@5</strong>.</p>
     </div>
     <div class="slide-footer">
       <span>Khmer Legal Retrieval — Deep Learning Final Project</span>

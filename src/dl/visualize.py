@@ -46,6 +46,7 @@ PALETTE = {
     "A1 BiLSTM": "#ff7f0e",      # Orange
     "A2 Linear Probe": "#2ca02c",# Green
     "A3 XLM-R Finetuned": "#d62728", # Red (Winner)
+    "A4 PrahokBART": "#9467bd",  # Purple (Khmer Native)
 }
 
 
@@ -65,13 +66,16 @@ def plot_primary_metrics_bar(results_dir: Path, figures_dir: Path) -> Path:
         ("A2 Linear Probe", results_dir / "metrics" / "a2_linear_probe.json"),
         ("A3 XLM-R Finetuned", results_dir / "metrics" / "a3_xlmr.json"),
     ]
+    a4_file = results_dir / "metrics" / "a4_prahokbart.json"
+    if a4_file.exists():
+        models.append(("A4 PrahokBART", a4_file))
 
     metrics = ["Recall@1", "Recall@5", "MRR@10", "Hit@5"]
     n_metrics = len(metrics)
     n_models = len(models)
 
     x = np.arange(n_metrics)
-    width = 0.16
+    width = 0.85 / n_models
 
     fig, ax = plt.subplots(figsize=(11, 6))
 
@@ -148,6 +152,9 @@ def plot_learning_curves(results_dir: Path, figures_dir: Path) -> Path:
         ("A2 Linear Probe (frozen)", a2_log, PALETTE["A2 Linear Probe"], "s"),
         ("A3 XLM-R (full fine-tuning)", a3_log, PALETTE["A3 XLM-R Finetuned"], "^"),
     ]
+    a4_logs = sorted(list((results_dir / "logs").glob("a4_*.csv")))
+    if a4_logs:
+        runs.append(("A4 PrahokBART (Khmer native)", a4_logs[-1], PALETTE["A4 PrahokBART"], "D"))
 
     for label, log_path, color, marker in runs:
         if not log_path.exists():
@@ -202,6 +209,9 @@ def plot_recall_at_k(results_dir: Path, figures_dir: Path) -> Path:
         ("A2 Linear Probe", results_dir / "metrics" / "a2_linear_probe.json"),
         ("A3 XLM-R Finetuned", results_dir / "metrics" / "a3_xlmr.json"),
     ]
+    a4_file = results_dir / "metrics" / "a4_prahokbart.json"
+    if a4_file.exists():
+        models.append(("A4 PrahokBART", a4_file))
 
     ks = [1, 5, 10]
     fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(13, 5))
@@ -265,6 +275,9 @@ def plot_code_breakdown(results_dir: Path, figures_dir: Path) -> Path:
         ("A2 Linear Probe", results_dir / "metrics" / "a2_linear_probe.json"),
         ("A3 XLM-R Finetuned", results_dir / "metrics" / "a3_xlmr.json"),
     ]
+    a4_file = results_dir / "metrics" / "a4_prahokbart.json"
+    if a4_file.exists():
+        models.append(("A4 PrahokBART", a4_file))
 
     labels = [m[0] for m in models]
     civ_mrr = []

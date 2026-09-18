@@ -173,30 +173,18 @@ def bootstrap_ci(
     }
 
 
-def evaluate_rankings(
+def compute_per_query_scores(
     rankings: list[list[str]],
     ground_truth: list[set[str]],
-    n_bootstrap: int = 1000,
-    seed: int = 42,
-) -> dict[str, dict[str, float]]:
-    """Compute the full suite of retrieval metrics with 95% bootstrap CIs.
-
-    Metrics computed:
-    - Recall@1
-    - Recall@5
-    - Recall@10
-    - MRR@10
-    - nDCG@10
-    - Hit@5
+) -> dict[str, list[float]]:
+    """Compute per-query score vectors for standard retrieval metrics.
 
     Args:
         rankings: List of retrieved doc_id lists (one ranked list per query).
         ground_truth: List of sets of expected doc_ids (one set per query).
-        n_bootstrap: Number of bootstrap iterations for CI (default: 1,000).
-        seed: Random seed for bootstrap reproducibility (default: 42).
 
     Returns:
-        Dictionary mapping metric names to {'mean', 'ci_lower', 'ci_upper'}.
+        Dictionary mapping each metric name to a list of float scores (one per query).
     """
     if len(rankings) != len(ground_truth):
         raise ValueError(
@@ -225,6 +213,159 @@ def evaluate_rankings(
         per_query_scores["nDCG@10"].append(compute_ndcg_at_k(rank_list, target_set, k=10))
         per_query_scores["Hit@5"].append(compute_hit_at_k(rank_list, target_set, k=5))
 
+    return per_query_scores
+
+
+def paired_bootstrap_test(
+    scores_a: Sequence[float],
+    scores_b: Sequence[float],
+    metric_name: str = "Recall@5",
+    n_bootstrap: int = 10000,
+    ci: float = 0.95,
+    seed: int = 42,
+) -> dict[str, Any]:
+    """Perform a paired non-parametric bootstrap hypothesis test between two models.
+
+    Tests H0: Delta = E[score_a - score_b] == 0 vs H1: Delta != 0.
+    Since both models evaluate on the exact same benchmark queries, paired analysis
+    removes inter-query variance, yielding higher statistical power than comparing
+    independent marginal confidence intervals.
+
+    Args:
+        scores_a: Per-query metric scores for Model A.
+        scores_b: Per-query metric scores for Model B.
+        metric_name: Name of the metric evaluated (e.g. 'Recall@5', 'MRR@10').
+        n_bootstrap: Number of paired bootstrap resamples (default: 10,000).
+        ci: Confidence level for difference CI (default: 0.95).
+        seed: Random seed for deterministic resampling.
+
+    Returns:
+        Dictionary containing:
+        - 'metric': Metric name evaluated
+        - 'mean_a': Mean score of Model A
+        - 'mean_b': Mean score of Model B
+        - 'delta': Difference in means (mean_a - mean_b)
+        - 'ci_lower': Lower bound of paired 95% CI on Delta
+        - 'ci_upper': Upper bound of paired 95% CI on Delta
+        - 'p_value': Two-sided empirical bootstrap p-value
+        - 'is_significant': Boolean indicating p_value < (1.0 - ci) and 0 not in CI
+        - 'wins': Number of queries where Model A scored strictly higher than Model B
+        - 'losses': Number of queries where Model B scored strictly higher than Model A
+        - 'ties': Number of queries where Model A and Model B tied
+    """
+    if len(scores_a) != len(scores_b):
+        raise ValueError(
+            f"Length mismatch: scores_a ({len(scores_a)}) vs scores_b ({len(scores_b)})"
+        )
+
+    n = len(scores_a)
+    if n == 0:
+        return {
+            "metric": metric_name,
+            "mean_a": 0.0,
+            "mean_b": 0.0,
+            "delta": 0.0,
+            "ci_lower": 0.0,
+            "ci_upper": 0.0,
+            "p_value": 1.0,
+            "is_significant": False,
+            "wins": 0,
+            "losses": 0,
+            "ties": 0,
+        }
+
+    arr_a = np.array(scores_a, dtype=np.float64)
+    arr_b = np.array(scores_b, dtype=np.float64)
+    diffs = arr_a - arr_b
+
+    mean_a = float(np.mean(arr_a))
+    mean_b = float(np.mean(arr_b))
+    delta = float(mean_a - mean_b)
+
+    wins = int(np.sum(diffs > 1e-9))
+    losses = int(np.sum(diffs < -1e-9))
+    ties = int(np.sum(np.abs(diffs) <= 1e-9))
+
+    # All differences identical
+    if np.all(np.abs(diffs - diffs[0]) < 1e-9):
+        p_val = 1.0 if abs(delta) < 1e-9 else 0.0
+        return {
+            "metric": metric_name,
+            "mean_a": round(mean_a, 4),
+            "mean_b": round(mean_b, 4),
+            "delta": round(delta, 4),
+            "ci_lower": round(delta, 4),
+            "ci_upper": round(delta, 4),
+            "p_value": round(p_val, 4),
+            "is_significant": p_val < (1.0 - ci),
+            "wins": wins,
+            "losses": losses,
+            "ties": ties,
+        }
+
+    rng = np.random.default_rng(seed)
+    boot_indices = rng.integers(0, n, size=(n_bootstrap, n))
+    boot_diff_means = np.mean(diffs[boot_indices], axis=1)
+
+    alpha = (1.0 - ci) / 2.0
+    lower_pct = alpha * 100.0
+    upper_pct = (1.0 - alpha) * 100.0
+
+    ci_lower = float(np.percentile(boot_diff_means, lower_pct))
+    ci_upper = float(np.percentile(boot_diff_means, upper_pct))
+
+    # Two-sided empirical bootstrap p-value under H0: mean(diffs) = 0
+    centered = boot_diff_means - delta
+    p_val = float(np.mean(np.abs(centered) >= np.abs(delta)))
+    # Ensure non-zero lower bound resolution from bootstrap sample size
+    p_val = max(1.0 / n_bootstrap, p_val)
+
+    is_significant = (p_val < (1.0 - ci)) and (ci_lower > 0.0 or ci_upper < 0.0)
+
+    return {
+        "metric": metric_name,
+        "mean_a": round(mean_a, 4),
+        "mean_b": round(mean_b, 4),
+        "delta": round(delta, 4),
+        "ci_lower": round(ci_lower, 4),
+        "ci_upper": round(ci_upper, 4),
+        "p_value": round(p_val, 4),
+        "is_significant": is_significant,
+        "wins": wins,
+        "losses": losses,
+        "ties": ties,
+    }
+
+
+def evaluate_rankings(
+    rankings: list[list[str]],
+    ground_truth: list[set[str]],
+    n_bootstrap: int = 1000,
+    seed: int = 42,
+) -> dict[str, dict[str, float]]:
+    """Compute the full suite of retrieval metrics with 95% bootstrap CIs.
+
+    Metrics computed:
+    - Recall@1
+    - Recall@5
+    - Recall@10
+    - MRR@10
+    - nDCG@10
+    - Hit@5
+
+    Args:
+        rankings: List of retrieved doc_id lists (one ranked list per query).
+        ground_truth: List of sets of expected doc_ids (one set per query).
+        n_bootstrap: Number of bootstrap iterations for CI (default: 1,000).
+        seed: Random seed for bootstrap reproducibility (default: 42).
+
+    Returns:
+        Dictionary mapping metric names to {'mean', 'ci_lower', 'ci_upper'}.
+    """
+    per_query_scores = compute_per_query_scores(rankings, ground_truth)
+    if not per_query_scores:
+        return {}
+
     results: dict[str, dict[str, float]] = {}
     for metric_name, score_list in per_query_scores.items():
         results[metric_name] = bootstrap_ci(
@@ -235,3 +376,4 @@ def evaluate_rankings(
         )
 
     return results
+
