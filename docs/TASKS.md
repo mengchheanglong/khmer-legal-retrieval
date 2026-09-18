@@ -11,7 +11,7 @@
 | Requirement (instruction §) | Status | Gap / action |
 |-----------------------------|:------:|--------------|
 | Topic approved by lecturer (§3.1, Week 7) | ⏳ | Presentation slides ready in `slides/`; record approval date in README upon Week 7 defense |
-| ≥ 2 (ideally 3) distinct DL approaches trained/fine-tuned by me (§2, §4) | ✅ | Implemented, trained, and evaluated A1 (BiLSTM), A2 (XLM-R Linear Probe), and A3 (XLM-R Full Fine-Tuning) |
+| ≥ 2 (ideally 3) distinct DL approaches trained/fine-tuned by me (§2, §4) | ✅ | Implemented, trained, and evaluated 4 distinct approaches: A1 (BiLSTM), A2 (XLM-R Linear Probe), A3 (XLM-R Full Fine-Tuning), and A4 (PrahokBART Dual Encoder) |
 | All models in PyTorch; no Keras/TF (§5B) | ✅ | All models and loss functions implemented purely in PyTorch; dependencies pinned in `requirements.txt` |
 | Same train/val/test split and test preprocessing for all (§2, §5A) | ✅ | Fixed splits generated in `data/05_splits/` with deterministic seed 42 and leakage guard |
 | Dataset source, license, size, distribution, bias (§5A) | ✅ | 1,976 articles, CC-BY-SA-4.0, documented in README §2 and `data/05_splits/manifest.json` |
@@ -121,6 +121,14 @@
 - [x] Grid: LR {1e-5, 2e-5, 3e-5} × weight decay {0, 0.01} (× τ {0.02, 0.05} if time allows)
 - [x] Save tuning table → `results/tuning/a3.csv`; select by val MRR@10 only
 - [ ] Upload best checkpoint to HF Hub/Drive; link in README §6.4
+
+### 6.6b Approach A4 — PrahokBART dual encoder (Khmer-native pre-training)
+- [x] Extract encoder from `nict-astrec-att/prahokbart_base` (35.8M parameters, 512-dim output, SentencePiece 32,004 vocab)
+- [x] Siamese dual tower with masked mean pooling and L2 unit normalization (`src/dl/models/prahokbart.py`)
+- [x] Config `configs/a4_prahokbart.yaml` and unit tests `tests/unit/test_a4_prahokbart.py` (all passing)
+- [x] Hyperparameter tuning runner `src/dl/experiments/tune_a4.py` (LR {5e-5, 1e-4} x weight decay {0.01})
+- [x] Full evaluation on Primary T-Q and Secondary T-T benchmarks (`results/metrics/a4_prahokbart.json`)
+- [x] Colab interactive reproduction notebook `notebooks/a4_prahokbart_colab.ipynb`
 
 ### 6.7 Final evaluation & comparison
 - [x] Evaluate each selected model **once** on T-Q and T-T

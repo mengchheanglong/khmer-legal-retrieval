@@ -1,0 +1,14 @@
+{
+  "tag": "a4_lr5e-05_wd0.01",
+  "run_name": "a4_lr5e-05_wd0.01",
+  "approach": "A4",
+  "model_type": "prahokbart_dual_encoder",
+  "lr": 5e-05,
+  "weight_decay": 0.01,
+  "batch_size": 32,
+  "best_epoch": 3,
+  "best_val_mrr10": 0.5044,
+  "total_time_sec": 1496.156274318695,
+  "total_wall_clock_seconds": 1496.156274318695,
+  "checkpoint_dir": "C:\\Users\\User\\Internship\\khmer-legal-retrieval\\results\\checkpoints\\a4_lr5e-05_wd0.01"
+}

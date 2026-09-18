@@ -1,0 +1,3 @@
+tag,run_name,approach,model_type,lr,weight_decay,batch_size,best_epoch,best_val_mrr10,total_time_sec,total_wall_clock_seconds,checkpoint_dir
+a4_lr5e-05_wd0.01,a4_lr5e-05_wd0.01,A4,prahokbart_dual_encoder,5e-05,0.01,32,3,0.5044,1496.156274318695,1496.156274318695,C:\Users\User\Internship\khmer-legal-retrieval\results\checkpoints\a4_lr5e-05_wd0.01
+a4_lr1e-04_wd0.01,a4_lr1e-04_wd0.01,A4,prahokbart_dual_encoder,0.0001,0.01,32,3,0.6116,1602.2208864688873,1602.2208864688873,C:\Users\User\Internship\khmer-legal-retrieval\results\checkpoints\a4_lr1e-04_wd0.01

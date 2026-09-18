@@ -13,8 +13,8 @@
 > - ⏳ Topic approved by lecturer (presentation scheduled for Week 7; slides ready in `slides/`)
 > - ✅ Khmer corpus built: Civil Code 2007 (1,304 articles) + Criminal Code 2009 (672 articles), converted from legacy Limon fonts to Unicode and chunked with hierarchy metadata
 > - ✅ Khmer test sets built: Primary `T-Q` (200 human-verified questions) + Secondary `T-T` (148 held-out article titles) with strict leakage guards
-> - ✅ Deep learning experiments A1–A3 (PyTorch): A1 (BiLSTM), A2 (XLM-R Linear Probe), and A3 (XLM-R Full Fine-Tuning) trained and tuned
-> - ✅ Evaluation & analysis: Main comparison table with 95% bootstrap CIs, 4 publication figures (`results/figures/`), and qualitative error analysis
+> - ✅ Deep learning experiments A1–A4 (PyTorch): A1 (BiLSTM), A2 (XLM-R Linear Probe), A3 (XLM-R Full Fine-Tuning), and A4 (PrahokBART Dual Encoder) trained and tuned
+> - ✅ Evaluation & analysis: Main comparison table with 95% bootstrap CIs, paired hypothesis tests ($p < 0.001$), 4 publication figures (`results/figures/`), and qualitative error analysis
 > - ✅ Reproducibility: Standalone Colab notebooks (`notebooks/`) and deterministic YAML-driven CLI scripts
 > - ✅ Slides: 18-slide presentation deck compiled to `slides/final_presentation.pdf` and interactive viewer
 > - ✅ Khmer RAG prototype: FastAPI + Streamlit app fully integrated with native Khmer A3 dense retriever + BM25 hybrid search
@@ -142,19 +142,22 @@ Generated once by `src/dl/prepare_splits.py` (seed 42) and saved with file hashe
 
 ## 3. Approaches Compared
 
-All three approaches are neural **bi-encoders** implemented in **PyTorch**. Each encodes a question and
+All four approaches are neural **bi-encoders** implemented in **PyTorch**. Each encodes a question and
 an article into vectors, and relevance is their cosine similarity. All are trained with the same
 **InfoNCE loss with in-batch negatives**, on the same split, and evaluated by the same harness.
 
 | ID | Model | Dimension A — architecture | Dimension B — training strategy | Trainable params |
 |----|-------|----------------------------|----------------------------------|-----------------:|
-| **A1** | **BiLSTM** dual encoder: `khmer-nltk` word tokens → randomly initialised 300-d embeddings → 1-layer BiLSTM (256 per direction) → mean pooling; shared towers | Recurrent (RNN) | **Trained from scratch** | — (vocab-dependent; report) |
+| **A1** | **BiLSTM** dual encoder: `khmer-nltk` word tokens → randomly initialised 300-d embeddings → 1-layer BiLSTM (256 per direction) → mean pooling; shared towers | Recurrent (RNN) | **Trained from scratch** | 1.97 M |
 | **A2** | **XLM-RoBERTa** encoder (`intfloat/multilingual-e5-base`), **frozen**, plus a trainable linear head 768 → 768 (initialised to identity) | Transformer encoder | **Transfer learning, frozen backbone (linear probe)** | ≈ 0.59 M |
-| **A3** | Same encoder, **all layers fine-tuned** | Transformer encoder | **Full fine-tuning** | ≈ 278 M |
+| **A3** | Same encoder, **all layers fine-tuned** | Transformer encoder | **Full fine-tuning** | ≈ 278.04 M |
+| **A4** | **PrahokBART** encoder (`nict-astrec-att/prahokbart_base`), native Khmer SentencePiece (32,004 vocab), 512-dim output, **all layers fine-tuned** | Compact Transformer | **Khmer-native pre-training + full fine-tuning** | ≈ 35.83 M |
 
-**Why these three:**
+**Why these four approaches:**
 - **A1 vs A2:** does pre-training on 100 languages beat a task-specific RNN when only about 1.4K Khmer pairs exist? This comparison also sets a word segmenter against subword tokenization, a real design question for Khmer.
 - **A2 vs A3:** how much of the backbone needs to adapt to formal legal Khmer (capacity vs overfitting)?
+- **A3 vs A4:** does a massive multilingual model (278M params, 768-d) beat a compact, Khmer-centric model (35.8M params, ~8x smaller, 512-d) trained specifically on Khmer?
+- **A4 vs A1:** does Khmer-native self-supervised pre-training beat learning from scratch with a domain dictionary?
 
 `multilingual-e5-base` has the XLM-RoBERTa-base architecture: it starts from `xlm-roberta-base` and was
 further trained for text embeddings. Raw `xlm-roberta-base` can be swapped in with the same code if
@@ -188,6 +191,7 @@ preferred.
 | Approach | Learning rate | Regularisation | Other |
 |----------|---------------|----------------|-------|
 | A3 (best) | {1e-5, 2e-5, 3e-5} | weight decay {0, 0.01} | τ = 0.05 (fixed), CosineAnnealingLR (10% warmup) |
+| A4 | {5e-5, 1e-4} | weight decay {0.01} | 512-dim, SentencePiece 32k, CosineAnnealingLR (10% warmup) |
 | A1 | {1e-3, 3e-3} | dropout {0.1, 0.3} | — |
 | A2 | {1e-3, 1e-2} | weight decay {0, 0.01} | — |
 
@@ -208,6 +212,7 @@ Changing only the learning rate, loss, optimiser or seed is tuning within an app
 | **A1** BiLSTM from scratch | 0.0875 [0.05, 0.13] | 0.2025 [0.16, 0.25] | 0.2950 [0.24, 0.36] | 0.1724 [0.13, 0.22] | 0.2450 [0.19, 0.31] | 1.97 M | 2035.3 s | CPU |
 | **A2** XLM-R frozen + linear probe | 0.2400 [0.19, 0.30] | 0.4117 [0.35, 0.48] | 0.4542 [0.39, 0.52] | 0.3591 [0.30, 0.42] | 0.4750 [0.41, 0.54] | 0.59 M | 5.9 s | CPU |
 | **A3** XLM-R full fine-tune | **0.3375** [0.28, 0.40] | **0.5142** [0.45, 0.58] | **0.5908** [0.52, 0.66] | **0.4827** [0.42, 0.55] | **0.5700** [0.50, 0.64] | 278.04 M | 7237.5 s | CPU (14t, fp32) |
+| **A4** PrahokBART full fine-tune | 0.0525 [0.03, 0.09] | 0.1517 [0.11, 0.20] | 0.1867 [0.14, 0.24] | 0.1035 [0.07, 0.14] | 0.1800 [0.13, 0.24] | 35.83 M | 1602.2 s | CPU (14t, fp32) |
 
 #### Paired Statistical Significance (T-Q Primary Benchmark, 10,000 Bootstrap Resamples)
 
@@ -225,6 +230,10 @@ Because individual confidence intervals can exhibit marginal overlap, declaring 
 | A3 (Fine-Tuning) vs A2 Linear Probe | MRR@10 | 0.4827 | 0.3591 | **+0.1236** [+0.0796, +0.1697] | 0.0001 | *** (p < 0.001) | 65W / 21L / 114T |
 | A2 (Linear Probe) vs BM25 Baseline | Recall@5 | 0.4117 | 0.4075 | **+0.0042** [-0.0567, +0.0625] | 0.9031 | n.s. (not sig.) | 26W / 25L / 149T |
 | A2 (Linear Probe) vs BM25 Baseline | MRR@10 | 0.3591 | 0.3350 | **+0.0241** [-0.0322, +0.0793] | 0.4006 | n.s. (not sig.) | 51W / 42L / 107T |
+| **A3 (XLM-R) vs A4 (PrahokBART)** | **Recall@5** | **0.5142** | **0.1517** | **+0.3625** [+0.2925, +0.4300] | **0.0001** | **\*\*\* (p < 0.001)** | 83W / 5L / 112T |
+| **A3 (XLM-R) vs A4 (PrahokBART)** | **MRR@10** | **0.4827** | **0.1035** | **+0.3792** [+0.3195, +0.4396] | **0.0001** | **\*\*\* (p < 0.001)** | 116W / 6L / 78T |
+| A4 (PrahokBART) vs BM25 Baseline | Recall@5 | 0.1517 | 0.4075 | **-0.2558** [-0.3208, -0.1925] | 0.0001 | *** (p < 0.001) | 8W / 65L / 127T |
+| A4 (PrahokBART) vs BM25 Baseline | MRR@10 | 0.1035 | 0.3350 | **-0.2315** [-0.2869, -0.1775] | 0.0001 | *** (p < 0.001) | 12W / 90L / 98T |
 
 *Key Takeaway*: A3's performance gain over BM25 is statistically confirmed ($p < 0.001$) with empirical 95% $\Delta$ intervals strictly above zero ($[+0.0500, +0.1633]$ for Recall@5; $[+0.0962, +0.1993]$ for MRR@10). In contrast, the linear probe (A2) essentially matches BM25 ($p = 0.9031$), proving that deep non-linear adaptation across all encoder layers is required to outperform keyword matching on natural legal queries.
 
@@ -237,6 +246,7 @@ Because individual confidence intervals can exhibit marginal overlap, declaring 
 | **A1** BiLSTM from scratch | 0.5135 [0.43, 0.60] | 0.7568 [0.70, 0.82] | 0.8514 [0.79, 0.91] | 0.6242 [0.56, 0.69] | 0.7568 [0.70, 0.82] |
 | **A2** XLM-R frozen + linear probe | 0.7905 [0.72, 0.85] | 0.9392 [0.90, 0.97] | 0.9595 [0.93, 0.99] | 0.8563 [0.81, 0.90] | 0.9392 [0.90, 0.97] |
 | **A3** XLM-R full fine-tune | **0.9054** [0.85, 0.95] | **0.9932** [0.97, 1.00] | **0.9932** [0.97, 1.00] | **0.9456** [0.92, 0.97] | **0.9932** [0.97, 1.00] |
+| **A4** PrahokBART full fine-tune | 0.5946 [0.51, 0.68] | 0.8041 [0.74, 0.87] | 0.8378 [0.78, 0.90] | 0.6733 [0.60, 0.74] | 0.8041 [0.74, 0.87] |
 
 ### 5.2 Figures (`results/figures/`)
 
@@ -255,18 +265,25 @@ Because individual confidence intervals can exhibit marginal overlap, declaring 
    - *Failure of From-Scratch BiLSTM (A1)*: A1 achieves only MRR@10 0.1724. With only 1,176 training pairs, randomly initialized word embeddings and recurrent cells lack sufficient training signals to overcome Khmer vocabulary sparsity and complex word compounds.
 
 2. **Distribution Shift: In-Distribution (T-T) vs Out-of-Distribution (T-Q)**:
-   - **T-T Benchmark (In-Distribution)**: On held-out title-to-body retrieval, performance is extremely high across models (BM25: 97.3% Recall@5; A3: 99.3% Recall@5; A2: 93.9% Recall@5). This occurs because bi-encoder training pairs were extracted from title-body alignments; T-T tests retrieval within the exact same structural and stylistic distribution.
-   - **T-Q Benchmark (Out-of-Distribution)**: On conversational human questions, performance drops drastically across all systems (BM25: 40.8% Recall@5; A3: 51.4% Recall@5; A2: 41.2% Recall@5). Legal questions introduce severe distribution shift: colloquial phrasing, synonym variation (e.g. `សុពលភាព` [validity] vs statutory `មោឃភាព` [nullity]), scenario-based context, and absence of verbatim title keywords.
+   - **T-T Benchmark (In-Distribution)**: On held-out title-to-body retrieval, performance is extremely high across models (BM25: 97.3% Recall@5; A3: 99.3% Recall@5; A2: 93.9% Recall@5; A4: 80.4% Recall@5). This occurs because bi-encoder training pairs were extracted from title-body alignments; T-T tests retrieval within the exact same structural and stylistic distribution.
+   - **T-Q Benchmark (Out-of-Distribution)**: On conversational human questions, performance drops drastically across all systems (BM25: 40.8% Recall@5; A3: 51.4% Recall@5; A2: 41.2% Recall@5; A4: 15.2% Recall@5). Legal questions introduce severe distribution shift: colloquial phrasing, synonym variation (e.g. `សុពលភាព` [validity] vs statutory `មោឃភាព` [nullity]), scenario-based context, and absence of verbatim title keywords.
    - *Implication*: Lexical retrieval and linear probes degrade rapidly under conversational distribution shift. Full fine-tuning (A3) exhibits greater resilience, preserving semantic alignment despite syntactic and lexical shifts.
 
-3. **Learning Dynamics & Overfitting**:
+3. **PrahokBART (A4) vs XLM-R (A3) — Monolingual Compact vs Multilingual Large**:
+   - **Strong In-Distribution Performance (T-T)**: PrahokBART achieves 80.41% Recall@5 and 0.6733 MRR@10 on held-out article titles, beating from-scratch BiLSTM (A1: 75.68% Recall@5, 0.6242 MRR@10) and demonstrating that its native Khmer SentencePiece tokenizer (32,004 tokens) captures statutory terminology effectively.
+   - **Vulnerability to Natural Language Query Shift (T-Q)**: On human questions, PrahokBART achieves 15.17% Recall@5 and 0.1035 MRR@10. Paired bootstrap hypothesis tests confirm that A3 significantly outperforms A4 ($\Delta = +0.3625$ Recall@5, $p < 0.001$, 83 wins vs 5 losses; $\Delta = +0.3792$ MRR@10, $p < 0.001$, 116 wins vs 6 losses).
+   - *Why the Gap?*: PrahokBART was pre-trained as a sequence-to-sequence denoising autoencoder (BART objective), rather than with contrastive sentence-pair objectives. Furthermore, with only 35.8M parameters and 512-dim representations, it has ~8x lower capacity than XLM-R (278M params, 768-dim), which benefited from contrastive pre-training over billions of multilingual sentence pairs in multilingual-E5.
+
+4. **Learning Dynamics & Overfitting**:
    - **A1**: Showed severe overfitting. Training loss plunged to 0.017 while validation loss remained elevated (~0.86), confirming that from-scratch deep models cannot generalize on small legal corpora without pre-training.
    - **A2**: Showed stable convergence. Because all 278M transformer weights were frozen, the 0.59M linear projection head acted as a natural regularizer, avoiding overfitting while delivering a competitive **0.3591 MRR@10** in just 5.9 seconds of training.
    - **A3**: Full training across 5 epochs (365 optimizer steps, 7,237.5s wall-clock runtime) converged cleanly with `LinearLR` warmup and `CosineAnnealingLR` decay. Best validation MRR@10 (0.9031) was achieved at Epoch 3, yielding superior test generalization (51.42% Recall@5 vs 49.42% in initial quick runs).
+   - **A4**: PrahokBART tuned smoothly across 3 epochs (train loss 2.85 -> 1.34; val MRR@10 0.5112 -> 0.6116 at lr=1e-4), exhibiting fast convergence on CPU (1,602.2s wall-clock time) and strong stability without gradient explosions.
 
-4. **Accuracy vs Cost Trade-off**:
+5. **Accuracy vs Cost Trade-off**:
    - For resource-constrained deployments, **Approach A2** provides the best efficiency-accuracy balance: training takes < 6 seconds, requires only 0.59M parameter updates, and matches BM25 on colloquial legal queries without storing massive checkpoints.
    - For maximum retrieval quality, **Approach A3** provides unmatched precision (57.0% Hit@5, 0.4827 MRR@10), decisively beating all sparse and frozen alternatives.
+   - **Approach A4** offers a lightweight native checkpoint (35.8M parameters, 430MB), making it an attractive candidate for edge devices or embedded deployment where 278M transformer backbones are prohibitive.
 
 ### 5.4 Error Analysis (`results/error_analysis/`)
 
