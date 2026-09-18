@@ -1,0 +1,33 @@
+# Configuration for Approach A4: PrahokBART Dual Encoder
+run_name: a4_prahokbart
+approach: A4
+model_type: prahokbart_dual_encoder
+
+# Data Paths
+train_path: data/05_splits/train.jsonl
+val_path: data/05_splits/val.jsonl
+corpus_path: data/05_splits/corpus.jsonl
+qa_path: tests/evaluation/ground_truth_qa_kh.json
+test_titles_path: data/05_splits/test_titles.jsonl
+
+# Model Architecture
+model_name: nict-astrec-att/prahokbart_base
+embed_dim: 512
+max_length: 256
+
+# Optimization & Training
+batch_size: 32
+lr: 5.0e-5
+weight_decay: 0.01
+temperature: 0.05
+epochs: 5
+patience: 3
+max_grad_norm: 1.0
+warmup_ratio: 0.1
+fp16: false
+seed: 42
+
+# Logging & Checkpointing
+logs_dir: results/logs
+checkpoints_dir: results/checkpoints/a4_prahokbart
+metrics_dir: results/metrics
