@@ -1,3 +1,5 @@
 model_name,total_misses_at_5,hit_at_5_rate,Near-Miss (Rank 6-10),Civil/Criminal Code Confusion,Multi-Article Complexity,Shared Title Ambiguity,Vocabulary Mismatch / Paraphrasing
 BM25 Baseline,106,47.0%,15,4,26,0,61
 A1: BiLSTM,151,24.5%,19,13,37,3,79
+A2: Linear Probe,105,47.5%,7,4,27,1,66
+A3: Full Fine-Tuning,86,57.0%,17,1,15,1,52

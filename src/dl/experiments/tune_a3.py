@@ -349,11 +349,19 @@ def run_single_config(
         "model_type": "xlmr_full_finetune",
         "lr": lr,
         "weight_decay": weight_decay,
+        "temperature": temperature,
+        "batch_size": batch_size,
+        "num_train_examples": len(train_dataset),
+        "batches_per_epoch": len(train_loader),
+        "total_optimizer_steps": len(train_loader) * len(history) if not dry_run else len(history) * 2,
+        "warmup_steps": warmup_steps,
+        "scheduler": "LinearLR (10% warmup) + CosineAnnealingLR",
         "trainable_parameters": trainable_params,
         "best_epoch": best_epoch,
         "best_val_mrr10": best_val_mrr,
         "total_wall_clock_seconds": round(total_time, 2),
         "device": str(target_device),
+        "dry_run": dry_run,
         "history": history,
     }
     with open(metrics_dir / f"{run_name}_train.json", "w", encoding="utf-8") as f:
@@ -370,7 +378,8 @@ def run_tuning(
     batch_size: int = 16,
     seed: int = 42,
     dry_run: bool = False,
-    single_config: bool = False,
+    grid_mode: str = "2x2",
+    force: bool = False,
 ) -> Path:
     """Execute A3 hyperparameter tuning grid search and evaluate best model."""
     set_seed(seed)
@@ -389,10 +398,17 @@ def run_tuning(
     trunc_rate = probe_model.compute_truncation_rate(train_passages, max_length=256)
     logger.info(f"Training passages truncation rate at max_length=256: {trunc_rate * 100:.2f}%")
 
-    # 2. Grid search: LR in {1e-5, 2e-5, 3e-5} x WD in {0.0, 0.01}
-    if single_config or dry_run:
+    # 2. Grid search configuration
+    if dry_run or grid_mode == "single":
         grid = [{"lr": 2e-5, "weight_decay": 0.01}]
-    else:
+    elif grid_mode == "2x2":
+        grid = [
+            {"lr": 1e-5, "weight_decay": 0.0},
+            {"lr": 1e-5, "weight_decay": 0.01},
+            {"lr": 2e-5, "weight_decay": 0.0},
+            {"lr": 2e-5, "weight_decay": 0.01},
+        ]
+    else:  # full 3x2 grid
         grid = [
             {"lr": 1e-5, "weight_decay": 0.0},
             {"lr": 1e-5, "weight_decay": 0.01},
@@ -407,30 +423,47 @@ def run_tuning(
     tuning_csv = tuning_dir / "a3.csv"
 
     tuning_rows: list[dict[str, Any]] = []
-    logger.info(f"Starting A3 Full Fine-Tuning grid search ({len(grid)} configurations)...")
+    logger.info(f"Starting A3 Full Fine-Tuning grid search (mode='{grid_mode}', {len(grid)} configurations)...")
 
     for i, params in enumerate(grid, 1):
         lr = params["lr"]
         wd = params["weight_decay"]
         run_name = f"a3_lr{lr:.0e}_wd{wd}".replace("-0", "-")
+        metrics_file = results_dir / "metrics" / f"{run_name}_train.json"
+        ckpt_file = results_dir / "checkpoints" / run_name / "best.pt"
 
-        logger.info(f"\n[{i}/{len(grid)}] Running configuration: {run_name} (LR={lr:.1e}, WD={wd})")
+        # Check if already trained legitimately without dry-run
+        if not force and not dry_run and metrics_file.exists() and ckpt_file.exists():
+            try:
+                with open(metrics_file, "r", encoding="utf-8") as f:
+                    saved_tel = json.load(f)
+                if not saved_tel.get("dry_run", True) and saved_tel.get("total_optimizer_steps", 0) > 50:
+                    logger.info(f"\n[{i}/{len(grid)}] Configuration '{run_name}' already fully trained ({saved_tel['total_optimizer_steps']} steps). Loading results.")
+                    telemetry = saved_tel
+                else:
+                    telemetry = None
+            except Exception:
+                telemetry = None
+        else:
+            telemetry = None
 
-        telemetry = run_single_config(
-            run_name=run_name,
-            lr=lr,
-            weight_decay=wd,
-            train_dataset=train_dataset,
-            val_dataset=val_dataset,
-            results_dir=results_dir,
-            epochs=epochs,
-            patience=patience,
-            batch_size=batch_size,
-            temperature=0.05,
-            seed=seed,
-            device=device,
-            dry_run=dry_run,
-        )
+        if telemetry is None:
+            logger.info(f"\n[{i}/{len(grid)}] Training configuration: {run_name} (LR={lr:.1e}, WD={wd})")
+            telemetry = run_single_config(
+                run_name=run_name,
+                lr=lr,
+                weight_decay=wd,
+                train_dataset=train_dataset,
+                val_dataset=val_dataset,
+                results_dir=results_dir,
+                epochs=epochs,
+                patience=patience,
+                batch_size=batch_size,
+                temperature=0.05,
+                seed=seed,
+                device=device,
+                dry_run=dry_run,
+            )
 
         best_epoch_info = max(telemetry["history"], key=lambda h: h["val_mrr10"])
         tuning_rows.append({
@@ -494,7 +527,8 @@ if __name__ == "__main__":
     parser.add_argument("--batch-size", type=int, default=16, help="Mini-batch size.")
     parser.add_argument("--patience", type=int, default=3, help="Early stopping patience.")
     parser.add_argument("--dry-run", action="store_true", help="Quick dry run on 2 batches.")
-    parser.add_argument("--single-config", action="store_true", help="Run only the recommended single config.")
+    parser.add_argument("--grid", type=str, default="2x2", choices=["single", "2x2", "full"], help="Grid search scope: single, 2x2, or full.")
+    parser.add_argument("--force", action="store_true", help="Force retraining even if completed telemetry exists.")
     args = parser.parse_args()
 
     run_tuning(
@@ -502,5 +536,7 @@ if __name__ == "__main__":
         batch_size=args.batch_size,
         patience=args.patience,
         dry_run=args.dry_run,
-        single_config=args.single_config,
+        grid_mode=args.grid,
+        force=args.force,
     )
+
