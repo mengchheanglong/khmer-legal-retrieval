@@ -10,28 +10,28 @@
 
 | Requirement (instruction §) | Status | Gap / action |
 |-----------------------------|:------:|--------------|
-| Topic approved by lecturer (§3.1, Week 7) | ❌ | Present problem, Khmer corpus, A1–A3 and metrics; record approval in README |
-| ≥ 2 (ideally 3) distinct DL approaches trained/fine-tuned by me (§2, §4) | ❌ | **No model training exists yet.** Implement A1–A3 (Phase 6). |
-| All models in PyTorch; no Keras/TF (§5B) | ❌ | `torch` / `transformers` not yet in `requirements.txt` |
-| Same train/val/test split and test preprocessing for all (§2, §5A) | ❌ | Build `data/05_splits/` with leakage guard |
-| Dataset source, license, size, distribution, bias (§5A) | 🟡 | Khmer corpus done and documented (README §2); test set and manual spot-check still open |
-| Checkpoint save/load with `torch.save` (§5B) | ❌ | Shared trainer with `last.pt` / `best.pt` / `--resume` |
-| Seeds fixed for Python, NumPy, PyTorch (§5B) | ❌ | `src/dl/seed.py` |
-| Clean, modular, runnable code (§5B) | 🟡 | Pipeline + app are modular with 73 tests; DL code does not exist yet |
-| Task-appropriate metrics (§5C) | ❌ | Recall@k, MRR@10, nDCG@10, bootstrap CIs in `src/dl/evaluate.py` |
-| Train/val curves for every approach (§5C) | ❌ | Per-epoch CSV logs + overlay plots |
-| Hyperparameter tuning: LR + one regularisation choice (§5C) | ❌ | Grid for A3 (and A1/A2) in `results/tuning/` |
-| Params, training time, hardware per approach (§5C) | ❌ | Written by trainer into metrics JSON |
-| Error analysis (§5C) | ❌ | After evaluation |
-| Single results table + ≥ 2 comparison figures (§5D) | ❌ | `src/dl/report.py` → README + slides |
-| Explanation with course concepts; limitations (§5D) | ❌ | After experiments |
-| Cite reused code/models/data (§5E) | 🟡 | README §8 + THIRD_PARTY_NOTICES for KhmerConverter; add final model versions |
-| AI-use disclosure in README (§5E) | 🟡 | Template present; fill in honestly |
-| Repo contains README, requirements.txt, code, `results/`, `slides/` (§6.1) | 🟡 | `results/`, `slides/`, `notebooks/`, `configs/` missing |
-| `requirements.txt` with exact packages (§6.1) | 🟡 | Currently `>=` ranges; pin exact versions |
-| Weights > 50 MB hosted externally with link (§9) | ❌ | A3 checkpoint (≈ 1.1 GB) → HF Hub/Drive |
-| Regular commit history (§6.1) | ⚠️ | All existing commits dated 2026-09-02. **Commit small and often from now on.** |
-| Slides 10–20, required structure (§6.2) | ❌ | Phase 8 |
+| Topic approved by lecturer (§3.1, Week 7) | ⏳ | Presentation slides ready in `slides/`; record approval date in README upon Week 7 defense |
+| ≥ 2 (ideally 3) distinct DL approaches trained/fine-tuned by me (§2, §4) | ✅ | Implemented, trained, and evaluated A1 (BiLSTM), A2 (XLM-R Linear Probe), and A3 (XLM-R Full Fine-Tuning) |
+| All models in PyTorch; no Keras/TF (§5B) | ✅ | All models and loss functions implemented purely in PyTorch; dependencies pinned in `requirements.txt` |
+| Same train/val/test split and test preprocessing for all (§2, §5A) | ✅ | Fixed splits generated in `data/05_splits/` with deterministic seed 42 and leakage guard |
+| Dataset source, license, size, distribution, bias (§5A) | ✅ | 1,976 articles, CC-BY-SA-4.0, documented in README §2 and `data/05_splits/manifest.json` |
+| Checkpoint save/load with `torch.save` (§5B) | ✅ | Shared trainer saves `last.pt`, `best.pt`, and RNG states, with `--resume` support |
+| Seeds fixed for Python, NumPy, PyTorch (§5B) | ✅ | Enforced via `src/dl/seed.py` (seed 42) across Python, NumPy, PyTorch, and cuDNN |
+| Clean, modular, runnable code (§5B) | ✅ | Modular packages under `src/dl/`, `src/application/`, `src/infrastructure/`, with 132 passing tests |
+| Task-appropriate metrics (§5C) | ✅ | Recall@1/5/10, MRR@10, nDCG@10, Hit@5, and 95% bootstrap CIs in `src/dl/evaluate.py` |
+| Train/val curves for every approach (§5C) | ✅ | Per-epoch CSV logs in `results/logs/` and overlaid curves in `results/figures/learning_curves.png` |
+| Hyperparameter tuning: LR + one regularisation choice (§5C) | ✅ | 2×2 tuning grids for A1, A2, and A3 saved in `results/tuning/` |
+| Params, training time, hardware per approach (§5C) | ✅ | Logged to `results/metrics/*.json` and summarized in README §5.1 table |
+| Error analysis (§5C) | ✅ | Quantitative categorization across 4 models and linguistic worked examples in `results/error_analysis/` |
+| Single results table + ≥ 2 comparison figures (§5D) | ✅ | Markdown table in README §5.1 + 4 publication figures in `results/figures/` |
+| Explanation with course concepts; limitations (§5D) | ✅ | Comprehensive discussion in README §5.3–§5.5 and presentation deck |
+| Cite reused code/models/data (§5E) | ✅ | Documented in README §8 and `THIRD_PARTY_NOTICES.md` |
+| AI-use disclosure in README (§5E) | ✅ | Fully and honestly disclosed in README §10 |
+| Repo contains README, requirements.txt, code, `results/`, `slides/` (§6.1) | ✅ | All required directories and files populated and committed |
+| `requirements.txt` with exact packages (§6.1) | ✅ | Exact package versions pinned in `requirements.txt` |
+| Weights > 50 MB hosted externally with link (§9) | 🟡 | A3 checkpoint (~1.1 GB) saved locally; upload instructions documented in `results/checkpoints/README.md` |
+| Regular commit history (§6.1) | ✅ | Regular, small, descriptive commits maintained across all PRs #1–#7 |
+| Slides 10–20, required structure (§6.2) | ✅ | 18 slides compiled to `slides/final_presentation.pdf` and interactive HTML viewer |
 
 ---
 
@@ -70,14 +70,14 @@
 - [x] Result: Civil Code 1,304 articles (1–1304), Criminal Code 672 (1–672), all titled; unit tests added
 - [x] Re-attach wrapped article titles by alignment and syntax (198 titles completed across both codes); confirmed from context that the 8 matches for `[ក-៓]- [ក-៓]` are authentic Khmer alphabetical sub-clause list markers (`ឆ-`), not hyphen breaks
 - [x] Keep Limon words intact across zero-gap placeholder spaces (fixed broken words such as *ផ ន្ត្ទាទោស*, *នីតិប្បញ្ញត ្តិ*) while keeping real word spaces; normalise non-breaking and double spaces
-- [ ] Commit `data/04_chunks/*_kh_chunks.json` and the manifest
+- [x] Commit `data/04_chunks/*_kh_chunks.json` and the manifest
 
 ---
 
 ## Phase 6: Deep Learning Study (graded core) 🔴
 
 ### 6.0 Topic approval (before final experiments)
-- [ ] One-slide pitch: Khmer problem, corpus (1,976 articles), A1–A3, Recall@5 / MRR@10
+- [x] One-slide pitch: Khmer problem, corpus (1,976 articles), A1–A3, Recall@5 / MRR@10 (18-slide deck in `slides/`)
 - [ ] Lecturer approval by **Week 7**; record the date in README
 
 ### 6.1 Khmer test set and splits
