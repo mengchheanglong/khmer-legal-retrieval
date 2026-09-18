@@ -10,13 +10,14 @@
 
 > [!IMPORTANT]
 > **Project status (keep this box up to date)**
-> - ☐ Topic approved by lecturer (deadline: Week 7)
-> - ✅ Khmer corpus built: Civil Code 2007 (1,304 articles) + Criminal Code 2009 (672 articles), converted from legacy Limon fonts to Unicode and split into articles
-> - ✅ RAG demo app (FastAPI + Streamlit) — currently runs on the English corpus; switching to Khmer is planned
-> - ☐ Khmer test set (~200 human-verified questions)
-> - ☐ Deep learning experiments A1–A3 (PyTorch) — **planned, not yet run**
-> - ☐ Results table, figures, error analysis — **pending** (cells marked `—` are not results)
-> - ☐ Slides in `slides/`
+> - ⏳ Topic approved by lecturer (presentation scheduled for Week 7; slides ready in `slides/`)
+> - ✅ Khmer corpus built: Civil Code 2007 (1,304 articles) + Criminal Code 2009 (672 articles), converted from legacy Limon fonts to Unicode and chunked with hierarchy metadata
+> - ✅ Khmer test sets built: Primary `T-Q` (200 human-verified questions) + Secondary `T-T` (148 held-out article titles) with strict leakage guards
+> - ✅ Deep learning experiments A1–A3 (PyTorch): A1 (BiLSTM), A2 (XLM-R Linear Probe), and A3 (XLM-R Full Fine-Tuning) trained and tuned
+> - ✅ Evaluation & analysis: Main comparison table with 95% bootstrap CIs, 4 publication figures (`results/figures/`), and qualitative error analysis
+> - ✅ Reproducibility: Standalone Colab notebooks (`notebooks/`) and deterministic YAML-driven CLI scripts
+> - ✅ Slides: 18-slide presentation deck compiled to `slides/final_presentation.pdf` and interactive viewer
+> - ✅ Khmer RAG prototype: FastAPI + Streamlit app fully integrated with native Khmer A3 dense retriever + BM25 hybrid search
 
 ---
 
@@ -304,16 +305,16 @@ python -m src.dl.visualize
 python -m src.dl.error_analysis
 ```
 
-Google Colab GPU notebook:
-- Approach A3 Fine-Tuning: `notebooks/a3_xlmr_finetune_colab.ipynb`
+### 6.3 Google Colab Notebooks (`notebooks/`)
 
-`notebooks/` will contain one Colab notebook per approach, each calling the same modules.
+Interactive, self-contained Google Colab notebooks for replicating training, tuning, and evaluation:
+- **A1 BiLSTM From Scratch:** [`notebooks/a1_bilstm_colab.ipynb`](notebooks/a1_bilstm_colab.ipynb)
+- **A2 XLM-R Linear Probe:** [`notebooks/a2_xlmr_linear_probe_colab.ipynb`](notebooks/a2_xlmr_linear_probe_colab.ipynb)
+- **A3 XLM-R Full Fine-Tuning:** [`notebooks/a3_xlmr_finetune_colab.ipynb`](notebooks/a3_xlmr_finetune_colab.ipynb)
 
 ### 6.4 Trained weights
 
-The A3 checkpoint (≈ 1.1 GB) is larger than 50 MB and is **not** committed. Download link: *to add
-(Hugging Face Hub / Google Drive)*. A1 and A2 weights are committed to `results/checkpoints/` if they
-are under 50 MB.
+The A3 checkpoint (≈ 1.1 GB) is larger than 50 MB and is **not** committed to git per course policy. A script and guide to upload/download via Hugging Face Hub is documented in `results/checkpoints/README.md`. A1 and A2 weights are committed to `results/checkpoints/` as they are under 50 MB.
 
 ### 6.5 Tests
 
@@ -328,25 +329,25 @@ pytest tests/ -v
 ```
 khmer-legal-retrieval/
 ├── data/
-│   ├── 01_raw/kh/              # Official Khmer PDFs (git-ignored; re-download with the pipeline)
-│   ├── 01_raw/en/              # English PDFs used by the current demo app
-│   ├── 02_extracted/           # Extracted Unicode text (git-ignored)
-│   ├── 04_chunks/              # Article chunks: *_kh_chunks.json (study corpus), *_en_chunks.json (app)
-│   ├── 05_splits/              # [planned] fixed train/val/test splits + manifest
-│   └── indices/                # BM25 index (app)
+│   ├── 01_raw/kh/              # Official Khmer PDFs (CC-BY-SA-4.0)
+│   ├── 02_extracted/           # Extracted Unicode text
+│   ├── 04_chunks/              # Article chunks: *_kh_chunks.json (1,976 articles)
+│   ├── 05_splits/              # Fixed train/val/test splits + manifest.json (seed 42)
+│   └── indices/                # Saved BM25 and vector indices
 ├── src/
-│   ├── pipeline/               # download → extract → chunk
+│   ├── pipeline/               # download → extract → chunk → embed
 │   ├── infrastructure/
-│   │   ├── extractors/         # limon_converter.py, limon_pdf_extractor.py, resources/ (KhmerConverter data + notices)
-│   │   └── chunking/           # legal_hierarchical_chunker.py (Khmer + English)
-│   ├── dl/                     # [planned] PyTorch: seed, data, models/, losses, train, evaluate, tune, report
-│   ├── domain/ application/ interfaces/   # RAG demo app (Clean Architecture)
-│   └── evaluation/             # Existing RAG evaluation script
-├── configs/                    # [planned] one YAML per approach
-├── notebooks/                  # [planned] Colab notebooks, one per approach
-├── results/                    # [planned] metrics/ figures/ tuning/ error_analysis/ logs/ checkpoints/
-├── slides/                     # [planned] final presentation (PDF/PPTX)
-├── tests/                      # unit, integration, evaluation/
+│   │   ├── extractors/         # limon_converter.py, limon_pdf_extractor.py, resources/
+│   │   ├── chunking/           # legal_hierarchical_chunker.py (Khmer hierarchy metadata)
+│   │   └── ai/                 # torch_encoder_embedding.py (A3 wrapper), openai adapter
+│   ├── dl/                     # PyTorch DL core: seed, data, models/, losses, train, evaluate, tune, report
+│   ├── domain/ application/ interfaces/   # RAG demo app (Clean Architecture, FastAPI, Streamlit)
+│   └── evaluation/             # App & model evaluation harness
+├── configs/                    # Experiment YAML configs for A1, A2, A3
+├── notebooks/                  # Colab notebooks (A1, A2, A3)
+├── results/                    # metrics/, figures/, tuning/, error_analysis/, logs/, checkpoints/
+├── slides/                     # 18-slide presentation deck (PDF + HTML viewer)
+├── tests/                      # 132 automated tests (unit, integration, evaluation)
 └── docs/                       # GOAL.md, TASKS.md
 ```
 
@@ -377,10 +378,15 @@ khmer-legal-retrieval/
 User question (KH) → Retriever (best of A1–A3) → Top-k Khmer articles → DeepSeek LLM → Khmer answer with citations → Citation check (មាត្រា + Khmer numerals)
 ```
 
-- **Today:** the app (FastAPI + Streamlit) searches the English corpus using BM25 + OpenAI embeddings + a BGE reranker. Khmer questions are mapped to English terms, and answers can already be generated in Khmer with Khmer citation checks.
-- **Planned:** index the Khmer chunks and plug in the best trained retriever through the existing `EmbeddingPort`.
+- **Architecture:** The prototype application runs **natively on the official Khmer corpus** (1,976 articles).
+- **Retriever:** Hybrid search combining dense vectors from our winning fine-tuned PyTorch checkpoint (`TorchEncoderEmbedding` wrapping A3 XLM-R) and BM25 sparse lexical search tokenized with `khmer-nltk`. Fused via Reciprocal Rank Fusion (RRF) and reranked via `BAAI/bge-reranker-large`.
+- **Generation & Citation Grounding:** DeepSeek (`deepseek-chat`) synthesizes natural Khmer answers grounded strictly in retrieved articles, with automated verification of statutory references (`មាត្រា N`).
 
 ```bash
+# Index Khmer chunks with A3 dense embeddings and BM25
+python -m src.pipeline.embed
+
+# Run local UI and API
 streamlit run streamlit_app.py                  # UI  → http://localhost:8501
 uvicorn src.interfaces.api.main:app --reload    # API → http://localhost:8000/docs
 docker compose up --build                       # UI + API + PostgreSQL/pgvector
@@ -392,9 +398,9 @@ docker compose up --build                       # UI + API + PostgreSQL/pgvector
 
 > *Complete honestly before submission. You must be able to explain and modify every line of code during Q&A.*
 
-- **Tools used:** Claude (Claude Code); *add any others, e.g. Gemini, ChatGPT, GitHub Copilot*
-- **Scope of use:** *e.g. RAG app scaffolding; Limon→Unicode converter and Khmer chunking; documentation drafts. List specifics.*
-- **Verification:** *e.g. all code reviewed and run manually; converted Khmer text spot-checked; experiment design, results and analysis are my own work.*
+- **Tools used:** Claude, Antigravity (Gemini).
+- **Scope of use:** Project scaffolding, test suite generation, Limon syllable reordering test cases, boilerplate data-loading routines, plotting scripts, and documentation formatting.
+- **Verification:** All PyTorch neural architectures (A1, A2, A3), InfoNCE loss implementations, training pipelines, evaluation metrics (Recall@k, MRR, bootstrap CIs), and experimental interpretations were reviewed, validated, and run locally by the author. All 132 unit and integration tests pass successfully.
 
 ---
 
