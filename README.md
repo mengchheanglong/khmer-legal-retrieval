@@ -295,6 +295,7 @@ Failure case categorization on Primary Benchmark (T-Q: 200 questions) at $k=5$:
 | A1: BiLSTM | 151 | 24.5% | 79 (52.3%) | 13 (8.6%) | 37 (24.5%) | 19 (12.6%) | 3 (2.0%) |
 | A2: Linear Probe | 105 | 47.5% | 66 (62.9%) | 4 (3.8%) | 27 (25.7%) | 7 (6.7%) | 1 (1.0%) |
 | **A3: Full Fine-Tune** | **86** | **57.0%** | **52 (60.5%)** | **1 (1.2%)** | **15 (17.4%)** | **17 (19.8%)** | **1 (1.2%)** |
+| **A4: PrahokBART** | 164 | 18.0% | 96 (58.5%) | 16 (9.8%) | 44 (26.8%) | 8 (4.9%) | 0 (0.0%) |
 
 Key insights:
 - *Vocabulary Mismatch* is the primary error mode for lexical retrieval (57.5% of misses), but drops substantially with dense fine-tuning (A3) as the neural encoder maps colloquial Khmer phrasing to formal statutory terms.

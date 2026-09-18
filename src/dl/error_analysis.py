@@ -274,6 +274,19 @@ def run_error_analysis(
             a3_res = analyze_model_rankings("A3: Full Fine-Tuning", a3_rankings, qa_ds, corpus)
             analyzed_results.append(a3_res)
 
+    # 5. A4 PrahokBART Khmer Native
+    if "a4" in selected_models or "all" in selected_models:
+        a4_ckpt = results_dir / "checkpoints" / "a4_prahokbart" / "best.pt"
+        if a4_ckpt.exists():
+            from src.dl.models.prahokbart import PrahokBARTDualEncoder
+
+            a4_model = PrahokBARTDualEncoder(device=device)
+            load_checkpoint(a4_ckpt, model=a4_model, device=device)
+            a4_retriever = DenseRetriever(a4_model, corpus, device=device, batch_size=32)
+            a4_rankings = get_rankings_with_cache("a4_prahokbart", a4_retriever, queries, out_dir)
+            a4_res = analyze_model_rankings("A4: PrahokBART", a4_rankings, qa_ds, corpus)
+            analyzed_results.append(a4_res)
+
     # Save summary table
     rows = []
     for res in analyzed_results:
