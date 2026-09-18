@@ -144,6 +144,13 @@
     margin-top: 12px;
   }
 
+  .grid-4 {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    gap: 14px;
+    margin-top: 10px;
+  }
+
   .card {
     background: #f8fafc;
     border: 1px solid #e2e8f0;
@@ -428,7 +435,7 @@
   <!-- SLIDE 5: Evaluated Architectures Overview -->
   <div class="slide">
     <h2 class="slide-title">4. Overview of Evaluated Retrieval Approaches <span class="tag">Architectures</span></h2>
-    <div class="grid-3">
+    <div class="grid-4">
       <div class="card">
         <span class="badge badge-amber">Sparse Lexical Baseline</span>
         <h3 style="margin-top: 10px;">BM25 + Khmer-NLTK</h3>
@@ -451,6 +458,14 @@
         <p><strong>A2 (Probe)</strong>: Frozen XLM-R backbone + 768 &rarr; 768 linear projection (0.59M params, 5.9s training).</p>
         <p><strong>A3 (Fine-Tune)</strong>: End-to-end full backpropagation through all 278M parameters.</p>
         <p><strong>Backbone</strong>: <code>intfloat/multilingual-e5-base</code>.</p>
+      </div>
+      <div class="card">
+        <span class="badge badge-purple" style="background: #f3e8ff; color: #7e22ce;">Approach A4</span>
+        <h3 style="margin-top: 10px;">PrahokBART Khmer-Native</h3>
+        <p><strong>Strategy</strong>: Pre-trained Khmer BART encoder + native SentencePiece (32k vocab).</p>
+        <p><strong>Parameters</strong>: 35.83M (~8x smaller than XLM-R).</p>
+        <p><strong>Output</strong>: 512-dim unit embeddings.</p>
+        <p><strong>Goal</strong>: Evaluate compact monolingual pre-training vs large multilingual encoders.</p>
       </div>
     </div>
     <div class="slide-footer">
@@ -596,6 +611,16 @@
           <td>0.1724 [0.13, 0.22]</td>
           <td>24.5%</td>
         </tr>
+        <tr>
+          <td>6</td>
+          <td><strong>A4: PrahokBART (Khmer Native)</strong></td>
+          <td>35.83 M</td>
+          <td>0.0525 [0.03, 0.09]</td>
+          <td>0.1517 [0.11, 0.20]</td>
+          <td>0.1867 [0.14, 0.24]</td>
+          <td>0.1035 [0.07, 0.14]</td>
+          <td>18.0%</td>
+        </tr>
       </tbody>
     </table>
     <div class="card" style="margin-top: 14px; background: #eff6ff; border-color: #bfdbfe;">
@@ -646,6 +671,11 @@
         <ul>
           <li><strong>A2 (Probe)</strong>: Frozen transformer weights act as a rigid prior, making overfitting mathematically impossible.</li>
           <li><strong>A3 (Fine-Tuning)</strong>: AdamW + warmup adapts high-level attention representations without catastrophic forgetting.</li>
+        </ul>
+        <h3 style="color: #1e3a8a; margin-top: 14px; margin-bottom: 10px;">Why Did Native A4 (PrahokBART) Struggle on T-Q?</h3>
+        <ul>
+          <li><strong>Generative vs Contrastive Objective</strong>: Pre-trained with sequence denoising rather than sentence contrast.</li>
+          <li><strong>Scale & Capacity</strong>: 35.8M parameters / 512-dim vs 278M parameters with massive multilingual semantic alignment in XLM-R.</li>
         </ul>
       </div>
     </div>
@@ -744,10 +774,19 @@
           <td>0.6609</td>
           <td>72.3%</td>
         </tr>
+        <tr>
+          <td><strong>A4: PrahokBART (Khmer Native)</strong></td>
+          <td>0.5946</td>
+          <td>0.8041</td>
+          <td>0.8378</td>
+          <td>0.6733</td>
+          <td>0.7131</td>
+          <td>80.4%</td>
+        </tr>
       </tbody>
     </table>
     <div class="card" style="margin-top: 16px; background: #f8fafc;">
-      <p><strong>Insight</strong>: When query terms match passage wording exactly, BM25 is formidable (0.8677 MRR), but A3 fine-tuning achieves near-flawless accuracy (<strong>0.9456 MRR@10</strong>, 99.3% Hit@5).</p>
+      <p><strong>Insight</strong>: Under exact title matching, A4 PrahokBART (<strong>80.4% Recall@5</strong>, 0.6733 MRR) beats from-scratch BiLSTM (75.7%) and zero-shot E5 (72.3%), confirming its Khmer vocabulary strength, while A3 achieves near-flawless accuracy (<strong>0.9456 MRR@10</strong>, 99.3% Hit@5).</p>
     </div>
     <div class="slide-footer">
       <span>Khmer Legal Retrieval — Deep Learning Final Project</span>
@@ -807,6 +846,15 @@
           <td><strong>1 (1.2%)</strong></td>
           <td><strong>15 (17.4%)</strong></td>
           <td><strong>17 (19.8%)</strong></td>
+        </tr>
+        <tr>
+          <td><strong>A4: PrahokBART</strong></td>
+          <td>164</td>
+          <td>18.0%</td>
+          <td>96 (58.5%)</td>
+          <td>16 (9.8%)</td>
+          <td>44 (26.8%)</td>
+          <td>8 (4.9%)</td>
         </tr>
       </tbody>
     </table>

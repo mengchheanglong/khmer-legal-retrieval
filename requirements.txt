@@ -53,6 +53,7 @@ tqdm>=4.66.4
 # =====================================================================
 torch>=2.10.0
 transformers>=4.40.0
+sentencepiece>=0.2.0
 khmer-nltk>=1.6
 pandas>=2.0.0
 matplotlib>=3.8.0
