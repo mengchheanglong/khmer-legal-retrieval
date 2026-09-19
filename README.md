@@ -190,12 +190,14 @@ preferred.
 
 | Approach | Learning rate | Regularisation | Other |
 |----------|---------------|----------------|-------|
-| A3 (best) | {1e-5, 2e-5, 3e-5} | weight decay {0, 0.01} | τ = 0.05 (fixed), CosineAnnealingLR (10% warmup) |
+| A3 (best) | 2e-5 (single run; see note) | weight decay 0.01 (single run) | τ = 0.05 (fixed), CosineAnnealingLR (10% warmup) |
 | A4 | {5e-5, 1e-4} | weight decay {0.01} | 512-dim, SentencePiece 32k, CosineAnnealingLR (10% warmup) |
 | A1 | {1e-3, 3e-3} | dropout {0.1, 0.3} | — |
 | A2 | {1e-3, 1e-2} | weight decay {0, 0.01} | — |
 
 Changing only the learning rate, loss, optimiser or seed is tuning within an approach, not a new approach.
+
+**Note on A3's tuning:** `src/dl/experiments/tune_a3.py` supports a full LR {1e-5, 2e-5, 3e-5} × weight decay {0, 0.01} grid, but each A3 run takes ~2 hours on CPU (7,237.5s), so only one configuration (lr=2e-5, wd=0.01 — the value XLM-R fine-tuning papers typically use) was actually run and evaluated. This is a single chosen configuration, not an empirical search, and it is the one gap against "systematic tuning of the best-performing approach." A1, A2, and A4 do have real, fully-executed grids (`results/tuning/a1.csv`, `a2.csv`, `a4.csv`).
 
 ---
 
@@ -389,7 +391,7 @@ khmer-legal-retrieval/
 ├── notebooks/                  # Colab notebooks (A1, A2, A3)
 ├── results/                    # metrics/, figures/, tuning/, error_analysis/, logs/, checkpoints/
 ├── slides/                     # 18-slide presentation deck (PDF + HTML viewer)
-├── tests/                      # 132 automated tests (unit, integration, evaluation)
+├── tests/                      # 138 automated tests (unit, integration, evaluation)
 └── docs/                       # GOAL.md, TASKS.md
 ```
 
@@ -442,7 +444,7 @@ docker compose up --build                       # UI + API + PostgreSQL/pgvector
 
 - **Tools used:** Claude, Antigravity (Gemini).
 - **Scope of use:** Project scaffolding, test suite generation, Limon syllable reordering test cases, boilerplate data-loading routines, plotting scripts, and documentation formatting.
-- **Verification:** All PyTorch neural architectures (A1, A2, A3), InfoNCE loss implementations, training pipelines, evaluation metrics (Recall@k, MRR, bootstrap CIs), and experimental interpretations were reviewed, validated, and run locally by the author. All 132 unit and integration tests pass successfully.
+- **Verification:** All PyTorch neural architectures (A1, A2, A3), InfoNCE loss implementations, training pipelines, evaluation metrics (Recall@k, MRR, bootstrap CIs), and experimental interpretations were reviewed, validated, and run locally by the author. All 138 unit and integration tests pass successfully.
 
 ---
 

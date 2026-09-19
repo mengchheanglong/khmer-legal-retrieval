@@ -17,10 +17,10 @@
 | Dataset source, license, size, distribution, bias (§5A) | ✅ | 1,976 articles, CC-BY-SA-4.0, documented in README §2 and `data/05_splits/manifest.json` |
 | Checkpoint save/load with `torch.save` (§5B) | ✅ | Shared trainer saves `last.pt`, `best.pt`, and RNG states, with `--resume` support |
 | Seeds fixed for Python, NumPy, PyTorch (§5B) | ✅ | Enforced via `src/dl/seed.py` (seed 42) across Python, NumPy, PyTorch, and cuDNN |
-| Clean, modular, runnable code (§5B) | ✅ | Modular packages under `src/dl/`, `src/application/`, `src/infrastructure/`, with 132 passing tests |
+| Clean, modular, runnable code (§5B) | ✅ | Modular packages under `src/dl/`, `src/application/`, `src/infrastructure/`, with 138 passing tests |
 | Task-appropriate metrics (§5C) | ✅ | Recall@1/5/10, MRR@10, nDCG@10, Hit@5, and 95% bootstrap CIs in `src/dl/evaluate.py` |
 | Train/val curves for every approach (§5C) | ✅ | Per-epoch CSV logs in `results/logs/` and overlaid curves in `results/figures/learning_curves.png` |
-| Hyperparameter tuning: LR + one regularisation choice (§5C) | ✅ | 2×2 tuning grids for A1, A2, and A3 saved in `results/tuning/` |
+| Hyperparameter tuning: LR + one regularisation choice (§5C) | 🟡 | Real 2×2 grids for A1, A2, A4 in `results/tuning/`; A3 (best approach) used a single chosen configuration, not a search, due to ~2h/run CPU cost (see README §4.1 note) |
 | Params, training time, hardware per approach (§5C) | ✅ | Logged to `results/metrics/*.json` and summarized in README §5.1 table |
 | Error analysis (§5C) | ✅ | Quantitative categorization across 4 models and linguistic worked examples in `results/error_analysis/` |
 | Single results table + ≥ 2 comparison figures (§5D) | ✅ | Markdown table in README §5.1 + 4 publication figures in `results/figures/` |
@@ -31,7 +31,7 @@
 | `requirements.txt` with exact packages (§6.1) | ✅ | Exact package versions pinned in `requirements.txt` |
 | Weights > 50 MB hosted externally with link (§9) | 🟡 | A3 checkpoint (~1.1 GB) saved locally; upload instructions documented in `results/checkpoints/README.md` |
 | Regular commit history (§6.1) | ✅ | Regular, small, descriptive commits maintained across all PRs #1–#7 |
-| Slides 10–20, required structure (§6.2) | ✅ | 12 slides (10 core + 2 appendix) compiled to `slides/final_presentation.pdf` tailored for 5-minute presentation |
+| Slides 10–20, required structure (§6.2) | ✅ | 12 slides: 6 core slides timed to 5 minutes + 6 Q&A appendix slides, compiled to `slides/final_presentation.pdf` |
 
 ---
 
@@ -118,7 +118,8 @@
 
 ### 6.6 Approach A3 — XLM-R encoder, full fine-tuning
 - [x] All layers trainable; AdamW + warm-up; fp16 on T4; max length 256 (report truncation rate)
-- [x] Grid: LR {1e-5, 2e-5, 3e-5} × weight decay {0, 0.01} (× τ {0.02, 0.05} if time allows)
+- [x] `tune_a3.py` supports the grid LR {1e-5, 2e-5, 3e-5} × weight decay {0, 0.01}
+- [ ] Actually run ≥ 2 of those configurations (only lr=2e-5, wd=0.01 has been run so far — ~2h CPU per run)
 - [x] Save tuning table → `results/tuning/a3.csv`; select by val MRR@10 only
 - [ ] Upload best checkpoint to HF Hub/Drive; link in README §6.4
 

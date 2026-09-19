@@ -41,7 +41,11 @@ model. Calling APIs (DeepSeek, OpenAI) or using off-the-shelf models without tra
 | A1 | BiLSTM dual encoder on `khmer-nltk` word tokens | From scratch, random embeddings |
 | A2 | XLM-RoBERTa encoder (`multilingual-e5-base`) | Frozen backbone + linear projection head |
 | A3 | XLM-RoBERTa encoder (`multilingual-e5-base`) | Full fine-tuning |
+| A4 *(stretch, beyond the 3-approach minimum)* | PrahokBART, a Khmer-only pre-trained encoder | Full fine-tuning |
 | *Baselines* | BM25 on segmented Khmer; E5-base zero-shot | Not counted as approaches |
+
+A4 was added after A1–A3 were complete, to test whether a smaller model pre-trained only on Khmer
+(rather than 100+ languages) does better or worse on formal legal Khmer. See README §3 and §5.3.
 
 ---
 
@@ -62,25 +66,25 @@ conditions for every approach.
 ## Success Criteria (mapped to the grading rubric)
 
 ### Technical & Intellectual Depth (50%)
-- [ ] 3 distinct DL approaches, all correctly implemented and trained in PyTorch
-- [ ] Identical corpus, split, test-time preprocessing and metrics for every approach; no statute filter at test time
-- [ ] No leakage: test-question articles removed from training; title line removed from training passages; test sets used once
-- [ ] Hyperparameter tuning (learning rate + ≥ 1 regularisation choice) for at least A3, documented
-- [ ] Train/val learning curves for every approach, with over/under-fitting discussed
-- [ ] Error analysis of failed queries (including segmentation and shared-title cases) and a limitations section
-- [ ] Results explained with course concepts (capacity, transfer learning, inductive bias, tokenization, data size, regularisation)
+- [x] 3 distinct DL approaches, all correctly implemented and trained in PyTorch (4 built: A1–A4)
+- [x] Identical corpus, split, test-time preprocessing and metrics for every approach; no statute filter at test time
+- [x] No leakage: test-question articles removed from training; title line removed from training passages; test sets used once
+- [x] Hyperparameter tuning: real grids for A1, A2, A4 (`results/tuning/`); A3 (the best approach) ran only one configuration due to ~2h/run CPU cost — see README §4.1 note. Grid support exists (`tune_a3.py`) but was not exercised.
+- [x] Train/val learning curves for every approach, with over/under-fitting discussed
+- [x] Error analysis of failed queries (including segmentation and shared-title cases) and a limitations section
+- [x] Results explained with course concepts (capacity, transfer learning, inductive bias, tokenization, data size, regularisation)
 
 ### Documentation & Prototyping (15%)
-- [ ] README complete (title/name, problem, dataset, approaches, results table, how to run, citations, AI-use note)
-- [ ] `requirements.txt` with exact pinned versions, including `torch`, `transformers`, `khmer-nltk`
-- [ ] Fixed seeds; checkpoint save/resume; one command per experiment
-- [ ] `results/` holds metrics (CSV/JSON), figures, tuning logs, weights or download links
-- [ ] Regular, meaningful commits across the project period
-- [ ] Working prototype: the best trained retriever over the Khmer corpus in the RAG app
+- [x] README complete (title/name, problem, dataset, approaches, results table, how to run, citations, AI-use note)
+- [x] `requirements.txt` with exact pinned versions, including `torch`, `transformers`, `khmer-nltk`
+- [x] Fixed seeds; checkpoint save/resume; one command per experiment
+- [x] `results/` holds metrics (CSV/JSON), figures, tuning logs, weights or download links
+- [x] Regular, meaningful commits across the project period
+- [x] Working prototype: the best trained retriever over the Khmer corpus in the RAG app
 
 ### Presentation, Communication, Q&A (35%)
-- [ ] 10–20 slides in `slides/`, following the required structure, delivered in 10 minutes
-- [ ] Able to explain every line of code, including the Limon converter, InfoNCE, pooling and checkpointing
+- [ ] Slide deck in `slides/`, sized for the actual defense slot given (5-minute presentation + 5-minute Q&A), with appendix slides held in reserve for Q&A
+- [ ] Able to explain every line of code, including the Limon converter, InfoNCE, pooling and checkpointing (still the author's job on defense day, not something a repo state can check off)
 
 ---
 
@@ -130,7 +134,7 @@ architecture and training strategy.
 | Weeks 11–12 | Train all approaches, tune A3, final test evaluation | `results/metrics/`, `results/tuning/` |
 | Week 13 | Figures, error analysis, limitations; best model in the Khmer RAG app | `results/figures/`, updated README |
 | **Week 14** | **Final submission:** GitHub link with slides inside | `slides/*.pdf` |
-| **Week 15** | 10-min presentation + 5-min Q&A | — |
+| **Week 15** | 5-min presentation + 5-min Q&A (actual slot for this defense) | — |
 
 **Rule:** don't start the final experiments before the topic is approved. Otherwise the project mark
 is capped at 60%.
