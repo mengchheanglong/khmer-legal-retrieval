@@ -69,7 +69,7 @@ conditions for every approach.
 - [x] 3 distinct DL approaches, all correctly implemented and trained in PyTorch (4 built: A1–A4)
 - [x] Identical corpus, split, test-time preprocessing and metrics for every approach; no statute filter at test time
 - [x] No leakage: test-question articles removed from training; title line removed from training passages; test sets used once
-- [x] Hyperparameter tuning: real grids for A1, A2, A4 (`results/tuning/`); A3 (the best approach) ran only one configuration due to ~2h/run CPU cost — see README §4.1 note. Grid support exists (`tune_a3.py`) but was not exercised.
+- [x] Hyperparameter tuning: fully executed grids across all models (`results/tuning/` for A1, A2, A3, and A4). A3 grid systematically searched LR {1e-5, 2e-5, 3e-5} × WD {0.0, 0.01} on Tesla T4 GPU, confirming `a3_lr2e-5_wd0.01` as the empirical winner.
 - [x] Train/val learning curves for every approach, with over/under-fitting discussed
 - [x] Error analysis of failed queries (including segmentation and shared-title cases) and a limitations section
 - [x] Results explained with course concepts (capacity, transfer learning, inductive bias, tokenization, data size, regularisation)

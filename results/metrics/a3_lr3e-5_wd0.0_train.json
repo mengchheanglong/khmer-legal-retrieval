@@ -1,0 +1,57 @@
+{
+  "run_name": "a3_lr3e-5_wd0.0",
+  "approach": "A3",
+  "model_type": "xlmr_full_finetune",
+  "lr": 3e-05,
+  "weight_decay": 0.0,
+  "temperature": 0.05,
+  "batch_size": 16,
+  "num_train_examples": 1176,
+  "batches_per_epoch": 73,
+  "total_optimizer_steps": 365,
+  "warmup_steps": 36,
+  "scheduler": "LinearLR (10% warmup) + CosineAnnealingLR",
+  "trainable_parameters": 278043648,
+  "best_epoch": 4,
+  "best_val_mrr10": 0.9082,
+  "total_wall_clock_seconds": 1312.93,
+  "device": "cuda:0",
+  "dry_run": false,
+  "history": [
+    {
+      "epoch": 1,
+      "train_loss": 0.6248,
+      "val_loss": 0.1417,
+      "val_mrr10": 0.8814,
+      "time_seconds": 26.92
+    },
+    {
+      "epoch": 2,
+      "train_loss": 0.0868,
+      "val_loss": 0.1298,
+      "val_mrr10": 0.8996,
+      "time_seconds": 27.31
+    },
+    {
+      "epoch": 3,
+      "train_loss": 0.0386,
+      "val_loss": 0.1188,
+      "val_mrr10": 0.8997,
+      "time_seconds": 27.4
+    },
+    {
+      "epoch": 4,
+      "train_loss": 0.0181,
+      "val_loss": 0.1161,
+      "val_mrr10": 0.9082,
+      "time_seconds": 27.11
+    },
+    {
+      "epoch": 5,
+      "train_loss": 0.0164,
+      "val_loss": 0.1139,
+      "val_mrr10": 0.9013,
+      "time_seconds": 26.88
+    }
+  ]
+}

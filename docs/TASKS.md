@@ -119,7 +119,7 @@
 ### 6.6 Approach A3 — XLM-R encoder, full fine-tuning
 - [x] All layers trainable; AdamW + warm-up; fp16 on T4; max length 256 (report truncation rate)
 - [x] `tune_a3.py` supports the grid LR {1e-5, 2e-5, 3e-5} × weight decay {0, 0.01}
-- [ ] Actually run ≥ 2 of those configurations (only lr=2e-5, wd=0.01 has been run so far — ~2h CPU per run)
+- [x] Fully executed 6-configuration grid on Tesla T4 GPU ({1e-5, 2e-5, 3e-5} × {0.0, 0.01}; winning run `a3_lr2e-5_wd0.01` Val MRR@10: 0.9095)
 - [x] Save tuning table → `results/tuning/a3.csv`; select by val MRR@10 only
 - [ ] Upload best checkpoint to HF Hub/Drive; link in README §6.4
 

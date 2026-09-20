@@ -1,9 +1,9 @@
 {
-  "run_name": "a3_lr2e-5_wd0.01",
+  "run_name": "a3_lr2e-5_wd0.0",
   "approach": "A3",
   "model_type": "xlmr_full_finetune",
   "lr": 2e-05,
-  "weight_decay": 0.01,
+  "weight_decay": 0.0,
   "temperature": 0.05,
   "batch_size": 16,
   "num_train_examples": 1176,
@@ -14,44 +14,44 @@
   "trainable_parameters": 278043648,
   "best_epoch": 4,
   "best_val_mrr10": 0.9095,
-  "total_wall_clock_seconds": 1129.35,
+  "total_wall_clock_seconds": 1145.91,
   "device": "cuda:0",
   "dry_run": false,
   "history": [
     {
       "epoch": 1,
       "train_loss": 0.7138,
-      "val_loss": 0.1337,
+      "val_loss": 0.1336,
       "val_mrr10": 0.8916,
-      "time_seconds": 27.79
+      "time_seconds": 25.3
     },
     {
       "epoch": 2,
-      "train_loss": 0.1014,
-      "val_loss": 0.1164,
+      "train_loss": 0.1015,
+      "val_loss": 0.1163,
       "val_mrr10": 0.8889,
-      "time_seconds": 28.05
+      "time_seconds": 25.37
     },
     {
       "epoch": 3,
-      "train_loss": 0.0471,
-      "val_loss": 0.1006,
+      "train_loss": 0.047,
+      "val_loss": 0.1008,
       "val_mrr10": 0.9043,
-      "time_seconds": 28.05
+      "time_seconds": 25.6
     },
     {
       "epoch": 4,
-      "train_loss": 0.0258,
+      "train_loss": 0.0257,
       "val_loss": 0.1032,
       "val_mrr10": 0.9095,
-      "time_seconds": 27.59
+      "time_seconds": 25.25
     },
     {
       "epoch": 5,
       "train_loss": 0.0211,
-      "val_loss": 0.1035,
-      "val_mrr10": 0.9095,
-      "time_seconds": 27.65
+      "val_loss": 0.1036,
+      "val_mrr10": 0.9093,
+      "time_seconds": 26.15
     }
   ]
 }

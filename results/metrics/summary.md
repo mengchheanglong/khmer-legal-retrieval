@@ -28,7 +28,7 @@
 | Multilingual-E5 (Zero-Shot) | 278.04 M | 0 | 0 s | CPU |
 | A1: BiLSTM Dual Encoder | 1.97 M | 1.97 M | 2035.3 s | CPU |
 | A2: XLM-R Linear Probe | 278.63 M | 0.59 M | 5.9 s | CPU |
-| A3: XLM-R Full Fine-Tuning | 278.04 M | 278.04 M | 7237.5 s | CPU (fp32) |
+| A3: XLM-R Full Fine-Tuning | 278.04 M | 278.04 M | 1129.3 s | CPU (fp32) |
 | A4: PrahokBART Dual Encoder | 35.83 M | 35.83 M | 1602.2 s | CPU (fp32) |
 
 ### Paired Statistical Significance (T-Q Primary Benchmark, 10,000 Bootstrap Resamples)

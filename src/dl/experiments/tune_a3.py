@@ -513,7 +513,7 @@ def run_tuning(
     )
 
     best_model = XLMRFullFinetuneRetriever(device=device)
-    load_checkpoint(best_ckpt_dest, model=best_model, device=device)
+    load_checkpoint(best_ckpt_dest, model=best_model, device=device, restore_rng=False)
 
     retriever = DenseRetriever(best_model, harness.corpus, device=device, batch_size=batch_size)
     harness.run_full_evaluation(retriever, run_name="a3_xlmr", output_dir=results_dir / "metrics")

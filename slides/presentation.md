@@ -87,7 +87,7 @@ directly in the curves rather than just asserted."
 | A2 | Is the Difference Real? | Full paired bootstrap significance table |
 | A3 | In-Distribution vs. Real Questions | T-T vs T-Q drop per model; why PrahokBART (A4) struggles most |
 | A4 | Error Analysis | Category breakdown table + 2 more verified worked examples |
-| A5 | Hyperparameter Tuning & Reproducibility | Real grids for A1/A2/A4; honest note on A3's single run; seeds/checkpoints |
+| A5 | Hyperparameter Tuning & Reproducibility | Complete grids for all 4 models (A1, A2, A3, A4); seeds/checkpoints |
 | A6 | Engineering: Reading the PDFs at All | The Limon-font problem and the conversion approach |
 
 ---

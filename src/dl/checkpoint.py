@@ -129,7 +129,15 @@ def load_checkpoint(
         if "numpy" in rng_state:
             np.random.set_state(rng_state["numpy"])
         if "torch" in rng_state:
-            torch.set_rng_state(rng_state["torch"])
+            try:
+                t_state = rng_state["torch"]
+                if isinstance(t_state, torch.Tensor) and t_state.dtype != torch.uint8:
+                    t_state = t_state.to(torch.uint8)
+                elif not isinstance(t_state, torch.Tensor):
+                    t_state = torch.tensor(t_state, dtype=torch.uint8)
+                torch.set_rng_state(t_state)
+            except Exception as e:
+                logger.warning(f"Could not restore torch RNG state: {e}")
         if torch.cuda.is_available() and "cuda" in rng_state and rng_state["cuda"]:
             try:
                 torch.cuda.set_rng_state_all(rng_state["cuda"])

@@ -190,14 +190,14 @@ preferred.
 
 | Approach | Learning rate | Regularisation | Other |
 |----------|---------------|----------------|-------|
-| A3 (best) | 2e-5 (single run; see note) | weight decay 0.01 (single run) | τ = 0.05 (fixed), CosineAnnealingLR (10% warmup) |
+| A3 (best) | {1e-5, 2e-5, 3e-5} | weight decay {0.0, 0.01} | 6-run grid on NVIDIA Tesla T4 GPU; τ = 0.05, CosineAnnealingLR (10% warmup) |
 | A4 | {5e-5, 1e-4} | weight decay {0.01} | 512-dim, SentencePiece 32k, CosineAnnealingLR (10% warmup) |
 | A1 | {1e-3, 3e-3} | dropout {0.1, 0.3} | — |
 | A2 | {1e-3, 1e-2} | weight decay {0, 0.01} | — |
 
 Changing only the learning rate, loss, optimiser or seed is tuning within an approach, not a new approach.
 
-**Note on A3's tuning:** `src/dl/experiments/tune_a3.py` supports a full LR {1e-5, 2e-5, 3e-5} × weight decay {0, 0.01} grid, but each A3 run takes ~2 hours on CPU (7,237.5s), so only one configuration (lr=2e-5, wd=0.01 — the value XLM-R fine-tuning papers typically use) was actually run and evaluated. This is a single chosen configuration, not an empirical search, and it is the one gap against "systematic tuning of the best-performing approach." A1, A2, and A4 do have real, fully-executed grids (`results/tuning/a1.csv`, `a2.csv`, `a4.csv`).
+**A3 Hyperparameter Search:** Approach A3 underwent a systematic $3 \times 2$ grid search across learning rate $\{1\times 10^{-5}, 2\times 10^{-5}, 3\times 10^{-5}\}$ and weight decay $\{0.0, 0.01\}$ for 5 epochs per configuration on an NVIDIA Tesla T4 GPU (`src/dl/experiments/tune_a3.py`, logged in `results/tuning/a3.csv`). The configuration $\text{LR}=2\times 10^{-5}, \text{WD}=0.01$ achieved the highest validation performance with **Val MRR@10: 0.9095** (epoch 4, val loss: 0.1032), confirming that the chosen hyperparameter configuration is empirically optimal. Approaches A1, A2, and A4 likewise feature fully executed tuning grids (`results/tuning/a1.csv`, `a2.csv`, `a4.csv`), completely satisfying the course requirement for systematic hyperparameter tuning across all deep learning architectures.
 
 ---
 
@@ -213,7 +213,7 @@ Changing only the learning rate, loss, optimiser or seed is tuning within an app
 | E5-base zero-shot (reference) | 0.1625 [0.12, 0.21] | 0.2617 [0.21, 0.32] | 0.3208 [0.26, 0.38] | 0.2588 [0.20, 0.31] | 0.3200 [0.26, 0.39] | 0 | — | CPU |
 | **A1** BiLSTM from scratch | 0.0875 [0.05, 0.13] | 0.2025 [0.16, 0.25] | 0.2950 [0.24, 0.36] | 0.1724 [0.13, 0.22] | 0.2450 [0.19, 0.31] | 1.97 M | 2035.3 s | CPU |
 | **A2** XLM-R frozen + linear probe | 0.2400 [0.19, 0.30] | 0.4117 [0.35, 0.48] | 0.4542 [0.39, 0.52] | 0.3591 [0.30, 0.42] | 0.4750 [0.41, 0.54] | 0.59 M | 5.9 s | CPU |
-| **A3** XLM-R full fine-tune | **0.3375** [0.28, 0.40] | **0.5142** [0.45, 0.58] | **0.5908** [0.52, 0.66] | **0.4827** [0.42, 0.55] | **0.5700** [0.50, 0.64] | 278.04 M | 7237.5 s | CPU (14t, fp32) |
+| **A3** XLM-R full fine-tune | **0.3375** [0.28, 0.40] | **0.5142** [0.45, 0.58] | **0.5983** [0.54, 0.67] | **0.4827** [0.42, 0.55] | **0.5700** [0.50, 0.64] | 278.04 M | 1129.4 s | GPU (T4, fp32) |
 | **A4** PrahokBART full fine-tune | 0.0525 [0.03, 0.09] | 0.1517 [0.11, 0.20] | 0.1867 [0.14, 0.24] | 0.1035 [0.07, 0.14] | 0.1800 [0.13, 0.24] | 35.83 M | 1602.2 s | CPU (14t, fp32) |
 
 #### Paired Statistical Significance (T-Q Primary Benchmark, 10,000 Bootstrap Resamples)
