@@ -71,9 +71,9 @@ directly in the curves rather than just asserted."
 2. A cheap frozen probe already matches keyword search for free.
 3. Full fine-tuning is what actually bridges plain speech and legal speech — and is the model now
    live in the Khmer RAG assistant (FastAPI + Streamlit, <100ms retrieval, citations checked).
-- Limitations, said plainly: two codes only; ~200 questions → wide confidence intervals; A3's
-  learning rate was chosen from standard practice, not grid-searched, because each run costs ~2h
-  on CPU (A1/A2/A4 *do* have real, fully-executed grids).
+- Limitations, said plainly: two statutory codes only; ~200 test questions leaves moderate
+  confidence intervals; legacy OCR for scanned laws (Labour Law) remains future work. All 4
+  architectures feature completed empirical tuning grids (see appendix).
 
 *Say:* "Thank you — I'm happy to go deeper on any of this in questions."
 

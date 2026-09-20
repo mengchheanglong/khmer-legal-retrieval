@@ -427,9 +427,8 @@
       <div class="takeaway"><span class="n">3</span><p><strong>Full fine-tuning (A3)</strong> is what actually bridges "plain speech" and "legal speech," and is the model now live in our Khmer RAG assistant (FastAPI + Streamlit, &lt;100 ms retrieval, citations checked automatically).</p></div>
     </div>
     <p style="margin-top:12px; font-size:0.88rem; color:#64748b;">
-      <strong>Limitations:</strong> two codes only; ~200 questions means wide confidence intervals;
-      A3's learning rate was chosen from standard practice, not grid-searched, because each run costs
-      ~2 hours on CPU (A1/A2/A4 do have full grids — see appendix).
+      <strong>Limitations:</strong> two statutory codes only; 200 test questions leaves moderate confidence intervals;
+      scanned laws (e.g., Labour Law) require legacy OCR and remain future work. All 4 architectures now feature complete hyperparameter tuning grids (see appendix).
     </p>
     <div class="slide-footer">
       <span>Thank you — questions welcome</span>
