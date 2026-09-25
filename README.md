@@ -55,42 +55,46 @@ shown.
 ```mermaid
 flowchart TD
     subgraph Data["1. Data Ingestion & Font Normalization Pipeline"]
-        PDF["Official Khmer PDFs<br/>(Civil Code 2007 & Criminal Code 2009)"] --> Extractor["LimonPdfExtractor<br/>(Page Filtering & Syllable Engine)"]
-        Extractor --> Converter["LimonConverter<br/>(Unicode Mapping + Glyph Reordering)"]
-        Converter --> Unicode["Normalized Khmer Text<br/>(0 leftover Latin, 0 glyph errors)"]
-        Unicode --> Chunker["LegalHierarchicalChunker<br/>(គន្ថី → មាតិកា → ជំពូក → មាត្រា)"]
-        Chunker --> Corpus["1,976 Statutory Articles<br/>(data/04_chunks/*_kh_chunks.json)"]
+        PDF["Official Khmer PDFs (Civil & Criminal Code)"] --> Extractor["LimonPdfExtractor & Syllable Engine"]
+        Extractor --> Converter["LimonConverter (Unicode Mapping & Syllable Reordering)"]
+        Converter --> Unicode["Normalized Khmer Text (0 Latin / 0 glyph errors)"]
+        Unicode --> Chunker["LegalHierarchicalChunker (គន្ថី, ជំពូក, មាត្រា)"]
+        Chunker --> Corpus["1,976 Statutory Articles"]
     end
 
     subgraph Splits["2. Deterministic Leakage-Guarded Splits (Seed 42)"]
-        Corpus --> Guard{"Leakage Guard"}
-        Guard -->|"Exclude 261 Cited Articles"| TrainPairs["Training Pairs: 1,176<br/>Val Pairs: 147"]
-        Guard -->|"Held-Out Article Titles"| TT["T-T Benchmark<br/>(148 Articles)"]
-        Guard -->|"Human-Verified Questions"| TQ["T-Q Primary Benchmark<br/>(200 Questions)"]
+        Corpus --> Guard["Leakage Guard (Exclude 261 Cited Articles)"]
+        Guard --> TrainPairs["Training Pairs (1,176 articles)"]
+        Guard --> ValPairs["Validation Pairs (147 articles)"]
+        Guard --> TT["Held-Out Titles T-T (148 articles)"]
+        Guard --> TQ["Human Questions T-Q (200 questions)"]
     end
 
     subgraph DL["3. PyTorch Deep Learning Retrievers"]
-        TrainPairs --> Loss["InfoNCE Contrastive Loss (τ = 0.05)<br/>+ In-Batch Negatives"]
-        Loss --> A1["A1: BiLSTM Dual Encoder<br/>(From Scratch, 1.97M params)"]
-        Loss --> A2["A2: XLM-R Linear Probe<br/>(Frozen Backbone, 0.59M params)"]
-        Loss --> A3["A3: XLM-R Full Fine-Tune<br/>(278M params, Tesla T4 GPU) 🏆"]
-        Loss --> A4["A4: PrahokBART Dual Encoder<br/>(Khmer Pretrained, 35.8M params)"]
+        TrainPairs --> Loss["InfoNCE Contrastive Loss (tau = 0.05)"]
+        Loss --> A1["A1: BiLSTM Dual Encoder (From Scratch, 1.97M)"]
+        Loss --> A2["A2: XLM-R Linear Probe (Frozen Backbone, 0.59M)"]
+        Loss --> A3["A3: XLM-R Full Fine-Tune (278M, Tesla T4 GPU) 🏆"]
+        Loss --> A4["A4: PrahokBART Dual Encoder (Khmer Pretrained, 35.8M)"]
     end
 
     subgraph Eval["4. Dual Benchmark Evaluation & Reporting"]
-        TQ & TT --> Harness["Shared Evaluation Harness<br/>(Recall@k, MRR@10, 95% Bootstrap CIs)"]
-        A1 & A2 & A3 & A4 --> Harness
-        Harness --> Tables["Leaderboard & Significance<br/>(summary.csv, statistical_significance.md)"]
-        Harness --> Plots["Publication Figures<br/>(results/figures/*.png)"]
+        A1 --> Harness["Shared Evaluation Harness (Recall@k, MRR@10, 95% CIs)"]
+        A2 --> Harness
+        A3 --> Harness
+        A4 --> Harness
+        TT --> Harness
+        TQ --> Harness
+        Harness --> Tables["Consolidated Leaderboard & Significance (p < 0.001)"]
+        Harness --> Plots["4 Publication Figures (results/figures/*.png)"]
     end
 
     subgraph App["5. Citation-Grounded Khmer RAG Application"]
-        UserQ["User Khmer Legal Question"] --> Retriever["Hybrid Retriever<br/>(A3 Dense Embeddings + BM25 Lexical)"]
-        A3 -.->|"Fine-Tuned Weights"| Retriever
-        Corpus -.->|"Full Context Store"| Retriever
-        Retriever --> Rerank["Reciprocal Rank Fusion (RRF)<br/>+ BGE Cross-Encoder Reranking"]
-        Rerank --> LLM["DeepSeek Flash (deepseek-chat)"]
-        LLM --> Verify["Statutory Citation Verification<br/>(Extract & verify មាត្រា citations)"]
+        UserQ["User Khmer Legal Question"] --> Retriever["Hybrid Retriever (A3 Dense + BM25 Lexical)"]
+        A3 --> Retriever
+        Retriever --> Rerank["RRF Fusion & Cross-Encoder Reranker"]
+        Rerank --> LLM["DeepSeek Flash (v4) Grounded Generation"]
+        LLM --> Verify["Statutory Citation Verification (មាត្រា N)"]
         Verify --> Answer["Grounded Answer with Verified Citations"]
     end
 ```
