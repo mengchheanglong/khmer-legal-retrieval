@@ -1,4 +1,4 @@
-# ⚖️ Khmer Legal Article Retrieval — Comparing Deep Learning Retrievers on Cambodian Law
+# Khmer Legal Article Retrieval — Comparing Deep Learning Retrievers on Cambodian Law
 
 > **Deep Learning Final Project (Individual)** — Bachelor of Software Engineering, Department of Engineering
 > Lecturer: Mr. Soklong HIM · Academic year 2026–2027
@@ -14,19 +14,19 @@
 
 | # | Final Project Instruction & Evaluation Rubric Checklist (Section 9) | Status | Evidence / Location |
 |---|:---|:---:|:---|
-| 1 | Topic approved by lecturer (Section 3.1) | ✅ Verified | Khmer statutory article retrieval approved by Mr. Soklong HIM |
-| 2 | Compare $\ge 2$ (recommended 3) distinct DL approaches (Section 4) | ✅ 4 Models | A1 (BiLSTM), A2 (Linear Probe), A3 (Full Fine-Tune), A4 (PrahokBART) |
-| 3 | Identical train / val / test split and test-time preprocessing | ✅ Strict | `data/05_splits/` (seed 42), leakage guard protects 261 articles; Section 2.5–2.6 |
-| 4 | Implemented strictly in PyTorch, fixed random seeds | ✅ PyTorch | PyTorch 2.x only (no Keras/TF); `set_seed(42)` across Python, NumPy, PyTorch |
-| 5 | Model weights $> 50$ MB hosted externally with working download links | ✅ Hosted | Linked to Hugging Face Hub (`mengchheanglong/khmer-legal-xlmr-retriever`); Section 6.4 |
-| 6 | Repository contains README, requirements.txt, code, results/, slides/ | ✅ Complete | Modular `src/dl/`, `requirements.txt`, `results/`, `slides/` present; Section 7 |
-| 7 | README explains how to run, includes citations & AI-use note | ✅ Complete | Step-by-step CLI commands (Section 6), citations (Section 8), AI note (Section 10) |
-| 8 | Single results table & $\ge 2$ comparison figures in README & slides | ✅ Complete | Side-by-side table (Section 5.1); 4 publication figures (Section 5.2) |
-| 9 | Training & validation curves shown for every approach | ✅ Complete | `results/figures/learning_curves.png` embedded; Section 5.2 & 5.3 discussion |
-| 10 | Hyperparameter tuning documented for at least the best approach | ✅ 4 Grids | Full $3\times 2$ grid for A3 (Tesla T4 GPU); grids for A1, A2, A4; Section 4.1 |
-| 11 | Error analysis and limitations section included | ✅ Complete | Failure modes by linguistic category (Section 5.4); limitations (Section 5.5) |
-| 12 | Regular commits spread across project period | ✅ Verified | History of frequent, meaningful Git commits across all development phases |
-| 13 | Author can explain and modify every line of code | ✅ Ready | Clean modular code, Google-style docstrings, 136 passing unit tests |
+| 1 | Topic approved by lecturer (Section 3.1) | [Verified] | Khmer statutory article retrieval approved by Mr. Soklong HIM |
+| 2 | Compare $\ge 2$ (recommended 3) distinct DL approaches (Section 4) | [4 Models] | A1 (BiLSTM), A2 (Linear Probe), A3 (Full Fine-Tune), A4 (PrahokBART) |
+| 3 | Identical train / val / test split and test-time preprocessing | [Strict] | `data/05_splits/` (seed 42), leakage guard protects 261 articles; Section 2.5–2.6 |
+| 4 | Implemented strictly in PyTorch, fixed random seeds | [PyTorch] | PyTorch 2.x only (no Keras/TF); `set_seed(42)` across Python, NumPy, PyTorch |
+| 5 | Model weights $> 50$ MB hosted externally with working download links | [Hosted] | Linked to Hugging Face Hub (`mengchheanglong/khmer-legal-xlmr-retriever`); Section 6.4 |
+| 6 | Repository contains README, requirements.txt, code, results/, slides/ | [Complete] | Modular `src/dl/`, `requirements.txt`, `results/`, `slides/` present; Section 7 |
+| 7 | README explains how to run, includes citations & AI-use note | [Complete] | Step-by-step CLI commands (Section 6), citations (Section 8), AI note (Section 10) |
+| 8 | Single results table & $\ge 2$ comparison figures in README & slides | [Complete] | Side-by-side table (Section 5.1); 4 publication figures (Section 5.2) |
+| 9 | Training & validation curves shown for every approach | [Complete] | `results/figures/learning_curves.png` embedded; Section 5.2 & 5.3 discussion |
+| 10 | Hyperparameter tuning documented for at least the best approach | [4 Grids] | Full $3\times 2$ grid for A3 (Tesla T4 GPU); grids for A1, A2, A4; Section 4.1 |
+| 11 | Error analysis and limitations section included | [Complete] | Failure modes by linguistic category (Section 5.4); limitations (Section 5.5) |
+| 12 | Regular commits spread across project period | [Verified] | History of frequent, meaningful Git commits across all development phases |
+| 13 | Author can explain and modify every line of code | [Ready] | Clean modular code, Google-style docstrings, 136 passing unit tests |
 
 ---
 
@@ -74,7 +74,7 @@ flowchart TD
         TrainPairs --> Loss["InfoNCE Contrastive Loss (tau = 0.05)"]
         Loss --> A1["A1: BiLSTM Dual Encoder (From Scratch, 1.97M)"]
         Loss --> A2["A2: XLM-R Linear Probe (Frozen Backbone, 0.59M)"]
-        Loss --> A3["A3: XLM-R Full Fine-Tune (278M, Tesla T4 GPU) 🏆"]
+        Loss --> A3["A3: XLM-R Full Fine-Tune (278M, Tesla T4 GPU) [Best]"]
         Loss --> A4["A4: PrahokBART Dual Encoder (Khmer Pretrained, 35.8M)"]
     end
 
@@ -234,7 +234,7 @@ preferred.
 
 | Item | Setting |
 |------|---------|
-| Framework | PyTorch (+ 🤗 `transformers`). No Keras/TensorFlow. |
+| Framework | PyTorch (+ Hugging Face `transformers`). No Keras/TensorFlow. |
 | Loss | InfoNCE, in-batch negatives, fixed temperature τ = 0.05 |
 | Optimiser | AdamW, LinearLR warm-up (10% steps) then CosineAnnealingLR decay; fp32 on CPU / fp16 on GPU |
 | Model selection | Best epoch by **validation MRR@10**. Test sets are evaluated **once**, after tuning. |
@@ -501,7 +501,7 @@ khmer-legal-retrieval/
 - van den Oord, A. et al. (2018). *Representation Learning with Contrastive Predictive Coding.* arXiv:1807.03748. (InfoNCE)
 - Robertson, S. & Zaragoza, H. (2009). *The Probabilistic Relevance Framework: BM25 and Beyond.*
 
-**Libraries:** PyTorch, 🤗 Transformers, PyMuPDF, rank-bm25, FastAPI, Streamlit.
+**Libraries:** PyTorch, Hugging Face Transformers, PyMuPDF, rank-bm25, FastAPI, Streamlit.
 
 ---
 
@@ -579,7 +579,7 @@ LGPL-2.1 mapping data. See
 
 ---
 
-## ⚠️ Legal Disclaimer
+## Legal Disclaimer
 
 This is a research and educational project. It is **not** legal advice. Consult a qualified legal
 professional about specific legal matters.
