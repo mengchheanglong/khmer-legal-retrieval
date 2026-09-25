@@ -3,30 +3,11 @@
 > **Deep Learning Final Project (Individual)** — Bachelor of Software Engineering, Department of Engineering
 > Lecturer: Mr. Soklong HIM · Academic year 2026–2027
 > **Author:** Long Mengchheang ([@mengchheanglong](https://github.com/mengchheanglong))
+> **Presentation Deck:** [`slides/final_presentation.pdf`](slides/final_presentation.pdf)
 
 [![Python 3.11+](https://img.shields.io/badge/Python-3.11+-blue.svg)](https://python.org)
 [![PyTorch](https://img.shields.io/badge/PyTorch-2.x-ee4c2c.svg)](https://pytorch.org)
 [![Language: Khmer](https://img.shields.io/badge/Language-Khmer%20(ភាសាខ្មែរ)-0b5394.svg)](#2-dataset)
-
-> **Course Assessment:** Final Project (Individual) — Weight: 50% of total grade  
-> **Course Learning Outcomes:** CLO-03 (Apply DL algorithms), CLO-04 (Implement DL algorithms), CLO-05 (Design test procedures)  
-> **Deliverables:** GitHub repository + Slide deck (`slides/final_presentation.pdf`) + Oral presentation with Q&A  
-
-| # | Final Project Instruction & Evaluation Rubric Checklist (Section 9) | Status | Evidence / Location |
-|---|:---|:---:|:---|
-| 1 | Topic approved by lecturer (Section 3.1) | [Verified] | Khmer statutory article retrieval approved by Mr. Soklong HIM |
-| 2 | Compare $\ge 2$ (recommended 3) distinct DL approaches (Section 4) | [4 Models] | A1 (BiLSTM), A2 (Linear Probe), A3 (Full Fine-Tune), A4 (PrahokBART) |
-| 3 | Identical train / val / test split and test-time preprocessing | [Strict] | `data/05_splits/` (seed 42), leakage guard protects 261 articles; Section 2.5–2.6 |
-| 4 | Implemented strictly in PyTorch, fixed random seeds | [PyTorch] | PyTorch 2.x only (no Keras/TF); `set_seed(42)` across Python, NumPy, PyTorch |
-| 5 | Model weights $> 50$ MB hosted externally with working download links | [Hosted] | Linked to Hugging Face Hub (`mengchheanglong/khmer-legal-xlmr-retriever`); Section 6.4 |
-| 6 | Repository contains README, requirements.txt, code, results/, slides/ | [Complete] | Modular `src/dl/`, `requirements.txt`, `results/`, `slides/` present; Section 7 |
-| 7 | README explains how to run, includes citations & AI-use note | [Complete] | Step-by-step CLI commands (Section 6), citations (Section 8), AI note (Section 10) |
-| 8 | Single results table & $\ge 2$ comparison figures in README & slides | [Complete] | Side-by-side table (Section 5.1); 4 publication figures (Section 5.2) |
-| 9 | Training & validation curves shown for every approach | [Complete] | `results/figures/learning_curves.png` embedded; Section 5.2 & 5.3 discussion |
-| 10 | Hyperparameter tuning documented for at least the best approach | [4 Grids] | Full $3\times 2$ grid for A3 (Tesla T4 GPU); grids for A1, A2, A4; Section 4.1 |
-| 11 | Error analysis and limitations section included | [Complete] | Failure modes by linguistic category (Section 5.4); limitations (Section 5.5) |
-| 12 | Regular commits spread across project period | [Verified] | History of frequent, meaningful Git commits across all development phases |
-| 13 | Author can explain and modify every line of code | [Ready] | Clean modular code, Google-style docstrings, 136 passing unit tests |
 
 ---
 
@@ -426,7 +407,7 @@ Interactive, self-contained Google Colab notebooks for replicating training, tun
 
 ### 6.4 Trained Weights & External Hosting
 
-Per Course Rubric Section 5.B & 9, model weights exceeding 50 MB are not committed directly to git and are hosted externally on the Hugging Face Hub:
+Model weights exceeding 50 MB are not committed directly to git and are hosted externally on the Hugging Face Hub:
 
 - **Repository:** [`mengchheanglong/khmer-legal-xlmr-retriever`](https://huggingface.co/mengchheanglong/khmer-legal-xlmr-retriever)
 - **Download & Evaluate:** To run evaluation directly without retraining:
