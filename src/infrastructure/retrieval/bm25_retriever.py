@@ -61,7 +61,11 @@ class BM25Retriever(SparseRetrieverPort):
         self._bm25: Optional[BM25Okapi] = None
 
         base_dir = Path(__file__).resolve().parent.parent.parent.parent
-        self._index_path = index_path or (base_dir / "data" / "indices" / "bm25_index.pkl")
+        if index_path:
+            self._index_path = Path(index_path)
+        else:
+            khmer_idx = base_dir / "data" / "indices" / "bm25_khmer_index.pkl"
+            self._index_path = khmer_idx if khmer_idx.exists() else (base_dir / "data" / "indices" / "bm25_index.pkl")
         self._index_path.parent.mkdir(parents=True, exist_ok=True)
 
         if self._index_path.exists():
@@ -119,6 +123,7 @@ class BM25Retriever(SparseRetrieverPort):
         self,
         query: str,
         top_k: int = 50,
+        law_filter: Optional[str] = None,
     ) -> list[RetrievedDocument]:
         """
         Search for relevant legal chunks using BM25.
@@ -126,6 +131,7 @@ class BM25Retriever(SparseRetrieverPort):
         Args:
             query: User's query string.
             top_k: Maximum number of chunks to return.
+            law_filter: Optional statute filter (e.g. 'Civil Code 2007', 'Criminal Code 2009').
 
         Returns:
             List of RetrievedDocument with sparse_score populated.
@@ -140,23 +146,34 @@ class BM25Retriever(SparseRetrieverPort):
 
         doc_scores = self._bm25.get_scores(query_tokens)
 
-        # Get top_k indices sorted by score descending
+        # Get sorted indices by score descending
         scored_indices = sorted(
             range(len(doc_scores)),
             key=lambda i: doc_scores[i],
             reverse=True,
-        )[:top_k]
+        )
 
         results: list[RetrievedDocument] = []
+        clean_filter = law_filter.lower() if law_filter else None
         for idx in scored_indices:
             score = float(doc_scores[idx])
-            if score > 0.0:  # Only return documents with non-zero match score
-                results.append(
-                    RetrievedDocument(
-                        chunk=self._chunks[idx],
-                        sparse_score=score,
-                    )
+            if score <= 0.0:
+                break  # Scores are sorted descending
+            chunk = self._chunks[idx]
+            if clean_filter:
+                chunk_law = chunk.metadata.law_name.lower()
+                if "civil" in clean_filter and "civil" not in chunk_law:
+                    continue
+                if "crim" in clean_filter and "crim" not in chunk_law:
+                    continue
+            results.append(
+                RetrievedDocument(
+                    chunk=chunk,
+                    sparse_score=score,
                 )
+            )
+            if len(results) >= top_k:
+                break
 
         return results
 

@@ -76,10 +76,17 @@ class HybridRetrieveUseCase:
             logger.warning("Dense vector retrieval unavailable, falling back to BM25 sparse search", error=str(e))
 
         # Step 3: Sparse retrieval (BM25)
-        sparse_results = self._sparse_retriever.search(
-            query=request.query,
-            top_k=sparse_top_k,
-        )
+        try:
+            sparse_results = self._sparse_retriever.search(
+                query=request.query,
+                top_k=sparse_top_k,
+                law_filter=request.law_filter,
+            )
+        except TypeError:
+            sparse_results = self._sparse_retriever.search(
+                query=request.query,
+                top_k=sparse_top_k,
+            )
         logger.info("Sparse retrieval complete", count=len(sparse_results))
 
         # Step 4: Reciprocal Rank Fusion
