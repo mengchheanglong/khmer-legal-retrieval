@@ -148,10 +148,15 @@ def execute_unified_retrieval(
             if dense_docs:
                 return dense_docs[:top_k]
             # Fallback to BM25 if dense indexing not completed
-            return bm25.search(query=query, top_k=top_k, law_filter=law_filter)
+            res = bm25.search(query=query, top_k=top_k, law_filter=law_filter)
+            if not res and law_filter:
+                res = bm25.search(query=query, top_k=top_k, law_filter=None)
+            return res
 
         # 3. Hybrid Search (RRF of Dense + BM25)
         bm25_docs = bm25.search(query=query, top_k=top_k * 2, law_filter=law_filter)
+        if not bm25_docs and law_filter:
+            bm25_docs = bm25.search(query=query, top_k=top_k * 2, law_filter=None)
         if not dense_docs:
             return bm25_docs[:top_k]
 
@@ -177,7 +182,10 @@ def execute_unified_retrieval(
         ]
 
     # Default fallback
-    return bm25.search(query=query, top_k=top_k, law_filter=law_filter)
+    res = bm25.search(query=query, top_k=top_k, law_filter=law_filter)
+    if not res and law_filter:
+        res = bm25.search(query=query, top_k=top_k, law_filter=None)
+    return res
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -381,23 +389,37 @@ with tab_qa:
     st.caption("Ground truth statutory retrieval combined with citation-verified LLM analysis.")
 
     benchmark_questions = [
-        "-- Select an authentic benchmark question --",
-        "តើគោលការណ៍ស្វ័យភាពនៃបុគ្គលឯកជនមានន័យដូចម្តេច? (Civil Code Art. 3)",
-        "តើគោលការណ៍គ្មានទោសបើគ្មានច្បាប់ចែង (Principle of Legality) មានន័យដូចម្តេច? (Criminal Code Art. 2)",
-        "តើកិច្ចសន្យាបង្កើតឡើងដោយរបៀបណា យោងតាមក្រមរដ្ឋប្បវេណី? (Civil Code Art. 311)",
-        "តើបទល្មើសព្រហ្មទណ្ឌត្រូវបានបែងចែកជាប៉ុន្មានថ្នាក់? (Criminal Code Art. 46)",
-        "តើជនបរទេសអាចមានកម្រិតក្នុងការទទួលបានសិទ្ធិក្នុងករណីណាខ្លះ? (Civil Code Art. 8)",
-        "តើអ្វីទៅជាការការពារស្របច្បាប់ (Self-Defense) ក្នុងក្រមព្រហ្មទណ្ឌ? (Criminal Code Art. 33)",
-        "តើអ្វីទៅជាបទលួច និងទោសបញ្ញត្តិក្នុងក្រមព្រហ្មទណ្ឌ? (Criminal Code Art. 353)",
-        "What are the remedies when a seller delivers defective goods under the Civil Code?",
+        ("-- Select an authentic Khmer legal question --", ""),
+        # Civil Code (2007)
+        ("តើកិច្ចសន្យាបង្កើតឡើងដោយរបៀបណា យោងតាមក្រមរដ្ឋប្បវេណី? (Civil Code Art. 311/336 - ការបង្កើតកិច្ចសន្យា)", "តើកិច្ចសន្យាបង្កើតឡើងដោយរបៀបណា យោងតាមក្រមរដ្ឋប្បវេណី?"),
+        ("តើគោលការណ៍ស្វ័យភាពនៃបុគ្គលឯកជនមានន័យដូចម្តេច? (Civil Code Art. 3 - គោលការណ៍ស្វ័យភាព)", "តើគោលការណ៍ស្វ័យភាពនៃបុគ្គលឯកជនមានន័យដូចម្តេច?"),
+        ("តើគោលការណ៍នៃសេចក្តីស្មោះត្រង់និងសុចរិតក្នុងច្បាប់រដ្ឋប្បវេណីមានន័យដូចម្តេច? (Civil Code Art. 5 - សេចក្តីស្មោះត្រង់និងសុចរិត)", "តើគោលការណ៍នៃសេចក្តីស្មោះត្រង់និងសុចរិតក្នុងច្បាប់រដ្ឋប្បវេណីមានន័យដូចម្តេច?"),
+        ("តើជនបរទេសអាចមានកម្រិតក្នុងការទទួលបានសិទ្ធិក្នុងករណីណាខ្លះ? (Civil Code Art. 8 - សិទ្ធិរបស់ជនបរទេស)", "តើជនបរទេសអាចមានកម្រិតក្នុងការទទួលបានសិទ្ធិក្នុងករណីណាខ្លះ?"),
+        ("តើទារកក្នុងផ្ទៃមានសមត្ថភាពទទួលសិទ្ធិដែរឬទេ? (Civil Code Art. 9 - សមត្ថភាពទទួលសិទ្ធិរបស់ទារក)", "តើទារកក្នុងផ្ទៃមានសមត្ថភាពទទួលសិទ្ធិដែរឬទេ?"),
+        ("តើអ្វីទៅជាការទទួលខុសត្រូវលើអំពើអនីត្យានុកូល? (Civil Code Art. 743 - អំពើអនីត្យានុកូល)", "តើអ្វីទៅជាការទទួលខុសត្រូវលើអំពើអនីត្យានុកូល?"),
+        ("តើលក្ខខណ្ឌនៃការរំលត់កាតព្វកិច្ចដោយសារការទូទាត់មានអ្វីខ្លះ? (Civil Code Art. 415 - ការរំលត់កាតព្វកិច្ច)", "តើលក្ខខណ្ឌនៃការរំលត់កាតព្វកិច្ចដោយសារការទូទាត់មានអ្វីខ្លះ?"),
+        ("តើអ្វីទៅជាសិទ្ធិភតិសន្យា និងការជួលអចលនវត្ថុ? (Civil Code Art. 596 - ភតិសន្យា)", "តើអ្វីទៅជាសិទ្ធិភតិសន្យា និងការជួលអចលនវត្ថុ?"),
+        ("តើអ្នកលក់មានការទទួលខុសត្រូវលើវិការៈនៃវត្ថុទិញលក់យ៉ាងដូចម្តេច? (Civil Code Art. 544 - ការទទួលខុសត្រូវលើវិការៈ)", "តើអ្នកលក់មានការទទួលខុសត្រូវលើវិការៈនៃវត្ថុទិញលក់យ៉ាងដូចម្តេច?"),
+        ("តើការទាមទារសំណងការខូចខាតដោយសារការមិនអនុវត្តកាតព្វកិច្ចមានលក្ខខណ្ឌអ្វីខ្លះ? (Civil Code Art. 398 - សំណងការខូចខាត)", "តើការទាមទារសំណងការខូចខាតដោយសារការមិនអនុវត្តកាតព្វកិច្ចមានលក្ខខណ្ឌអ្វីខ្លះ?"),
+        # Criminal Code (2009)
+        ("តើគោលការណ៍គ្មានទោសបើគ្មានច្បាប់ចែង (Principle of Legality) មានន័យដូចម្តេច? (Criminal Code Art. 2 - គោលការណ៍ស្របច្បាប់)", "តើគោលការណ៍គ្មានទោសបើគ្មានច្បាប់ចែង (Principle of Legality) មានន័យដូចម្តេច?"),
+        ("តើបទល្មើសព្រហ្មទណ្ឌត្រូវបានបែងចែកជាប៉ុន្មានថ្នាក់? (Criminal Code Art. 46 - បទឧក្រិដ្ឋ បទមជ្ឈិម បទលហុ)", "តើបទល្មើសព្រហ្មទណ្ឌត្រូវបានបែងចែកជាប៉ុន្មានថ្នាក់?"),
+        ("តើអ្វីទៅជាការការពារស្របច្បាប់ (Self-Defense) ក្នុងក្រមព្រហ្មទណ្ឌ? (Criminal Code Art. 33 - ការការពារស្របច្បាប់)", "តើអ្វីទៅជាការការពារស្របច្បាប់ (Self-Defense) ក្នុងក្រមព្រហ្មទណ្ឌ?"),
+        ("តើអ្វីទៅជាបទលួច និងទោសបញ្ញត្តិក្នុងក្រមព្រហ្មទណ្ឌ? (Criminal Code Art. 353 - បទលួច)", "តើអ្វីទៅជាបទលួច និងទោសបញ្ញត្តិក្នុងក្រមព្រហ្មទណ្ឌ?"),
+        ("តើអ្វីទៅជាបទឆបោក និងធាតុផ្សំនៃបទល្មើស? (Criminal Code Art. 377 - បទឆបោក)", "តើអ្វីទៅជាបទឆបោក និងធាតុផ្សំនៃបទល្មើស?"),
+        ("តើការប៉ុនប៉ងប្រព្រឹត្តបទល្មើសព្រហ្មទណ្ឌត្រូវផ្តន្ទាទោសក្នុងករណីណាខ្លះ? (Criminal Code Art. 27 - ការប៉ុនប៉ង)", "តើការប៉ុនប៉ងប្រព្រឹត្តបទល្មើសព្រហ្មទណ្ឌត្រូវផ្តន្ទាទោសក្នុងករណីណាខ្លះ?"),
+        ("តើច្បាប់ព្រហ្មទណ្ឌកម្ពុជាអនុវត្តទៅលើដែនដីណាខ្លះ? (Criminal Code Art. 12 - ដែនអនុវត្តច្បាប់)", "តើច្បាប់ព្រហ្មទណ្ឌកម្ពុជាអនុវត្តទៅលើដែនដីណាខ្លះ?"),
+        ("តើអ្វីទៅជាបទរំលោភលើទំនុកចិត្តក្នុងក្រមព្រហ្មទណ្ឌ? (Criminal Code Art. 391 - បទរំលោភលើទំនុកចិត្ត)", "តើអ្វីទៅជាបទរំលោភលើទំនុកចិត្តក្នុងក្រមព្រហ្មទណ្ឌ?"),
     ]
 
-    selected_sample = st.selectbox("Pick an authentic benchmark question:", benchmark_questions)
+    question_labels = [item[0] for item in benchmark_questions]
+    selected_label = st.selectbox("Pick an authentic benchmark question:", question_labels)
 
     default_query = ""
-    if selected_sample != "-- Select an authentic benchmark question --":
-        # Extract the pure question before parenthesis
-        default_query = selected_sample.split(" (")[0]
+    for label, query_text in benchmark_questions:
+        if label == selected_label:
+            default_query = query_text
+            break
 
     user_query = st.text_input(
         "Question (Khmer / English):",

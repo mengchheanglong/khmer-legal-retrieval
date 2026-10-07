@@ -48,6 +48,7 @@ Thumbs.db
 
 # PyTorch / ML model cache
 *.pt
+!data/indices/khmer_article_embeddings.pt
 *.bin
 *.safetensors
 
