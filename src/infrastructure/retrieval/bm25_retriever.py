@@ -21,12 +21,19 @@ from src.domain.ports.sparse_retriever_port import SparseRetrieverPort
 logger = get_logger(__name__)
 
 
-def tokenize_legal_text(text: str) -> list[str]:
+KHMER_QUESTION_STOPWORDS = {
+    "តើ", "របៀប", "ណា", "យោង", "តាម", "អ្វី", "ខ្លះ", "ដូចម្តេច", "យ៉ាងណា",
+    "ដែរ", "ឬទេ", "ចែង", "យ៉ាងដូចម្តេច", "ចំពោះ", "អំពី", "នៃ", "និង", "ក្នុង", "លើ", "ដោយសារ",
+}
+
+
+def tokenize_legal_text(text: str, is_query: bool = False) -> list[str]:
     """
     Tokenize legal text for BM25 keyword matching.
 
     Supports both Khmer (via khmer-nltk word segmentation) and English/alphanumeric text.
     Preserves numbers (like article numbers "315") and legal terms.
+    If is_query=True, filters interrogative stopwords and expands morphological roots.
     """
     if not text:
         return []
@@ -37,6 +44,22 @@ def tokenize_legal_text(text: str) -> list[str]:
             from src.dl.text import tokenize_khmer
             tokens = tokenize_khmer(text)
             if tokens:
+                if is_query:
+                    cleaned: list[str] = []
+                    for t in tokens:
+                        s = t.strip()
+                        if not s or s in KHMER_QUESTION_STOPWORDS or len(s) <= 1:
+                            continue
+                        cleaned.append(s)
+                        # Morphological root expansion: e.g. បង្កើតឡើង -> បង្កើត, ការបង្កើត
+                        if s.endswith("ឡើង") and len(s) > 4:
+                            stem = s[:-len("ឡើង")]
+                            cleaned.extend([stem, "ការ" + stem])
+                        # e.g. ការបង្កើត -> បង្កើត, បង្កើតឡើង
+                        if s.startswith("ការ") and len(s) > 4:
+                            stem = s[len("ការ"):]
+                            cleaned.extend([stem, stem + "ឡើង"])
+                    return list(dict.fromkeys(cleaned)) if cleaned else tokens
                 return tokens
         except Exception:
             pass
@@ -140,11 +163,25 @@ class BM25Retriever(SparseRetrieverPort):
             logger.warning("BM25 search called on uninitialized index.")
             return []
 
-        query_tokens = tokenize_legal_text(query)
+        query_tokens = tokenize_legal_text(query, is_query=True)
         if not query_tokens:
             return []
 
-        doc_scores = self._bm25.get_scores(query_tokens)
+        doc_scores = list(self._bm25.get_scores(query_tokens))
+
+        # Core keyword title boosting for Khmer statutory precision
+        core_tokens = [
+            t for t in query_tokens
+            if t not in ["ក្រម", "រដ្ឋប្បវេណី", "ព្រហ្មទណ្ឌ", "ច្បាប់", "មាត្រា", "នៃ", "និង", "ក្នុង"]
+        ]
+        if core_tokens:
+            for idx, chunk in enumerate(self._chunks):
+                title = chunk.metadata.article_title or ""
+                matches = sum(1 for kw in core_tokens if kw in title)
+                if matches >= 2:
+                    doc_scores[idx] += 12.0
+                elif matches == 1:
+                    doc_scores[idx] += 4.0
 
         # Get sorted indices by score descending
         scored_indices = sorted(

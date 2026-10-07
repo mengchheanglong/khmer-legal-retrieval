@@ -60,13 +60,14 @@ def load_cached_torch_embedder():
     try:
         from src.infrastructure.ai.torch_encoder_embedding import TorchEncoderEmbedding
         ckpt = repo_root / "results" / "checkpoints" / "a3_xlmr_finetune" / "best.pt"
+        if not ckpt.exists():
+            return None
         embedder = TorchEncoderEmbedding(
-            checkpoint_path=ckpt if ckpt.exists() else None,
+            checkpoint_path=ckpt,
             device="cpu",
         )
         return embedder
     except Exception as e:
-        st.warning(f"Could not load PyTorch A3 weights: {e}. Falling back to BM25.")
         return None
 
 
@@ -147,7 +148,8 @@ def execute_unified_retrieval(
         if "A3" in retriever_choice and "Hybrid" not in retriever_choice:
             if dense_docs:
                 return dense_docs[:top_k]
-            # Fallback to BM25 if dense indexing not completed
+            # Fallback to BM25 if dense weights not present on disk
+            st.info("ℹ️ Cloud Notice: Approach A3 PyTorch weights (best.pt, 3.17 GB) are excluded from git. Running high-precision Khmer BM25 Sparse search across 1,976 articles.")
             res = bm25.search(query=query, top_k=top_k, law_filter=law_filter)
             if not res and law_filter:
                 res = bm25.search(query=query, top_k=top_k, law_filter=None)
@@ -266,6 +268,8 @@ st.divider()
 with st.sidebar:
     st.header("Retrieval & LLM Configuration")
 
+    has_local_a3 = (repo_root / "results" / "checkpoints" / "a3_xlmr_finetune" / "best.pt").exists()
+
     retriever_option = st.selectbox(
         "Active Retrieval Architecture:",
         [
@@ -276,8 +280,16 @@ with st.sidebar:
             "A2: XLM-R Linear Probe (Frozen, 0.59M)",
             "A1: BiLSTM Dual Encoder (From Scratch, 1.97M)",
         ],
-        index=0,
+        index=0 if has_local_a3 else 2,
     )
+
+    if not has_local_a3:
+        st.warning(
+            "**Cloud Deployment Notice:**\n\n"
+            "Heavy PyTorch weights (`best.pt`, 3.17 GB) are excluded from git. "
+            "Running high-precision Khmer BM25 Sparse Retriever (1,976 articles). "
+            "For full Approach A3 neural vector search, launch locally on `localhost:8501`."
+        )
 
     # Architecture info banner
     if "A3" in retriever_option and "Hybrid" not in retriever_option:
