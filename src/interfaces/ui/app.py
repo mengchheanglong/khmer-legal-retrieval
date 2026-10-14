@@ -12,6 +12,7 @@ Features:
 - Interactive Deep Learning Benchmark Dashboard & Publication Figures
 """
 
+import html
 import os
 import sys
 import time
@@ -211,60 +212,204 @@ st.set_page_config(
 st.markdown(
     """
     <style>
-    .metric-card {
-        background-color: #f8f9fa;
-        border: 1px solid #e9ecef;
-        border-radius: 8px;
-        padding: 14px 18px;
-        margin-bottom: 12px;
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Kantumruy+Pro:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap');
+
+    html, body, [class*="css"], [class*="st-"] {
+        font-family: 'Inter', 'Kantumruy Pro', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     }
-    .badge-verified {
-        color: #155724;
-        background-color: #d4edda;
-        border: 1px solid #c3e6cb;
-        padding: 2px 8px;
-        border-radius: 4px;
+
+    /* Hero Banner */
+    .hero-header {
+        background: linear-gradient(135deg, rgba(37, 99, 235, 0.08) 0%, rgba(99, 102, 241, 0.04) 100%);
+        border: 1px solid rgba(37, 99, 235, 0.2);
+        border-radius: 12px;
+        padding: 20px 24px;
+        margin-bottom: 20px;
+    }
+
+    /* Legal Article Card */
+    .legal-law-badge {
+        display: inline-block;
+        padding: 3px 10px;
+        border-radius: 16px;
+        font-size: 0.75rem;
         font-weight: 600;
-        font-size: 0.85em;
+        letter-spacing: 0.03em;
+    }
+    .badge-civil {
+        background-color: #eff6ff;
+        color: #1d4ed8;
+        border: 1px solid #bfdbfe;
+    }
+    .badge-crim {
+        background-color: #fef2f2;
+        color: #b91c1c;
+        border: 1px solid #fecaca;
+    }
+    .score-chip {
+        font-size: 0.8rem;
+        background: rgba(128, 128, 128, 0.12);
+        padding: 4px 9px;
+        border-radius: 6px;
+        font-family: monospace;
+        font-weight: 600;
+    }
+    .article-text {
+        font-family: 'Kantumruy Pro', sans-serif !important;
+        font-size: 1.02rem !important;
+        line-height: 1.9 !important;
+        color: var(--text-color, #1e293b);
+        white-space: pre-wrap;
+        background: rgba(128, 128, 128, 0.04);
+        padding: 14px 18px;
+        border-radius: 8px;
+        border: 1px solid rgba(128, 128, 128, 0.1);
+        margin-top: 8px;
+    }
+
+    /* Citations & Verification Badges */
+    .badge-verified {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        color: #166534;
+        background-color: #dcfce7;
+        border: 1px solid #bbf7d0;
+        padding: 3px 10px;
+        border-radius: 20px;
+        font-weight: 600;
+        font-size: 0.82rem;
     }
     .badge-unverified {
-        color: #856404;
-        background-color: #fff3cd;
-        border: 1px solid #ffeeba;
-        padding: 2px 8px;
-        border-radius: 4px;
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        color: #854d0e;
+        background-color: #fef9c3;
+        border: 1px solid #fef08a;
+        padding: 3px 10px;
+        border-radius: 20px;
         font-weight: 600;
-        font-size: 0.85em;
+        font-size: 0.82rem;
     }
-    .article-box {
-        background-color: #ffffff;
-        border: 1px solid #dee2e6;
-        border-left: 4px solid #0056b3;
-        border-radius: 6px;
-        padding: 16px;
-        margin-bottom: 14px;
+
+    .error-card {
+        background: rgba(128, 128, 128, 0.03);
+        border: 1px solid rgba(128, 128, 128, 0.15);
+        border-left: 4px solid #6366f1;
+        border-radius: 8px;
+        padding: 14px 16px;
+        margin-bottom: 12px;
     }
     </style>
     """,
     unsafe_allow_html=True,
 )
 
-st.title("Khmer Legal Article Retrieval Assistant")
-st.caption(
-    "Deep Learning Article Retrieval & Citation-Grounded Legal Assistant · "
-    "Official Khmer Civil Code (2007) & Criminal Code (2009)"
+
+def render_article_card(doc: RetrievedDocument, index: Optional[int] = None) -> None:
+    """Render a statutory article in a beautifully styled reading card."""
+    meta = doc.chunk.metadata
+    is_crim = "criminal" in meta.law_name.lower()
+    law_label = "Criminal Code 2009" if is_crim else "Civil Code 2007"
+    badge_class = "badge-crim" if is_crim else "badge-civil"
+    card_border = "#dc2626" if is_crim else "#2563eb"
+
+    score_badge = ""
+    if doc.dense_score is not None:
+        score_badge = f"<span class='score-chip'>Dense CosSim: {doc.dense_score:.4f}</span>"
+    elif doc.sparse_score is not None:
+        score_badge = f"<span class='score-chip'>BM25 Score: {doc.sparse_score:.2f}</span>"
+    elif doc.rrf_score is not None:
+        score_badge = f"<span class='score-chip'>RRF Score: {doc.rrf_score:.4f}</span>"
+
+    idx_prefix = f"#{index}. " if index else ""
+    title_display = f" — {html.escape(meta.article_title)}" if meta.article_title else ""
+
+    hier_parts = [html.escape(h) for h in [meta.book, meta.chapter, meta.section] if h]
+    hier_text = " &nbsp;›&nbsp; ".join(hier_parts)
+    escaped_content = html.escape(doc.chunk.content)
+
+    card_html = f"""
+    <div style="
+        background: var(--background-color, #ffffff);
+        border: 1px solid rgba(128, 128, 128, 0.2);
+        border-left: 5px solid {card_border};
+        border-radius: 10px;
+        padding: 16px 20px;
+        margin-bottom: 16px;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.03);
+    ">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; flex-wrap: wrap; gap: 8px;">
+            <div>
+                <span class="legal-law-badge {badge_class}">{law_label}</span>
+                <strong style="margin-left: 8px; font-size: 1.05rem;">{idx_prefix}មាត្រា {meta.article_number}{title_display}</strong>
+            </div>
+            <div>{score_badge}</div>
+        </div>
+        {f'<div style="font-size: 0.8rem; color: #64748b; margin-bottom: 10px;">📁 {hier_text}</div>' if hier_text else ''}
+        <div class="article-text">{escaped_content}</div>
+    </div>
+    """
+    st.markdown(card_html, unsafe_allow_html=True)
+
+
+# Hero Header
+st.markdown(
+    """
+    <div class="hero-header">
+        <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px;">
+            <div>
+                <span class="legal-law-badge badge-civil" style="margin-bottom: 8px;">🇰🇭 Deep Learning Legal NLP</span>
+                <h1 style="margin: 4px 0 6px 0; font-size: 2.1rem; font-weight: 700; color: var(--text-color, #0f172a);">
+                    Khmer Legal Article Retrieval Assistant
+                </h1>
+                <p style="margin: 0; font-size: 0.95rem; color: #64748b;">
+                    Neural Bi-Encoder Passage Retrieval & Citation-Grounded Assistant · 
+                    <strong>1,976 Articles</strong> from the Official Civil Code (2007) & Criminal Code (2009)
+                </p>
+            </div>
+            <div>
+                <span class="score-chip" style="font-size: 0.85rem; padding: 6px 12px; background: rgba(37, 99, 235, 0.1); color: #2563eb;">
+                    🏆 Winning Model: Approach A3 XLM-R (51.4% Recall@5)
+                </span>
+            </div>
+        </div>
+    </div>
+    """,
+    unsafe_allow_html=True,
 )
 
 # Top Status Indicators
 col_m1, col_m2, col_m3, col_m4 = st.columns(4)
 with col_m1:
-    st.metric("Total Corpus Articles", "1,976", help="1,304 Civil Code + 672 Criminal Code (100% consecutive)")
+    st.metric(
+        "Corpus Articles",
+        "1,976",
+        help="1,304 Civil Code (2007) + 672 Criminal Code (2009) articles (100% consecutive)",
+    )
 with col_m2:
-    st.metric("Best Model (A3 XLM-R)", "51.4% Recall@5", help="MRR@10: 0.4827 on 200 Human Benchmark Questions (T-Q)")
+    st.metric(
+        "Best Model (A3 XLM-R)",
+        "51.42% Recall@5",
+        delta="+10.67% vs BM25 (p < 0.001)",
+        help="MRR@10: 0.4827 on 200 Human Benchmark Questions (T-Q)",
+    )
 with col_m3:
-    st.metric("Baseline (BM25)", "40.8% Recall@5", help="MRR@10: 0.3350 on 200 Human Benchmark Questions (T-Q)")
+    st.metric(
+        "Baseline (BM25)",
+        "40.75% Recall@5",
+        delta="0.3350 MRR@10",
+        delta_color="off",
+        help="Rank-BM25 with khmer-nltk word segmentation",
+    )
 with col_m4:
-    st.metric("LLM Provider", "DeepSeek Flash", help="Model: deepseek-chat via DeepSeek API")
+    st.metric(
+        "Grounded LLM",
+        "DeepSeek Flash",
+        delta="Citation Verified",
+        help="deepseek-chat with compound (law, article) verification guard",
+    )
 
 st.divider()
 
@@ -424,6 +569,8 @@ with tab_qa:
 
     benchmark_questions = [
         ("-- Select an authentic Khmer legal question --", ""),
+        # Recommended Live Defense Demo Query (TQ-CIV-009: BM25 miss vs A3 Rank 1)
+        ("⭐ [LIVE DEFENSE DEMO] តើនរណាខ្លះអាចស្នើសុំឱ្យតុលាការប្រកាសបើកអាណាព្យាបាលទូទៅ? (Civil Code Art. 24 - អាណាព្យាបាលទូទៅ)", "តើនរណាខ្លះអាចស្នើសុំឱ្យតុលាការប្រកាសបើកអាណាព្យាបាលទូទៅ?"),
         # Civil Code (2007)
         ("តើកិច្ចសន្យាបង្កើតឡើងដោយរបៀបណា យោងតាមក្រមរដ្ឋប្បវេណី? (Civil Code Art. 311/336 - ការបង្កើតកិច្ចសន្យា)", "តើកិច្ចសន្យាបង្កើតឡើងដោយរបៀបណា យោងតាមក្រមរដ្ឋប្បវេណី?"),
         ("តើគោលការណ៍ស្វ័យភាពនៃបុគ្គលឯកជនមានន័យដូចម្តេច? (Civil Code Art. 3 - គោលការណ៍ស្វ័យភាព)", "តើគោលការណ៍ស្វ័យភាពនៃបុគ្គលឯកជនមានន័យដូចម្តេច?"),
@@ -514,20 +661,42 @@ with tab_qa:
                         response = qa_use_case.execute(req)
                         qa_use_case._retriever = original_retriever
 
-                        st.markdown("### Legal Analysis")
-                        st.markdown(response.answer)
+                        st.markdown("### ⚖️ Legal Synthesis & Grounded Analysis")
+                        with st.container(border=True):
+                            st.markdown(response.answer)
 
                         if response.citations:
-                            st.markdown("#### Cited Statutory Authorities")
+                            st.markdown("#### 📜 Cited Statutory Authorities & Grounding Verification")
                             for cit in response.citations:
                                 is_ver = cit.get("is_verified", False)
                                 badge_html = (
-                                    '<span class="badge-verified">[Verified Citation]</span>'
+                                    '<span class="badge-verified">✓ Verified Context Match</span>'
                                     if is_ver
-                                    else '<span class="badge-unverified">[Unverified Citation]</span>'
+                                    else '<span class="badge-unverified">⚠ Unverified in Retrieved Context</span>'
                                 )
+                                is_crim = "criminal" in str(cit.get("law_name", "")).lower()
+                                badge_class = "badge-crim" if is_crim else "badge-civil"
                                 st.markdown(
-                                    f"- **{cit['law_name']} — Article {cit['article_number']}** {badge_html}",
+                                    f"""
+                                    <div style="
+                                        display: flex;
+                                        align-items: center;
+                                        justify-content: space-between;
+                                        padding: 10px 14px;
+                                        background: rgba(128,128,128,0.04);
+                                        border: 1px solid rgba(128,128,128,0.12);
+                                        border-radius: 8px;
+                                        margin-bottom: 8px;
+                                        flex-wrap: wrap;
+                                        gap: 8px;
+                                    ">
+                                        <div>
+                                            <span class="legal-law-badge {badge_class}">{cit['law_name']}</span>
+                                            <strong style="margin-left: 8px; font-size: 0.95rem;">មាត្រា {cit['article_number']}</strong>
+                                        </div>
+                                        <div>{badge_html}</div>
+                                    </div>
+                                    """,
                                     unsafe_allow_html=True,
                                 )
                                 if cit.get("excerpt"):
@@ -544,32 +713,9 @@ with tab_qa:
                 )
 
             # Display Context Articles
-            with st.expander(f"Retrieved Statutory Context Articles ({len(docs)} articles)", expanded=True):
+            with st.expander(f"📚 Retrieved Statutory Context Articles ({len(docs)} articles)", expanded=True):
                 for i, doc in enumerate(docs, 1):
-                    meta = doc.chunk.metadata
-                    score_info = ""
-                    if doc.dense_score is not None:
-                        score_info = f" · Dense Sim: `{doc.dense_score:.4f}`"
-                    elif doc.sparse_score is not None:
-                        score_info = f" · BM25 Score: `{doc.sparse_score:.2f}`"
-                    elif doc.rrf_score is not None:
-                        score_info = f" · RRF Score: `{doc.rrf_score:.4f}`"
-
-                    title_str = f" — {meta.article_title}" if meta.article_title else ""
-                    st.markdown(
-                        f"**{i}. {meta.law_name} — Article {meta.article_number}{title_str}**{score_info}"
-                    )
-                    hier = []
-                    if meta.book:
-                        hier.append(meta.book)
-                    if meta.chapter:
-                        hier.append(meta.chapter)
-                    if meta.section:
-                        hier.append(meta.section)
-                    if hier:
-                        st.caption("Hierarchy: " + " > ".join(hier))
-                    st.text(doc.chunk.content)
-                    st.divider()
+                    render_article_card(doc, index=i)
 
             st.warning(
                 "**Legal Disclaimer:** This system is an academic research prototype for legal retrieval. "
@@ -583,10 +729,23 @@ with tab_qa:
 
 with tab_search:
     st.subheader("Explore the Official 1,976 Khmer Articles")
-    st.caption("Perform direct semantic or lexical search across the Civil Code (2007) and Criminal Code (2009).")
+    demo_q = "តើនរណាខ្លះអាចស្នើសុំឱ្យតុលាការប្រកាសបើកអាណាព្យាបាលទូទៅ?"
+    if "search_query_val" not in st.session_state:
+        st.session_state["search_query_val"] = ""
+
+    col_demo, col_clear = st.columns([4, 1])
+    with col_demo:
+        if st.button("🎯 Load Benchmark Demo Query: «តើនរណាខ្លះអាចស្នើសុំឱ្យតុលាការប្រកាសបើកអាណាព្យាបាលទូទៅ?» (Expected: Art. 24)", key="btn_load_demo_q"):
+            st.session_state["search_query_val"] = demo_q
+            st.rerun()
+    with col_clear:
+        if st.session_state["search_query_val"] and st.button("Clear", key="btn_clear_q"):
+            st.session_state["search_query_val"] = ""
+            st.rerun()
 
     search_query = st.text_input(
         "Search legal terms, concepts, or article queries:",
+        value=st.session_state.get("search_query_val", ""),
         placeholder="e.g. កិច្ចសន្យា, គោលការណ៍ស្វ័យភាព, បទលួច, Article 311, self-defense",
     )
 
@@ -604,36 +763,8 @@ with tab_search:
             f"Retrieved **{len(results)}** articles in **{elapsed_ms:.1f}ms** using **{retriever_option.split(' [')[0]}**:"
         )
 
-        for doc in results:
-            meta = doc.chunk.metadata
-            score_text = ""
-            if doc.dense_score is not None:
-                score_text = f"Cosine Similarity: {doc.dense_score:.4f}"
-            elif doc.sparse_score is not None:
-                score_text = f"BM25 Score: {doc.sparse_score:.2f}"
-            elif doc.rrf_score is not None:
-                score_text = f"RRF Score: {doc.rrf_score:.4f}"
-
-            with st.container(border=True):
-                title_line = f" — {meta.article_title}" if meta.article_title else ""
-                st.markdown(f"#### {meta.law_name} — Article {meta.article_number}{title_line}")
-
-                col_meta, col_score = st.columns([3, 1])
-                with col_meta:
-                    hier = []
-                    if meta.book:
-                        hier.append(meta.book)
-                    if meta.chapter:
-                        hier.append(meta.chapter)
-                    if meta.section:
-                        hier.append(meta.section)
-                    if hier:
-                        st.caption("Hierarchy: " + " > ".join(hier))
-                with col_score:
-                    if score_text:
-                        st.caption(f"`{score_text}`")
-
-                st.markdown(f"```plaintext\n{doc.chunk.content}\n```")
+        for i, doc in enumerate(results, 1):
+            render_article_card(doc, index=i)
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -770,28 +901,56 @@ with tab_benchmark:
     with col_e1:
         st.markdown(
             """
-            **1. Exact Legal Term Match (BM25 Failure):**
-            - Query: *What is the principle of private autonomy?* (`ស្វ័យភាពនៃបុគ្គលឯកជន`)
-            - Ground Truth: Civil Code Art. 3.
-            - Failure Mode: Questions using colloquial Khmer phrasing miss when searching exact statutory terminology. Neural models bridge this gap via embedding geometry.
-
-            **2. Abstract Legal Concepts (BiLSTM Failure):**
-            - Query: *Principle of Legality* (`គ្មានទោសបើគ្មានច្បាប់ចែង`)
-            - Ground Truth: Criminal Code Art. 2.
-            - Failure Mode: BiLSTM trained from scratch struggles on rare Latin/French legal doctrine loan translations without massive pretraining.
-            """
+            <div class="error-card">
+                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px;">
+                    <strong style="font-size: 0.95rem;">1. Exact Term Mismatch (BM25 Failure)</strong>
+                    <span class="legal-law-badge badge-crim" style="font-size: 0.7rem;">Lexical Gap</span>
+                </div>
+                <p style="margin: 4px 0; font-size: 0.88rem;"><strong>Query:</strong> <em>What is the principle of private autonomy?</em> (<code>ស្វ័យភាពនៃបុគ្គលឯកជន</code>)</p>
+                <p style="margin: 4px 0; font-size: 0.88rem;"><strong>Ground Truth:</strong> Civil Code Art. 3</p>
+                <p style="margin: 4px 0; font-size: 0.85rem; color: #64748b;">
+                    <strong>Failure Mechanism:</strong> Questions using colloquial Khmer phrasing miss when searching exact statutory terminology. Neural models bridge this gap via semantic embedding geometry.
+                </p>
+            </div>
+            <div class="error-card">
+                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px;">
+                    <strong style="font-size: 0.95rem;">2. Abstract Legal Doctrine (BiLSTM Failure)</strong>
+                    <span class="legal-law-badge badge-crim" style="font-size: 0.7rem;">Representation Gap</span>
+                </div>
+                <p style="margin: 4px 0; font-size: 0.88rem;"><strong>Query:</strong> <em>Principle of Legality</em> (<code>គ្មានទោសបើគ្មានច្បាប់ចែង</code>)</p>
+                <p style="margin: 4px 0; font-size: 0.88rem;"><strong>Ground Truth:</strong> Criminal Code Art. 2</p>
+                <p style="margin: 4px 0; font-size: 0.85rem; color: #64748b;">
+                    <strong>Failure Mechanism:</strong> BiLSTM trained from scratch struggles on rare Latin/French legal doctrine loan translations without massive pretraining.
+                </p>
+            </div>
+            """,
+            unsafe_allow_html=True,
         )
     with col_e2:
         st.markdown(
             """
-            **3. Sub-Clause Disambiguation:**
-            - Query: *Remedies for defect in specific contract types*
-            - Ground Truth: Civil Code Art. 544 vs Art. 547.
-            - Failure Mode: Closely related procedural remedies within the same chapter have similar dense embeddings; reranker or BM25 hybrid fusion helps isolate the exact article.
-
-            **4. Lexical Gap on Criminal Offense Classes:**
-            - Query: *Classification into Felonies, Misdemeanors, and Petty Offenses*
-            - Ground Truth: Criminal Code Art. 46.
-            - Model Behavior: Handled with 100% Top-1 accuracy by A3 Full Fine-Tune.
-            """
+            <div class="error-card">
+                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px;">
+                    <strong style="font-size: 0.95rem;">3. Sub-Clause Disambiguation</strong>
+                    <span class="legal-law-badge badge-civil" style="font-size: 0.7rem;">Fine-Grained Scope</span>
+                </div>
+                <p style="margin: 4px 0; font-size: 0.88rem;"><strong>Query:</strong> <em>Remedies for defect in specific contract types</em></p>
+                <p style="margin: 4px 0; font-size: 0.88rem;"><strong>Ground Truth:</strong> Civil Code Art. 544 vs Art. 547</p>
+                <p style="margin: 4px 0; font-size: 0.85rem; color: #64748b;">
+                    <strong>Failure Mechanism:</strong> Closely related procedural remedies within the same chapter have similar dense embeddings; reranker or BM25 hybrid fusion helps isolate the exact article.
+                </p>
+            </div>
+            <div class="error-card">
+                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px;">
+                    <strong style="font-size: 0.95rem;">4. Lexical Gap on Criminal Offense Classes</strong>
+                    <span class="badge-verified" style="font-size: 0.7rem;">100% Solved by A3</span>
+                </div>
+                <p style="margin: 4px 0; font-size: 0.88rem;"><strong>Query:</strong> <em>Classification into Felonies, Misdemeanors, and Petty Offenses</em></p>
+                <p style="margin: 4px 0; font-size: 0.88rem;"><strong>Ground Truth:</strong> Criminal Code Art. 46</p>
+                <p style="margin: 4px 0; font-size: 0.85rem; color: #64748b;">
+                    <strong>Model Behavior:</strong> Handled with 100% Top-1 accuracy by A3 Full Fine-Tune, effectively mapping colloquial category queries to formal legal statutory classifications.
+                </p>
+            </div>
+            """,
+            unsafe_allow_html=True,
         )
