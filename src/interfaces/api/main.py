@@ -5,8 +5,14 @@ Run with:
 uvicorn src.interfaces.api.main:app --reload
 """
 
+from pathlib import Path
+from dotenv import load_dotenv
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+
+# Automatically load .env from repository root
+repo_root = Path(__file__).resolve().parent.parent.parent.parent
+load_dotenv(repo_root / ".env")
 
 from src.config.logging import get_logger, setup_logging
 from src.interfaces.api.routes import health, qa, retrieval

@@ -6,9 +6,9 @@ import {
   Cpu,
   Database,
   ExternalLink,
-  Key,
   X,
   Search,
+  CheckCircle2,
 } from 'lucide-react'
 import type { ChatSession, ModelOption } from '../types'
 
@@ -23,8 +23,6 @@ interface SidebarProps {
   models: ModelOption[]
   activeModel: ModelOption
   onSelectModel: (model: ModelOption) => void
-  apiKey: string
-  setApiKey: (key: string) => void
 }
 
 export const Sidebar: React.FC<SidebarProps> = ({
@@ -38,21 +36,12 @@ export const Sidebar: React.FC<SidebarProps> = ({
   models,
   activeModel,
   onSelectModel,
-  apiKey,
-  setApiKey,
 }) => {
   const [searchHistory, setSearchHistory] = useState('')
-  const [showKeyModal, setShowKeyModal] = useState(false)
-  const [tempKey, setTempKey] = useState(apiKey)
 
   const filteredSessions = sessions.filter((s) =>
     s.title.toLowerCase().includes(searchHistory.toLowerCase())
   )
-
-  const handleSaveKey = () => {
-    setApiKey(tempKey)
-    setShowKeyModal(false)
-  }
 
   return (
     <>
@@ -170,7 +159,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
             className="w-full text-xs bg-background border border-border/80 rounded-lg p-2 text-foreground font-medium outline-none focus:border-primary cursor-pointer"
           >
             {models.map((m) => (
-              <option key={m.id} value={m.id}>
+              <option key={m.id} value={m.id} className="bg-card text-foreground py-1">
                 {m.name} ({m.params}) {m.winner ? '🏆' : ''}
               </option>
             ))}
@@ -202,13 +191,10 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
         {/* Footer Actions */}
         <div className="p-3 border-t border-border/70 flex items-center justify-between text-xs text-muted-foreground">
-          <button
-            onClick={() => setShowKeyModal(true)}
-            className="flex items-center gap-1 hover:text-foreground p-1 rounded transition-colors"
-          >
-            <Key className="w-3.5 h-3.5 text-amber-500" />
-            <span>{apiKey ? 'API Key Set' : 'Add API Key'}</span>
-          </button>
+          <div className="flex items-center gap-1.5 text-emerald-600 dark:text-emerald-400 font-medium">
+            <CheckCircle2 className="w-3.5 h-3.5" />
+            <span className="text-[11px]">.env API Key Active</span>
+          </div>
 
           <a
             href="http://localhost:8501"
@@ -222,54 +208,6 @@ export const Sidebar: React.FC<SidebarProps> = ({
           </a>
         </div>
       </aside>
-
-      {/* API Key Modal */}
-      {showKeyModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs">
-          <div className="bg-card border border-border rounded-2xl max-w-md w-full p-5 shadow-2xl space-y-4">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <Key className="w-5 h-5 text-amber-500" />
-                <h3 className="font-bold text-base text-foreground">DeepSeek API Key</h3>
-              </div>
-              <button
-                onClick={() => setShowKeyModal(false)}
-                className="p-1 rounded-md text-muted-foreground hover:text-foreground"
-              >
-                <X className="w-4 h-4" />
-              </button>
-            </div>
-
-            <p className="text-xs text-muted-foreground leading-relaxed">
-              If your backend already has <code>DEEPSEEK_API_KEY</code> set in <code>.env</code>,
-              you do not need to enter one here. Enter an override key if you wish to query directly.
-            </p>
-
-            <input
-              type="password"
-              value={tempKey}
-              onChange={(e) => setTempKey(e.target.value)}
-              placeholder="sk-..."
-              className="w-full text-xs bg-muted/50 border border-border rounded-lg p-2.5 text-foreground placeholder:text-muted-foreground outline-none focus:border-primary"
-            />
-
-            <div className="flex justify-end gap-2 pt-2">
-              <button
-                onClick={() => setShowKeyModal(false)}
-                className="px-3 py-1.5 rounded-lg text-xs font-medium text-muted-foreground hover:text-foreground hover:bg-muted"
-              >
-                Cancel
-              </button>
-              <button
-                onClick={handleSaveKey}
-                className="px-4 py-1.5 rounded-lg text-xs font-semibold bg-primary text-primary-foreground hover:bg-primary/90"
-              >
-                Save Key
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
     </>
   )
 }

@@ -76,9 +76,9 @@ export const Header: React.FC<HeaderProps> = ({
             onChange={(e) => setTopK(Number(e.target.value))}
             className="bg-transparent text-foreground font-semibold outline-none cursor-pointer"
           >
-            <option value={3}>3</option>
-            <option value={5}>5</option>
-            <option value={10}>10</option>
+            <option value={3} className="bg-card text-foreground">3</option>
+            <option value={5} className="bg-card text-foreground">5</option>
+            <option value={10} className="bg-card text-foreground">10</option>
           </select>
         </div>
 

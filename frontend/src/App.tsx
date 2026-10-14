@@ -147,23 +147,12 @@ export const App: React.FC = () => {
   const [activeModel, setActiveModel] = useState<ModelOption>(AVAILABLE_MODELS[0])
   const [statuteFilter, setStatuteFilter] = useState<StatuteFilter>('ALL')
   const [topK, setTopK] = useState(5)
-  const [apiKey, setApiKey] = useState(() => localStorage.getItem('khmer_legal_api_key') || '')
-
   const messagesEndRef = useRef<HTMLDivElement>(null)
 
   // Sync sessions to localStorage
   useEffect(() => {
     localStorage.setItem('khmer_legal_chat_sessions', JSON.stringify(sessions))
   }, [sessions])
-
-  // Sync API key to localStorage
-  useEffect(() => {
-    if (apiKey) {
-      localStorage.setItem('khmer_legal_api_key', apiKey)
-    } else {
-      localStorage.removeItem('khmer_legal_api_key')
-    }
-  }, [apiKey])
 
   // Sync theme
   useEffect(() => {
@@ -253,7 +242,6 @@ export const App: React.FC = () => {
           question: queryText,
           top_k: topK,
           law_filter: lawFilterParam,
-          api_key: apiKey || undefined,
         }),
       })
 
@@ -330,8 +318,6 @@ export const App: React.FC = () => {
         models={AVAILABLE_MODELS}
         activeModel={activeModel}
         onSelectModel={setActiveModel}
-        apiKey={apiKey}
-        setApiKey={setApiKey}
       />
 
       {/* Main Chat Viewport */}

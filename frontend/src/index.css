@@ -88,3 +88,16 @@
 ::-webkit-scrollbar-thumb:hover {
   background: rgba(150, 150, 150, 0.4);
 }
+
+/* Select options high contrast fix for Windows/Chrome dark mode */
+select option {
+  background-color: #ffffff;
+  color: #0f172a;
+  padding: 8px;
+}
+
+.dark select option {
+  background-color: #13151b;
+  color: #f8fafc;
+  padding: 8px;
+}
