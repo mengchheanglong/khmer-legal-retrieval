@@ -90,9 +90,15 @@ class BiLSTMEncoder(nn.Module):
         embedded = self.embedding(input_ids)
         embedded = self.dropout(embedded)
 
-        # Pack sequence or run directly through LSTM
-        # (B, L, embed_dim) -> (B, L, 2 * hidden_dim)
-        lstm_out, _ = self.lstm(embedded)
+        # Pack sequence to avoid padding contamination in backward LSTM states
+        lengths = attention_mask.sum(dim=1).clamp(min=1).to(torch.int64).cpu()
+        packed_embedded = nn.utils.rnn.pack_padded_sequence(
+            embedded, lengths, batch_first=True, enforce_sorted=False
+        )
+        packed_out, _ = self.lstm(packed_embedded)
+        lstm_out, _ = nn.utils.rnn.pad_packed_sequence(
+            packed_out, batch_first=True, total_length=input_ids.size(1)
+        )
         lstm_out = self.dropout(lstm_out)
 
         # Masked mean pooling over non-padded tokens

@@ -73,14 +73,24 @@ class Citation(BaseModel):
     A verified legal citation extracted from the LLM response.
 
     Links a claim in the generated answer to a specific article.
+    Distinguishes citation presence in retrieved context from factual support.
     """
     law_name: str
     article_number: int
     excerpt: str = Field(..., description="Verbatim text from the cited article")
     is_verified: bool = Field(
         default=False,
-        description="Whether this citation was found in the retrieved context"
+        description="Whether this citation was found in the retrieved context (citation presence)"
     )
+    has_factual_support: Optional[bool] = Field(
+        default=None,
+        description="Whether the cited retrieved article provides factual support for the proposition"
+    )
+    support_notes: Optional[str] = Field(
+        default=None,
+        description="Explanation of factual grounding vs non-support/irrelevant citation"
+    )
+
 
 
 class QAResponse(BaseModel):

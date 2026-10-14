@@ -145,6 +145,33 @@ class RetrieverTrainer:
             if "query_ids" in batch and "passage_ids" in batch:
                 q_emb = self.model(batch["query_ids"].to(self.device), batch["query_mask"].to(self.device))
                 p_emb = self.model(batch["passage_ids"].to(self.device), batch["passage_mask"].to(self.device))
+            elif hasattr(self.model, "tokenizer"):
+                # Transformer-based models (A3 XLM-R, A4 PrahokBART)
+                # Call tokenizer and forward() directly to preserve autograd gradient graph
+                model_cls = type(self.model).__name__.lower()
+                prefix_q = "query: " if ("xlm" in model_cls or "e5" in model_cls) else ""
+                prefix_p = "passage: " if ("xlm" in model_cls or "e5" in model_cls) else ""
+                q_texts = [f"{prefix_q}{q}" for q in queries]
+                p_texts = [f"{prefix_p}{p}" for p in passages]
+                max_len = getattr(self.model, "max_length", 256)
+
+                encoded_q = self.model.tokenizer(
+                    q_texts,
+                    max_length=max_len,
+                    padding=True,
+                    truncation=True,
+                    return_tensors="pt",
+                ).to(self.device)
+                encoded_p = self.model.tokenizer(
+                    p_texts,
+                    max_length=max_len,
+                    padding=True,
+                    truncation=True,
+                    return_tensors="pt",
+                ).to(self.device)
+
+                q_emb = self.model(encoded_q["input_ids"], encoded_q["attention_mask"])
+                p_emb = self.model(encoded_p["input_ids"], encoded_p["attention_mask"])
             elif hasattr(self.model, "encode_queries") and hasattr(self.model, "encode_passages"):
                 q_emb = self.model.encode_queries(queries, device=self.device)
                 p_emb = self.model.encode_passages(passages, device=self.device)
@@ -195,6 +222,31 @@ class RetrieverTrainer:
                 if "query_ids" in batch and "passage_ids" in batch:
                     q_emb = self.model(batch["query_ids"].to(self.device), batch["query_mask"].to(self.device))
                     p_emb = self.model(batch["passage_ids"].to(self.device), batch["passage_mask"].to(self.device))
+                elif hasattr(self.model, "tokenizer"):
+                    model_cls = type(self.model).__name__.lower()
+                    prefix_q = "query: " if ("xlm" in model_cls or "e5" in model_cls) else ""
+                    prefix_p = "passage: " if ("xlm" in model_cls or "e5" in model_cls) else ""
+                    q_texts = [f"{prefix_q}{q}" for q in queries]
+                    p_texts = [f"{prefix_p}{p}" for p in passages]
+                    max_len = getattr(self.model, "max_length", 256)
+
+                    encoded_q = self.model.tokenizer(
+                        q_texts,
+                        max_length=max_len,
+                        padding=True,
+                        truncation=True,
+                        return_tensors="pt",
+                    ).to(self.device)
+                    encoded_p = self.model.tokenizer(
+                        p_texts,
+                        max_length=max_len,
+                        padding=True,
+                        truncation=True,
+                        return_tensors="pt",
+                    ).to(self.device)
+
+                    q_emb = self.model(encoded_q["input_ids"], encoded_q["attention_mask"])
+                    p_emb = self.model(encoded_p["input_ids"], encoded_p["attention_mask"])
                 elif hasattr(self.model, "encode_queries") and hasattr(self.model, "encode_passages"):
                     q_emb = self.model.encode_queries(queries, device=self.device)
                     p_emb = self.model.encode_passages(passages, device=self.device)

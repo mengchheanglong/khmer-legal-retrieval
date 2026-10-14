@@ -486,50 +486,50 @@ khmer-legal-retrieval/
 
 ---
 
-## 9. Prototype: RAG Demo Application
+## 9. Prototype: Citation-Grounded Legal Assistant
 
-The working prototype integrates our winning retriever (A3 XLM-R) into an interactive, citation-grounded Khmer legal assistant (`FastAPI` + `Streamlit`):
+The project provides two distinct execution paths designed according to **Clean Architecture** principles:
+
+### 9.1 Path A: Interactive Streamlit UI (Primary Demonstration & Defense Mode)
+The interactive demo (`streamlit_app.py`) executes use cases directly **in-process** without requiring external database or microservice overhead:
+1. **Retriever Ingestion & Model Selection:** Ingests the 1,976 Khmer statutory articles and runs local retrieval via our winning PyTorch checkpoint (Approach A3: XLM-R full fine-tune) or the lexical BM25 baseline with `khmer-nltk` tokenization.
+2. **Grounded Synthesis:** Calls DeepSeek Flash (`deepseek-chat`) with strict system prompts requiring article citations (`មាត្រា N` / `(Civil Code 2007, Article N)`).
+3. **Compound Citation Verification:** Verifies citations against compound `(law_name, article_number)` identifiers to avoid Civil vs Criminal article collisions, and flags whether retrieved articles provide factual support vs explicit lack-of-coverage disclaimers.
+4. **Live Benchmark Audit:** Surfaces real metrics from `results/metrics/summary.csv` and side-by-side comparative diagnostics.
 
 ```mermaid
 sequenceDiagram
     autonumber
-    actor User as Citizen / Legal Researcher
-    participant UI as Streamlit Web UI
-    participant API as FastAPI Backend
-    participant Ret as Hybrid Retriever (A3 + BM25)
-    participant Rerank as BGE Cross-Encoder
-    participant LLM as DeepSeek Flash (v4)
-    participant Guard as Citation Verifier
+    actor User as Citizen / Researcher
+    participant UI as Streamlit Web App (streamlit_app.py)
+    participant Ret as In-Process Retriever (A3 PyTorch / BM25)
+    participant LLM as DeepSeek Flash (v4 API)
+    participant Guard as Compound Citation Verifier
 
-    User->>UI: Enters legal question (Khmer)
-    UI->>API: POST /api/v1/qa
-    API->>Ret: Query string
-    Ret->>Ret: Dense Search (A3 PyTorch Encoder) + Sparse Search (BM25)
-    Ret->>Rerank: Top candidates fused via RRF
-    Rerank-->>API: Top-k Relevant Articles with Full Text
-    API->>LLM: Grounding Prompt (Question + Retrieved Articles)
-    LLM-->>API: Draft answer citing statutory articles
-    API->>Guard: Verify citations (មាត្រា N) exist in retrieved context
-    Guard-->>API: Verified citation status (Grounding Pass)
-    API-->>UI: Answer with verified statutory citations & latency
-    UI-->>User: Interactive citation-grounded response
+    User->>UI: Select retriever (A3 XLM-R / BM25) & ask Khmer legal question
+    UI->>Ret: Search question against 1,976 articles
+    Ret-->>UI: Top-5 retrieved statutory articles with text & similarity
+    UI->>LLM: Grounded prompt (question + retrieved articles)
+    LLM-->>UI: Generated legal response citing articles
+    UI->>Guard: Verify (law, article) existence in retrieved context & check factual support
+    Guard-->>UI: Verified / unverified status + factual support notes
+    UI-->>User: Render legal analysis, citation badges, and retrieved statutory context
 ```
 
-- **Architecture:** The prototype application runs **natively on the official Khmer corpus** (1,976 articles).
-- **Retriever:** Hybrid search combining dense vectors from our winning fine-tuned PyTorch checkpoint (`TorchEncoderEmbedding` wrapping A3 XLM-R) and BM25 sparse lexical search tokenized with `khmer-nltk`. Fused via Reciprocal Rank Fusion (RRF) and reranked via `BAAI/bge-reranker-large`.
-- **Generation & Citation Grounding:** DeepSeek (`deepseek-chat`) synthesizes natural Khmer answers grounded strictly in retrieved articles, with automated verification of statutory references (`មាត្រា N`).
+### 9.2 Path B: REST Microservice API (Clean Architecture Backend)
+The repository also includes a production-style REST API (`FastAPI` at `src/interfaces/api/main:app`) exposing standard OpenAPI endpoints (`/api/v1/qa`, `/api/v1/retrieval`):
+- **Dependency Injection:** Resolves domain ports to infrastructure adapters via `src/interfaces/api/dependencies.py`.
+- **Flexible Embedders:** Prioritizes local fine-tuned PyTorch A3 weights (`TorchEncoderEmbedding`) when available, falling back gracefully to external embeddings (`OpenAIEmbedding`).
+- **Storage Layer:** Integrates PostgreSQL + pgvector for persistent vector indexing, with automatic in-memory fallback.
 
 ```bash
-# 1. Index Khmer chunks with A3 dense embeddings and BM25
-python -m src.pipeline.embed
-
-# 2. Launch Streamlit UI
+# --- Launch Path A: Streamlit UI (Primary Defense Demo) ---
 streamlit run streamlit_app.py                  # UI  → http://localhost:8501
 
-# 3. Launch FastAPI backend
+# --- Launch Path B: FastAPI REST Service (Microservice Mode) ---
 uvicorn src.interfaces.api.main:app --reload    # API → http://localhost:8000/docs
 
-# 4. Or launch complete containerized stack via Docker Compose
+# --- Optional: Complete Containerized Stack with pgvector ---
 docker compose up --build                       # UI + API + PostgreSQL/pgvector
 ```
 

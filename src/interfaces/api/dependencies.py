@@ -6,12 +6,15 @@ and provides initialized use case instances to route handlers.
 """
 
 from functools import lru_cache
+from pathlib import Path
 
 from src.config.settings import Settings, get_settings
 from src.application.use_cases.answer_legal_qa import AnswerLegalQAUseCase
 from src.application.use_cases.hybrid_retrieve import HybridRetrieveUseCase
+from src.domain.ports.embedding_port import EmbeddingPort
 from src.infrastructure.ai.openai_embedding import OpenAIEmbedding
 from src.infrastructure.ai.openai_llm import OpenAILLM
+from src.infrastructure.ai.torch_encoder_embedding import TorchEncoderEmbedding
 from src.infrastructure.retrieval.bm25_retriever import BM25Retriever
 from src.infrastructure.retrieval.cross_encoder_reranker import CrossEncoderReranker
 from src.infrastructure.storage.db_session import create_db_engine, get_session_factory
@@ -44,6 +47,23 @@ def get_openai_embedding() -> OpenAIEmbedding:
 
 
 @lru_cache()
+def get_embedder() -> EmbeddingPort:
+    """
+    Singleton dense embedder for FastAPI.
+
+    Prioritizes the local fine-tuned PyTorch checkpoint (Approach A3: XLM-R)
+    if available in results/checkpoints, otherwise falls back to OpenAI embeddings.
+    """
+    ckpt = Path("results/checkpoints/a3_xlmr_finetune/best.pt")
+    if ckpt.exists():
+        try:
+            return TorchEncoderEmbedding(checkpoint_path=ckpt)
+        except Exception:
+            pass
+    return get_openai_embedding()
+
+
+@lru_cache()
 def get_openai_llm() -> OpenAILLM:
     """Singleton OpenAI LLM generation adapter."""
     return OpenAILLM()
@@ -59,7 +79,7 @@ def get_hybrid_retriever() -> HybridRetrieveUseCase:
     """Factory for HybridRetrieveUseCase."""
     settings = get_settings()
     return HybridRetrieveUseCase(
-        embedder=get_openai_embedding(),
+        embedder=get_embedder(),
         vector_store=get_pgvector_repository(),
         sparse_retriever=get_bm25_retriever(),
         reranker=get_reranker(),

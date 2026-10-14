@@ -20,7 +20,7 @@
 | Clean, modular, runnable code (§5B) | ✅ | Modular packages under `src/dl/`, `src/application/`, `src/infrastructure/`, with 138 passing tests |
 | Task-appropriate metrics (§5C) | ✅ | Recall@1/5/10, MRR@10, nDCG@10, Hit@5, and 95% bootstrap CIs in `src/dl/evaluate.py` |
 | Train/val curves for every approach (§5C) | ✅ | Per-epoch CSV logs in `results/logs/` and overlaid curves in `results/figures/learning_curves.png` |
-| Hyperparameter tuning: LR + one regularisation choice (§5C) | 🟡 | Real 2×2 grids for A1, A2, A4 in `results/tuning/`; A3 (best approach) used a single chosen configuration, not a search, due to ~2h/run CPU cost (see README §4.1 note) |
+| Hyperparameter tuning: LR + one regularisation choice (§5C) | ✅ | Systematic grid search executed for all 4 models in `results/tuning/`; A3 6-run grid on Tesla T4 GPU (LR {1e-5, 2e-5, 3e-5} × WD {0.0, 0.01}) recorded in `results/tuning/a3.csv` |
 | Params, training time, hardware per approach (§5C) | ✅ | Logged to `results/metrics/*.json` and summarized in README §5.1 table |
 | Error analysis (§5C) | ✅ | Quantitative categorization across 4 models and linguistic worked examples in `results/error_analysis/` |
 | Single results table + ≥ 2 comparison figures (§5D) | ✅ | Markdown table in README §5.1 + 4 publication figures in `results/figures/` |
@@ -31,7 +31,7 @@
 | `requirements.txt` with exact packages (§6.1) | ✅ | Exact package versions pinned in `requirements.txt` |
 | Weights > 50 MB hosted externally with link (§9) | 🟡 | A3 checkpoint (~1.1 GB) saved locally; upload instructions documented in `results/checkpoints/README.md` |
 | Regular commit history (§6.1) | ✅ | Regular, small, descriptive commits maintained across all PRs #1–#7 |
-| Slides 10–20, required structure (§6.2) | ✅ | 12 slides: 6 core slides timed to 5 minutes + 6 Q&A appendix slides, compiled to `slides/final_presentation.pdf` |
+| Slides 10–20, required structure (§6.2, §6.3) | ✅ | 15 slides: 11 main slides timed to 10 minutes + 4 reserve Q&A appendix slides, compiled to `slides/final_presentation.pdf` |
 
 ---
 
@@ -153,7 +153,7 @@
 
 ---
 
-## Phase 8: Slides & Presentation (10–20 slides, 5 min + 5 min Q&A)
+## Phase 8: Slides & Presentation (10–20 slides, 10 min + 5 min Q&A)
 - [x] Problem & motivation (Khmer, official text, input → output)
 - [x] Dataset & pipeline (ODC PDFs, Limon problem and conversion, article chunking, sizes, splits, leakage guard)
 - [x] Architectures & strategies (A1–A4 diagrams, tokenization contrast, justification)
@@ -161,7 +161,7 @@
 - [x] Results (single table, learning curves, metric chart)
 - [x] Discussion & error analysis (why the winner won, Khmer failure cases, limitations)
 - [x] Conclusion & future work; appendix (tuning table, examples, parameter counts)
-- [x] Export to `slides/final_presentation.pdf`; rehearse to ≤ 5 minutes
+- [x] Export to `slides/final_presentation.pdf`; rehearse to ≤ 10 minutes (§6.2, §6.3)
 - [x] Q&A prep: Limon reordering, InfoNCE, in-batch negatives, pooling, freezing, checkpoint/resume, each metric, every line of `src/dl/`
 
 ---

@@ -209,6 +209,21 @@ class AnswerLegalQAUseCase:
 
         return question
 
+    @staticmethod
+    def _canonical_law_name(name: Optional[str]) -> str:
+        """Canonicalize Khmer/English law names to standard corpus identifiers."""
+        if not name:
+            return "Civil Code 2007"
+        name_clean = name.strip()
+        name_lower = name_clean.lower()
+        if "ព្រហ្មទណ្ឌ" in name_clean or "criminal" in name_lower or "penal" in name_lower:
+            return "Criminal Code 2009"
+        if "អាជ្ញាកណ្តាល" in name_clean or "arbitration" in name_lower:
+            return "Law on Commercial Arbitration 2006"
+        if "រដ្ឋប្បវេណី" in name_clean or "civil" in name_lower:
+            return "Civil Code 2007"
+        return name_clean
+
     def _verify_citations(
         self,
         answer: str,
@@ -217,39 +232,160 @@ class AnswerLegalQAUseCase:
         """
         Extract and verify article citations from the generated answer.
 
-        Supports both English ("Article 336") and Khmer ("មាត្រា ៣៣៦" or "មាត្រា 336") citations.
+        Verifies against compound (law_name, article_number) identifiers to prevent
+        collisions between overlapping article numbers in Civil vs Criminal codes.
+        Also distinguishes between citation presence (article was in retrieved context)
+        and factual support (article substantively grounds the legal claim vs cited
+        as non-answering / insufficient context).
 
         Args:
             answer: The LLM-generated answer text.
             retrieved_docs: The articles used as context.
 
         Returns:
-            List of Citation objects with verification status.
+            List of Citation objects with compound verification and factual support status.
         """
         # Convert Khmer digits to Arabic digits (០-៩ -> 0-9)
         khmer_to_arabic = str.maketrans("០១២៣៤៥៦៧៨៩", "0123456789")
         normalized_answer = answer.translate(khmer_to_arabic)
 
-        # Match Article citations in English and Khmer
-        english_articles = re.findall(r"Article\s+(\d+)", normalized_answer, re.IGNORECASE)
-        khmer_articles = re.findall(r"មាត្រា\s*(\d+)", normalized_answer)
-        all_cited_nums = set(int(n) for n in (english_articles + khmer_articles))
+        # Build compound lookup for retrieved articles: (canonical_law_name, article_number) -> doc
+        retrieved_lookup: dict[tuple[str, int], RetrievedDocument] = {}
+        retrieved_laws: list[str] = []
+        for doc in retrieved_docs:
+            canon_law = self._canonical_law_name(doc.chunk.metadata.law_name)
+            art_num = doc.chunk.metadata.article_number
+            retrieved_lookup[(canon_law, art_num)] = doc
+            retrieved_laws.append(canon_law)
 
-        # Build a lookup of retrieved article numbers
-        retrieved_articles = {
-            doc.chunk.metadata.article_number: doc for doc in retrieved_docs
-        }
+        # Determine dominant law in retrieved context for ambiguous citations
+        dominant_law = "Civil Code 2007"
+        if retrieved_laws:
+            dominant_law = max(set(retrieved_laws), key=retrieved_laws.count)
+
+        # 1. Match compound citations where law is explicitly mentioned
+        # Patterns for: <Law> ... Article <N>
+        preceding_law_patterns = [
+            (
+                r"(?:ក្រម\s*ព្រហ្មទណ្ឌ|Criminal\s+Code|Penal\s+Code)[\s\w,.-]{0,35}?(?:មាត្រា|Article)\s*(\d+)",
+                "Criminal Code 2009",
+            ),
+            (
+                r"(?:ក្រម\s*រដ្ឋប្បវេណី|Civil\s+Code)[\s\w,.-]{0,35}?(?:មាត្រា|Article)\s*(\d+)",
+                "Civil Code 2007",
+            ),
+            (
+                r"(?:អាជ្ញាកណ្តាល|Commercial\s+Arbitration)[\s\w,.-]{0,35}?(?:មាត្រា|Article)\s*(\d+)",
+                "Law on Commercial Arbitration 2006",
+            ),
+        ]
+
+        # Patterns for: Article <N> ... of <Law>
+        succeeding_law_patterns = [
+            (
+                r"(?:មាត្រា|Article)\s*(\d+)[\s\w,.-]{0,35}?(?:នៃ|of(?: the)?)\s*(?:ក្រម\s*ព្រហ្មទណ្ឌ|Criminal\s+Code|Penal\s+Code)",
+                "Criminal Code 2009",
+            ),
+            (
+                r"(?:មាត្រា|Article)\s*(\d+)[\s\w,.-]{0,35}?(?:នៃ|of(?: the)?)\s*(?:ក្រម\s*រដ្ឋប្បវេណី|Civil\s+Code)",
+                "Civil Code 2007",
+            ),
+            (
+                r"(?:មាត្រា|Article)\s*(\d+)[\s\w,.-]{0,35}?(?:នៃ|of(?: the)?)\s*(?:អាជ្ញាកណ្តាល|Commercial\s+Arbitration)",
+                "Law on Commercial Arbitration 2006",
+            ),
+        ]
+
+        cited_compound: set[tuple[str, int]] = set()
+        matched_art_nums: set[int] = set()
+
+        for pattern, law in preceding_law_patterns:
+            for match in re.finditer(pattern, normalized_answer, re.IGNORECASE):
+                num = int(match.group(1))
+                cited_compound.add((law, num))
+                matched_art_nums.add(num)
+
+        for pattern, law in succeeding_law_patterns:
+            for match in re.finditer(pattern, normalized_answer, re.IGNORECASE):
+                num = int(match.group(1))
+                cited_compound.add((law, num))
+                matched_art_nums.add(num)
+
+        # 2. Match remaining standalone citations (e.g. "Article 388" or "មាត្រា ៣៨៨")
+        all_articles = re.findall(r"(?:Article\s+(\d+)|មាត្រា\s*(\d+))", normalized_answer, re.IGNORECASE)
+        standalone_nums = set()
+        for g1, g2 in all_articles:
+            raw_n = g1 or g2
+            if raw_n:
+                standalone_nums.add(int(raw_n))
+
+        for num in standalone_nums:
+            if num in matched_art_nums:
+                continue
+
+            # Infer statute from retrieved documents or context
+            candidate_laws = [law for (law, art) in retrieved_lookup.keys() if art == num]
+            if len(candidate_laws) == 1:
+                resolved_law = candidate_laws[0]
+            elif candidate_laws:
+                resolved_law = dominant_law if dominant_law in candidate_laws else candidate_laws[0]
+            else:
+                # Check if the surrounding text mentions criminal vs civil
+                resolved_law = dominant_law
+
+            cited_compound.add((resolved_law, num))
+
+        # Check for explicit disclaimer keywords indicating lack of factual support
+        disclaimer_markers = [
+            "មិនបានបញ្ជាក់",
+            "មិនមានចែង",
+            "មិនចែង",
+            "គ្មានមាត្រាណាមួយ",
+            "មិនអាចឆ្លើយ",
+            "does not explicitly address",
+            "does not address",
+            "no article",
+            "not mentioned",
+            "do not mention",
+            "cannot answer",
+        ]
+        has_overall_disclaimer = any(marker in normalized_answer for marker in disclaimer_markers)
 
         citations: list[Citation] = []
-        for article_num in all_cited_nums:
-            is_verified = article_num in retrieved_articles
+        # Sort for deterministic output: by law, then article number
+        for law_name, article_num in sorted(cited_compound, key=lambda x: (x[0], x[1])):
+            doc = retrieved_lookup.get((law_name, article_num))
+            is_verified = doc is not None
 
             excerpt = ""
-            law_name = "Civil Code 2007"
-            if is_verified:
-                doc = retrieved_articles[article_num]
+            has_factual_support: Optional[bool] = None
+            support_notes: Optional[str] = None
+
+            if is_verified and doc is not None:
                 excerpt = doc.chunk.content[:300]
-                law_name = doc.chunk.metadata.law_name
+                if has_overall_disclaimer:
+                    has_factual_support = False
+                    support_notes = (
+                        f"Article {article_num} ({law_name}) is present in retrieved context, "
+                        "but cited in the answer as non-supportive or insufficient to address the question."
+                    )
+                else:
+                    has_factual_support = True
+                    support_notes = (
+                        f"Article {article_num} ({law_name}) is present in retrieved context "
+                        "and corroborates substantive legal statements in the answer."
+                    )
+            else:
+                has_factual_support = False
+                support_notes = (
+                    f"Article {article_num} ({law_name}) was cited in the answer but was NOT found "
+                    "in the retrieved context (unverified citation / hallucination)."
+                )
+                logger.warning(
+                    "Unverified citation detected",
+                    law_name=law_name,
+                    article_number=article_num,
+                )
 
             citations.append(
                 Citation(
@@ -257,10 +393,9 @@ class AnswerLegalQAUseCase:
                     article_number=article_num,
                     excerpt=excerpt,
                     is_verified=is_verified,
+                    has_factual_support=has_factual_support,
+                    support_notes=support_notes,
                 )
             )
-
-            if not is_verified:
-                logger.warning("Unverified citation detected", article_number=article_num)
 
         return citations

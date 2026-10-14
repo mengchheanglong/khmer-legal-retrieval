@@ -67,3 +67,79 @@ def test_answer_legal_qa_unverified_citation_flagged():
     assert len(response.citations) == 1
     assert response.citations[0]["article_number"] == 999
     assert response.citations[0]["is_verified"] is False
+    assert response.citations[0]["has_factual_support"] is False
+
+
+def test_compound_law_citation_distinguishes_civil_and_criminal():
+    """Verify that compound law-and-article matching distinguishes Civil vs Criminal overlapping numbers."""
+    mock_retriever = MagicMock()
+    mock_llm = MagicMock()
+
+    # Context contains Criminal Code Article 100
+    chunk_crim100 = LegalChunk(
+        chunk_id="chk_crim_100",
+        content="មាត្រា ១០០.- បទល្មើសព្រហ្មទណ្ឌ...",
+        content_with_context="[Criminal Code 2009] Article 100",
+        metadata=LegalMetadata(
+            law_name="Criminal Code 2009",
+            article_number=100,
+            language=Language.KHMER,
+        ),
+    )
+    mock_retriever.execute.return_value = [RetrievedDocument(chunk=chunk_crim100)]
+
+    # Model incorrectly cites Civil Code 2007 Article 100, but correctly cites Criminal Code Article 100
+    mock_llm.generate.return_value = (
+        "យោងតាម ក្រមរដ្ឋប្បវេណី មាត្រា ១០០ និង ក្រមព្រហ្មទណ្ឌ មាត្រា ១០០..."
+    )
+
+    qa_use_case = AnswerLegalQAUseCase(retriever=mock_retriever, llm=mock_llm)
+    req = LegalQARequest(question="តើមាត្រា ១០០ ចែងអំពីអ្វី?")
+    response = qa_use_case.execute(req)
+
+    assert len(response.citations) == 2
+    by_law = {c["law_name"]: c for c in response.citations}
+
+    # Civil Code 100 was NOT retrieved, so it must be unverified
+    assert by_law["Civil Code 2007"]["is_verified"] is False
+    assert by_law["Civil Code 2007"]["has_factual_support"] is False
+
+    # Criminal Code 100 WAS retrieved, so it must be verified
+    assert by_law["Criminal Code 2009"]["is_verified"] is True
+    assert by_law["Criminal Code 2009"]["has_factual_support"] is True
+
+
+def test_citation_presence_distinguished_from_factual_support():
+    """When model disclaims coverage, retrieved citations have presence verified but factual support False."""
+    mock_retriever = MagicMock()
+    mock_llm = MagicMock()
+
+    chunk388 = LegalChunk(
+        chunk_id="chk_388",
+        content="មាត្រា ៣៨៨.- ការអនុវត្តតាមបញ្ញត្តិស្តីពីការសង...",
+        content_with_context="[Civil Code 2007] Article 388",
+        metadata=LegalMetadata(
+            law_name="Civil Code 2007",
+            article_number=388,
+            language=Language.KHMER,
+        ),
+    )
+    mock_retriever.execute.return_value = [RetrievedDocument(chunk=chunk388)]
+
+    # Answer contains disclaimer that context does not address the question
+    mock_llm.generate.return_value = (
+        "អត្ថបទច្បាប់ដែលបានផ្ដល់ឱ្យមិនបានបញ្ជាក់អំពីសំណួរនេះទេ។ "
+        "មាត្រា ៣៨៨ នៃក្រមរដ្ឋប្បវេណី ចែងអំពីការអនុវត្តតាមបញ្ញត្តិស្តីពីការសង មិនមែនការបង្កើតកិច្ចសន្យាទេ។"
+    )
+
+    qa_use_case = AnswerLegalQAUseCase(retriever=mock_retriever, llm=mock_llm)
+    req = LegalQARequest(question="តើកិច្ចសន្យាបង្កើតឡើងដោយរបៀបណា?")
+    response = qa_use_case.execute(req)
+
+    assert len(response.citations) == 1
+    cit = response.citations[0]
+    assert cit["article_number"] == 388
+    assert cit["is_verified"] is True  # Citation presence verified in context
+    assert cit["has_factual_support"] is False  # Explicitly disclaimed as non-supportive
+    assert "insufficient to address the question" in cit["support_notes"]
+

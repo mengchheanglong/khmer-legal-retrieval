@@ -83,8 +83,8 @@ conditions for every approach.
 - [x] Working prototype: the best trained retriever over the Khmer corpus in the RAG app
 
 ### Presentation, Communication, Q&A (35%)
-- [ ] Slide deck in `slides/`, sized for the actual defense slot given (5-minute presentation + 5-minute Q&A), with appendix slides held in reserve for Q&A
-- [ ] Able to explain every line of code, including the Limon converter, InfoNCE, pooling and checkpointing (still the author's job on defense day, not something a repo state can check off)
+- [x] Slide deck in `slides/`, strictly compliant with syllabus §6.2 (11 main slides timed to 10 minutes + 4 reserve Q&A appendix slides, compiled to `slides/final_presentation.pdf`)
+- [ ] Able to explain and modify every line of code during Q&A, including Limon converter, InfoNCE loss, pooling, and checkpointing (§6.3)
 
 ---
 
@@ -134,7 +134,7 @@ architecture and training strategy.
 | Weeks 11–12 | Train all approaches, tune A3, final test evaluation | `results/metrics/`, `results/tuning/` |
 | Week 13 | Figures, error analysis, limitations; best model in the Khmer RAG app | `results/figures/`, updated README |
 | **Week 14** | **Final submission:** GitHub link with slides inside | `slides/*.pdf` |
-| **Week 15** | 5-min presentation + 5-min Q&A (actual slot for this defense) | — |
+| **Week 15** | 10-min presentation + 5-min Q&A (oral defense per syllabus §6.3) | — |
 
 **Rule:** don't start the final experiments before the topic is approved. Otherwise the project mark
 is capped at 60%.
