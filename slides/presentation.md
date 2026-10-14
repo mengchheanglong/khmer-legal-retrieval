@@ -88,7 +88,7 @@
 ### Slide 6: What Happens During Training? Contrastive Metric Learning (⏱ 4:05 – 4:50)
 > *"All models were trained using a Siamese dual-tower contrastive metric learning formulation with **symmetric InfoNCE loss** and in-batch negatives.*
 >
-> *In each mini-batch of 32 query-article pairs, the matching article is the positive sample, and the other 31 articles serve as negative samples. The loss computes cosine similarities scaled by a temperature $\tau = 0.05$, pulling the positive article toward the query while repelling the negative articles symmetrically.*
+> *In each mini-batch of query-article pairs—such as our optimal A3 training batch size $B = 16$—the matching article is the positive sample, and the other $B - 1$ (15) articles serve as negative samples. The loss computes cosine similarities scaled by a temperature $\tau = 0.05$, pulling the positive article toward the query while repelling the negative articles symmetrically. The 4×4 grid on screen is an illustrative matrix showing how diagonal positives are maximized against off-diagonal negatives.*
 >
 > *We optimized using AdamW with a 10% linear warmup schedule followed by cosine learning rate decay. Per course requirements in Section 5.B, we saved model weights, optimizer, scheduler, and PyTorch RNG state each epoch to `last.pt` and `best.pt`, with automated `--resume` support."*
 
@@ -136,7 +136,7 @@
 ### Slide 10: Where the Model Still Fails: Error Breakdown & Limitations (⏱ 7:20 – 8:00)
 > *"To understand where A3 still fails, we categorized all misses at $k=5$ across the 200 benchmark questions:*
 > - * **Vocabulary Mismatch (60.5% of misses)** remains the largest hurdle, occurring when questions describe everyday scenarios without statutory roots.*
-> - * **Near-Misses (19.8%)**: In nearly a fifth of misses, A3 retrieved the correct article just outside the top-5 window (ranks 6–10). Its Recall@10 reaches **64.3%**.*
+> - * **Near-Misses (19.8%)**: In nearly a fifth of misses, A3 retrieved the correct article just outside the top-5 window (ranks 6–10). Its Recall@10 reaches **59.83%**.*
 > - * **Multi-Article Questions (17.4%)**: Questions spanning two articles (such as Art. 130 and 131) often catch only one in top-5.*
 >
 > *Regarding scope limitations: our study evaluated the Civil and Criminal Codes. Scanned laws like the 1997 Labour Law require OCR and are left for future work."*
@@ -151,7 +151,7 @@
 > *The ground-truth governing law is **Civil Code Article 24** ('Declaration of commencement of general guardianship').*
 >
 > *(Looking at screen):*
-> - *When we run **BM25 Keyword Search**, it completely misses Article 24 outside its top 10! BM25 gets distracted by the repeated term 'general guardianship' in later administrative articles (Articles 1105, 1125, 1107).*
+> - *When we run **BM25 Keyword Search**, it completely misses Article 24 outside its top 10! BM25 gets distracted by the repeated term 'general guardianship' in later administrative articles (Articles 1105, 1125, 1124).*
 > - *Now, we switch to our trained **Approach A3 Neural Retriever**. In under 50 milliseconds, A3 ranks **Civil Code Article 24 at Rank #1 with a cosine similarity of 0.6205**!*
 >
 > *Our dense encoder understands the conceptual connection between 'requesting the court to open' and Article 24's statutory scope, even when exact keywords differ. DeepSeek Flash then synthesizes a grounded answer with an automated green **[Verified Citation]** badge confirming the article exists in the retrieved context.*
@@ -180,10 +180,10 @@ During the 5-minute Q&A, navigate to the reserve appendix slides using arrow key
 ### 1. "How do you know A3's gain over BM25 is statistically significant and not just luck?"
 - **Navigate to**: **Slide A3 (Paired Bootstrap Statistical Significance)**
 - **Spoken Defense**:
-  > *"We performed paired studentized bootstrap hypothesis testing with 10,000 resamples directly on query-level delta scores ($\Delta_i = s_i^{(A3)} - s_i^{(BM25)}$).*
-  > *For Recall@5, A3 achieves a mean gain of $+0.1067$ with an empirical 95% confidence interval strictly above zero ($[+0.0500, +0.1633]$) and a $p$-value of $0.0002$ (41 wins vs 13 losses).*
-  > *For MRR@10, the gain is $+0.1477$ ($p = 0.0001$, 72 wins vs 25 losses). Because $p < 0.001$, the superiority is statistically confirmed at the 99.9% confidence level.*
-  > *In contrast, testing A2 against BM25 yields $p = 0.9031$, confirming that a frozen linear probe achieves true statistical parity with BM25."*
+  > *"We performed paired non-parametric bootstrap hypothesis testing with 10,000 resamples directly on query-level delta scores ($\Delta_i = s_i^{(A3)} - s_i^{(BM25)}$).*
+  > *For Recall@5, A3 achieves a mean gain of $+0.1067$ with an empirical 95% confidence interval strictly above zero ($[+0.0500, +0.1633]$) and a $p$-value of $0.0002$ (41 wins vs 13 losses, 146 ties).*
+  > *For MRR@10, the gain is $+0.1477$ with a 95% confidence interval of $[+0.0962, +0.1993]$ ($p = 0.0001$, 72 wins vs 25 losses, 103 ties). Because $p < 0.001$, the superiority is statistically confirmed at the 99.9% confidence level.*
+  > *In contrast, testing A2 against BM25 yields a 95% CI of $[-0.0567, +0.0625]$ and $p = 0.9031$ (26 wins vs 25 losses, 149 ties), confirming that a frozen linear probe achieves true statistical parity with BM25."*
 
 ### 2. "Why did PrahokBART (A4) perform worse on real questions than XLM-R (A3)?"
 - **Navigate to**: **Slide A1 & Slide 8**
