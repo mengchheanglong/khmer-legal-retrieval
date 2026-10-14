@@ -135,14 +135,20 @@ class AnswerLegalQAUseCase:
         # Step 4: Verify citations against retrieved context
         citations = self._verify_citations(answer, retrieved_docs)
 
-        # Step 5: Build response
+        # Step 5: Build response with full statutory content and metadata
         source_articles = [
             {
                 "law_name": doc.chunk.metadata.law_name,
                 "article_number": doc.chunk.metadata.article_number,
+                "article_title": doc.chunk.metadata.article_title,
+                "book": doc.chunk.metadata.book,
                 "chapter": doc.chunk.metadata.chapter,
+                "section": doc.chunk.metadata.section,
+                "content": doc.chunk.content,
                 "content_preview": doc.chunk.content[:200],
-                "relevance_score": doc.rerank_score or doc.rrf_score,
+                "dense_score": doc.dense_score,
+                "sparse_score": doc.sparse_score,
+                "relevance_score": doc.rerank_score or doc.rrf_score or doc.dense_score,
             }
             for doc in retrieved_docs
         ]

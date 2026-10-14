@@ -13,8 +13,10 @@ export const ArticleCard: React.FC<ArticleCardProps> = ({ article, index }) => {
   const isCriminal = article.law_name.toLowerCase().includes('criminal')
   const lawLabel = isCriminal ? 'Criminal Code 2009' : 'Civil Code 2007'
 
+  const contentText = article.content || (article as any).content_preview || ''
+
   const handleCopy = () => {
-    navigator.clipboard.writeText(`មាត្រា ${article.article_number} (${article.law_name}):\n${article.content}`)
+    navigator.clipboard.writeText(`មាត្រា ${article.article_number} (${lawLabel}):\n${contentText}`)
     setCopied(true)
     setTimeout(() => setCopied(false), 2000)
   }
@@ -22,11 +24,11 @@ export const ArticleCard: React.FC<ArticleCardProps> = ({ article, index }) => {
   const hierarchy = [article.book, article.chapter, article.section].filter(Boolean)
 
   let scoreLabel = ''
-  if (article.dense_score !== undefined) {
+  if (article.dense_score !== undefined && article.dense_score !== null) {
     scoreLabel = `Dense Sim: ${article.dense_score.toFixed(4)}`
-  } else if (article.sparse_score !== undefined) {
+  } else if (article.sparse_score !== undefined && article.sparse_score !== null) {
     scoreLabel = `BM25: ${article.sparse_score.toFixed(2)}`
-  } else if (article.relevance_score !== undefined) {
+  } else if (article.relevance_score !== undefined && article.relevance_score !== null) {
     scoreLabel = `Score: ${article.relevance_score.toFixed(4)}`
   }
 
@@ -64,7 +66,7 @@ export const ArticleCard: React.FC<ArticleCardProps> = ({ article, index }) => {
           )}
           <button
             onClick={handleCopy}
-            className="p-1 rounded-md text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
+            className="p-1 rounded-md text-muted-foreground hover:text-foreground hover:bg-muted transition-colors cursor-pointer"
             title="Copy statutory text"
           >
             {copied ? <Check className="w-3.5 h-3.5 text-green-500" /> : <Copy className="w-3.5 h-3.5" />}
@@ -74,15 +76,15 @@ export const ArticleCard: React.FC<ArticleCardProps> = ({ article, index }) => {
 
       {/* Hierarchy Breadcrumbs */}
       {hierarchy.length > 0 && (
-        <div className="flex items-center gap-1 text-[11px] text-muted-foreground mb-3 font-khmer flex-wrap">
-          <Layers className="w-3 h-3 shrink-0 opacity-70" />
+        <div className="flex items-center gap-1.5 text-xs text-muted-foreground mb-3 font-khmer flex-wrap">
+          <Layers className="w-3.5 h-3.5 shrink-0 opacity-70" />
           <span>{hierarchy.join(' › ')}</span>
         </div>
       )}
 
       {/* Article Content in Khmer Font */}
-      <div className="font-khmer text-[13.5px] leading-relaxed text-foreground/90 bg-muted/30 p-3 rounded-lg border border-border/40 whitespace-pre-wrap">
-        {article.content}
+      <div className="font-khmer text-sm md:text-[14.5px] leading-relaxed text-foreground/95 bg-muted/40 p-3.5 md:p-4 rounded-xl border border-border/50 whitespace-pre-wrap select-text">
+        {contentText || 'គ្មានខ្លឹមសារបង្ហាញ'}
       </div>
     </div>
   )
