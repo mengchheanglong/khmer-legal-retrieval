@@ -3,7 +3,9 @@
 > **Assessment**: Individual Deep Learning Final Project (50% Course Grade)  
 > **Course Guidelines Reference**: Department of Engineering · Bachelor of Software Engineering (§6.2, §6.3, §7.1)  
 > **Defense Format**: Strictly **10-minute presentation** (12 Main Slides + 90s Live Demo) followed by **5-minute Q&A** (§6.3).  
-> **Deck Artifact**: `slides/presentation.html` (Compiled to 16:9 vector PDF: `slides/final_presentation.pdf`, 16 slides total).  
+> **Deck Artifacts**:
+> - `slides/presentation.html` (Full deck with 4 Q&A appendix slides) &rarr; `slides/final_presentation.pdf` (16 slides)
+> - `slides/presentation_12slides.html` (Main 10-minute talk only) &rarr; `slides/final_presentation_12slides.pdf` (12 slides)  
 > **Live Demo URL**: `http://localhost:8501` (Localhost Streamlit UI with Approach A3 PyTorch neural encoder).
 
 ---
