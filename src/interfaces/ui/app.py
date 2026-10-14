@@ -220,8 +220,8 @@ st.markdown(
 
     /* Hero Banner */
     .hero-header {
-        background: linear-gradient(135deg, rgba(37, 99, 235, 0.08) 0%, rgba(99, 102, 241, 0.04) 100%);
-        border: 1px solid rgba(37, 99, 235, 0.2);
+        background: linear-gradient(135deg, rgba(37, 99, 235, 0.16) 0%, rgba(99, 102, 241, 0.08) 100%);
+        border: 1px solid rgba(59, 130, 246, 0.3);
         border-radius: 12px;
         padding: 20px 24px;
         margin-bottom: 20px;
@@ -237,18 +237,19 @@ st.markdown(
         letter-spacing: 0.03em;
     }
     .badge-civil {
-        background-color: #eff6ff;
-        color: #1d4ed8;
-        border: 1px solid #bfdbfe;
+        background-color: rgba(37, 99, 235, 0.18);
+        color: #3b82f6;
+        border: 1px solid rgba(59, 130, 246, 0.35);
     }
     .badge-crim {
-        background-color: #fef2f2;
-        color: #b91c1c;
-        border: 1px solid #fecaca;
+        background-color: rgba(220, 38, 38, 0.18);
+        color: #ef4444;
+        border: 1px solid rgba(239, 68, 68, 0.35);
     }
     .score-chip {
         font-size: 0.8rem;
-        background: rgba(128, 128, 128, 0.12);
+        background: rgba(128, 128, 128, 0.16);
+        color: inherit;
         padding: 4px 9px;
         border-radius: 6px;
         font-family: monospace;
@@ -258,12 +259,12 @@ st.markdown(
         font-family: 'Kantumruy Pro', sans-serif !important;
         font-size: 1.02rem !important;
         line-height: 1.9 !important;
-        color: var(--text-color, #1e293b);
+        color: inherit !important;
         white-space: pre-wrap;
-        background: rgba(128, 128, 128, 0.04);
+        background: rgba(128, 128, 128, 0.05);
         padding: 14px 18px;
         border-radius: 8px;
-        border: 1px solid rgba(128, 128, 128, 0.1);
+        border: 1px solid rgba(128, 128, 128, 0.15);
         margin-top: 8px;
     }
 
@@ -272,9 +273,9 @@ st.markdown(
         display: inline-flex;
         align-items: center;
         gap: 4px;
-        color: #166534;
-        background-color: #dcfce7;
-        border: 1px solid #bbf7d0;
+        color: #22c55e;
+        background-color: rgba(34, 197, 94, 0.16);
+        border: 1px solid rgba(34, 197, 94, 0.35);
         padding: 3px 10px;
         border-radius: 20px;
         font-weight: 600;
@@ -284,9 +285,9 @@ st.markdown(
         display: inline-flex;
         align-items: center;
         gap: 4px;
-        color: #854d0e;
-        background-color: #fef9c3;
-        border: 1px solid #fef08a;
+        color: #eab308;
+        background-color: rgba(234, 179, 8, 0.16);
+        border: 1px solid rgba(234, 179, 8, 0.35);
         padding: 3px 10px;
         border-radius: 20px;
         font-weight: 600;
@@ -294,8 +295,8 @@ st.markdown(
     }
 
     .error-card {
-        background: rgba(128, 128, 128, 0.03);
-        border: 1px solid rgba(128, 128, 128, 0.15);
+        background: rgba(128, 128, 128, 0.04);
+        border: 1px solid rgba(128, 128, 128, 0.18);
         border-left: 4px solid #6366f1;
         border-radius: 8px;
         padding: 14px 16px;
@@ -332,22 +333,22 @@ def render_article_card(doc: RetrievedDocument, index: Optional[int] = None) -> 
 
     card_html = f"""
     <div style="
-        background: var(--background-color, #ffffff);
-        border: 1px solid rgba(128, 128, 128, 0.2);
+        background: rgba(128, 128, 128, 0.05);
+        border: 1px solid rgba(128, 128, 128, 0.22);
         border-left: 5px solid {card_border};
         border-radius: 10px;
         padding: 16px 20px;
         margin-bottom: 16px;
-        box-shadow: 0 2px 6px rgba(0,0,0,0.03);
+        box-shadow: 0 2px 6px rgba(0,0,0,0.04);
     ">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; flex-wrap: wrap; gap: 8px;">
             <div>
                 <span class="legal-law-badge {badge_class}">{law_label}</span>
-                <strong style="margin-left: 8px; font-size: 1.05rem;">{idx_prefix}មាត្រា {meta.article_number}{title_display}</strong>
+                <strong style="margin-left: 8px; font-size: 1.05rem; color: inherit;">{idx_prefix}មាត្រា {meta.article_number}{title_display}</strong>
             </div>
             <div>{score_badge}</div>
         </div>
-        {f'<div style="font-size: 0.8rem; color: #64748b; margin-bottom: 10px;">📁 {hier_text}</div>' if hier_text else ''}
+        {f'<div style="font-size: 0.8rem; opacity: 0.75; margin-bottom: 10px;">📁 {hier_text}</div>' if hier_text else ''}
         <div class="article-text">{escaped_content}</div>
     </div>
     """
@@ -361,16 +362,16 @@ st.markdown(
         <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px;">
             <div>
                 <span class="legal-law-badge badge-civil" style="margin-bottom: 8px;">🇰🇭 Deep Learning Legal NLP</span>
-                <h1 style="margin: 4px 0 6px 0; font-size: 2.1rem; font-weight: 700; color: var(--text-color, #0f172a);">
+                <h1 style="margin: 6px 0 8px 0; font-size: 2.15rem; font-weight: 800; color: inherit; letter-spacing: -0.02em;">
                     Khmer Legal Article Retrieval Assistant
                 </h1>
-                <p style="margin: 0; font-size: 0.95rem; color: #64748b;">
+                <p style="margin: 0; font-size: 0.95rem; opacity: 0.85; line-height: 1.5;">
                     Neural Bi-Encoder Passage Retrieval & Citation-Grounded Assistant · 
                     <strong>1,976 Articles</strong> from the Official Civil Code (2007) & Criminal Code (2009)
                 </p>
             </div>
             <div>
-                <span class="score-chip" style="font-size: 0.85rem; padding: 6px 12px; background: rgba(37, 99, 235, 0.1); color: #2563eb;">
+                <span class="score-chip" style="font-size: 0.85rem; padding: 6px 14px; background: rgba(37, 99, 235, 0.2); color: #60a5fa; border: 1px solid rgba(96, 165, 250, 0.35);">
                     🏆 Winning Model: Approach A3 XLM-R (51.4% Recall@5)
                 </span>
             </div>
@@ -384,30 +385,32 @@ st.markdown(
 col_m1, col_m2, col_m3, col_m4 = st.columns(4)
 with col_m1:
     st.metric(
-        "Corpus Articles",
+        "Total Corpus",
         "1,976",
+        delta="Civil + Criminal",
+        delta_color="off",
         help="1,304 Civil Code (2007) + 672 Criminal Code (2009) articles (100% consecutive)",
     )
 with col_m2:
     st.metric(
-        "Best Model (A3 XLM-R)",
-        "51.42% Recall@5",
-        delta="+10.67% vs BM25 (p < 0.001)",
+        "A3 XLM-R (Best)",
+        "51.42%",
+        delta="Recall@5 (+10.7% vs BM25)",
         help="MRR@10: 0.4827 on 200 Human Benchmark Questions (T-Q)",
     )
 with col_m3:
     st.metric(
-        "Baseline (BM25)",
-        "40.75% Recall@5",
-        delta="0.3350 MRR@10",
+        "BM25 Baseline",
+        "40.75%",
+        delta="Recall@5 (0.3350 MRR)",
         delta_color="off",
         help="Rank-BM25 with khmer-nltk word segmentation",
     )
 with col_m4:
     st.metric(
         "Grounded LLM",
-        "DeepSeek Flash",
-        delta="Citation Verified",
+        "DeepSeek",
+        delta="Flash (Verified)",
         help="deepseek-chat with compound (law, article) verification guard",
     )
 
@@ -425,12 +428,12 @@ with st.sidebar:
     retriever_option = st.selectbox(
         "Active Retrieval Architecture:",
         [
-            "A3: XLM-R Full Fine-Tune (278M) [Best Model]",
-            "Hybrid: A3 Dense + Khmer BM25 Sparse",
-            "BM25 Sparse (Native khmer-nltk Tokenization)",
-            "A4: PrahokBART Dual Encoder (35.8M)",
-            "A2: XLM-R Linear Probe (Frozen, 0.59M)",
-            "A1: BiLSTM Dual Encoder (From Scratch, 1.97M)",
+            "A3: XLM-R Full Fine-Tune [Winner]",
+            "Hybrid: A3 Dense + BM25 Sparse",
+            "BM25 Sparse (khmer-nltk)",
+            "A4: PrahokBART Dual Encoder",
+            "A2: XLM-R Linear Probe",
+            "A1: BiLSTM Dual Encoder",
         ],
         index=0 if has_local_a3 else 2,
     )
