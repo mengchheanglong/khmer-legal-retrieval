@@ -23,6 +23,13 @@ repo_root = Path(__file__).resolve().parent.parent.parent.parent
 if str(repo_root) not in sys.path:
     sys.path.insert(0, str(repo_root))
 
+# Load .env variables into environment
+try:
+    from dotenv import load_dotenv
+    load_dotenv(repo_root / ".env")
+except ImportError:
+    pass
+
 import numpy as np
 import pandas as pd
 import streamlit as st
@@ -363,12 +370,23 @@ with st.sidebar:
 
     st.divider()
     st.subheader("DeepSeek LLM Key")
-    api_key_input = st.text_input(
-        "API Key (Optional for Direct Search):",
-        type="password",
-        placeholder="sk-... (or set DEEPSEEK_API_KEY)",
-        help="Required for Tab 1 Q&A synthesis. Direct Search in Tab 2 is 100% offline.",
-    )
+    env_key = (os.environ.get("DEEPSEEK_API_KEY", "") or os.environ.get("OPENAI_API_KEY", "")).strip().strip('"').strip("'")
+    if env_key:
+        masked = f"{env_key[:4]}...{env_key[-4:]}" if len(env_key) > 8 else "***"
+        st.success(f"Key loaded from `.env` (`{masked}`)", icon="🔑")
+        api_key_input = st.text_input(
+            "Override API Key (Optional):",
+            type="password",
+            placeholder="Using key from .env",
+            help="Your DEEPSEEK_API_KEY from .env is already loaded automatically. Enter a key here only if you wish to override it.",
+        )
+    else:
+        api_key_input = st.text_input(
+            "API Key (Optional for Direct Search):",
+            type="password",
+            placeholder="sk-... (or set DEEPSEEK_API_KEY)",
+            help="Required for Tab 1 Q&A synthesis. Direct Search in Tab 2 is 100% offline.",
+        )
 
     st.divider()
     st.subheader("Corpus Attribution")
