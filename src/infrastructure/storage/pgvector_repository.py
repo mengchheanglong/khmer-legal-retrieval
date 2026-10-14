@@ -320,3 +320,25 @@ class PgVectorRepository(VectorStorePort):
                 self._save_local_store()
         except Exception as e:
             logger.warning(f"Could not load precomputed embeddings: {e}")
+
+    def get_article(self, law_name: str, article_number: int) -> Optional[LegalChunk]:
+        """Lookup a statutory article by law name and article number."""
+        clean_law = (law_name or "").lower().strip()
+        is_crim = "crim" in clean_law or "ព្រហ្ម" in clean_law
+        is_civ = "civ" in clean_law or "រដ្ឋ" in clean_law
+
+        for chunk in self._local_chunks:
+            if chunk.metadata.article_number == article_number:
+                c_law = chunk.metadata.law_name.lower()
+                if is_crim and ("crim" in c_law or "ព្រហ្ម" in c_law):
+                    return chunk
+                if is_civ and ("civ" in c_law or "រដ្ឋ" in c_law):
+                    return chunk
+                if clean_law in c_law or c_law in clean_law:
+                    return chunk
+
+        for chunk in self._local_chunks:
+            if chunk.metadata.article_number == article_number:
+                return chunk
+        return None
+

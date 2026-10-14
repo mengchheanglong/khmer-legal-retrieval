@@ -7,7 +7,8 @@ from pydantic import BaseModel, Field
 
 from src.application.dtos import RetrievalRequest
 from src.application.use_cases.hybrid_retrieve import HybridRetrieveUseCase
-from src.interfaces.api.dependencies import get_hybrid_retriever
+from src.infrastructure.storage.pgvector_repository import PgVectorRepository
+from src.interfaces.api.dependencies import get_hybrid_retriever, get_pgvector_repository
 
 router = APIRouter(tags=["Retrieval"])
 
@@ -75,3 +76,30 @@ async def retrieve_articles(
         total_results=len(results),
         results=results,
     )
+
+
+@router.get("/articles/{law_name}/{article_number}", response_model=RetrievedChunkResponse)
+async def get_article_by_number(
+    law_name: str,
+    article_number: int,
+    repo: PgVectorRepository = Depends(get_pgvector_repository),
+) -> RetrievedChunkResponse:
+    """
+    Direct lookup of complete statutory article text from the official Cambodian codes.
+    """
+    chunk = repo.get_article(law_name, article_number)
+    if not chunk:
+        from fastapi import HTTPException
+        raise HTTPException(status_code=404, detail=f"Article {article_number} not found in {law_name}")
+
+    return RetrievedChunkResponse(
+        law_name=chunk.metadata.law_name,
+        article_number=chunk.metadata.article_number,
+        article_title=chunk.metadata.article_title,
+        book=chunk.metadata.book,
+        chapter=chunk.metadata.chapter,
+        section=chunk.metadata.section,
+        content=chunk.content,
+        relevance_score=1.0,
+    )
+

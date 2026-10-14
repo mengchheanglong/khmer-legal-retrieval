@@ -753,9 +753,9 @@
 
     <div class="grid-2">
       <div class="card highlight">
-        <div class="card-title" style="color:#1e40af;">In-Batch Negative Similarity Matrix</div>
+        <div class="card-title" style="color:#1e40af;">In-Batch Negative Similarity Matrix (Illustrative)</div>
         <p style="font-size:0.80rem; margin-bottom:10px;">
-          In a batch of <em>B</em> = 32 pairs, for query <em>q<sub>i</sub></em>, passage <em>p<sub>i</sub></em> is positive. The remaining 31 passages serve as negatives:
+          For query <em>q<sub>i</sub></em>, passage <em>p<sub>i</sub></em> is positive; the remaining <em>B</em> &minus; 1 passages in the batch serve as negatives (actual A3 training uses <em>B</em> = 16 &rarr; 15 negatives per query):
         </p>
         <div class="matrix-grid">
           <div class="matrix-cell pos">+1</div><div class="matrix-cell neg">-1</div><div class="matrix-cell neg">-1</div><div class="matrix-cell neg">-1</div>
@@ -764,7 +764,7 @@
           <div class="matrix-cell neg">-1</div><div class="matrix-cell neg">-1</div><div class="matrix-cell neg">-1</div><div class="matrix-cell pos">+1</div>
         </div>
         <p style="font-size:0.76rem; color:#1e40af; text-align:center; margin-top:8px; font-weight:600;">
-          Diagonal = Positives · Off-Diagonal = 31 Negatives
+          Diagonal = Positives · Off-Diagonal = In-Batch Negatives
         </p>
       </div>
 
@@ -1043,7 +1043,7 @@
             </div>
           </div>
           <p style="font-size:0.76rem; color:#64748b; margin-top:8px;">
-            Near-misses push A3 Recall@10 to <strong>64.3%</strong>, showing strong candidate ranking.
+            Near-misses push A3 Recall@10 to <strong>59.83%</strong>, showing strong candidate ranking.
           </p>
         </div>
       </div>
@@ -1094,9 +1094,9 @@
         <p style="font-size:0.76rem; color:#64748b; margin:4px 0 8px 0;">Superficial word matching fails on legal concepts</p>
         <div style="background:#fff; padding:8px 10px; border-radius:6px; border:1px solid #e2e8f0; font-size:0.76rem;">
           <div style="color:#b91c1c; font-weight:700; margin-bottom:4px;">❌ Target Article 24 completely missing from Top 10</div>
-          1. Art. 1105 (ជ្រើសតាំងអ្នកអាណាព្យាបាល) · BM25: 14.82<br>
-          2. Art. 1125 (ការត្រួតពិនិត្យតួនាទី) · BM25: 13.91<br>
-          3. Art. 1107 (ករណីយកិច្ចជ្រើសតាំង) · BM25: 13.44<br>
+          1. Art. 1105 (ជ្រើសតាំងអ្នកអាណាព្យាបាល) · BM25: 24.60<br>
+          2. Art. 1125 (ការត្រួតពិនិត្យតួនាទី) · BM25: 23.38<br>
+          3. Art. 1124 (កម្រៃរបស់អ្នកអាណាព្យាបាល) · BM25: 23.26<br>
           <div style="font-size:0.72rem; color:#64748b; margin-top:6px; border-top:1px dashed #cbd5e1; padding-top:4px;">
             <em>Cause:</em> Matches repeated word "អាណាព្យាបាល" across Book 8; misses "ស្នើសុំបើក" (court initiation).
           </div>
@@ -1265,7 +1265,7 @@
           <td class="mono">512</td>
           <td class="mono">768</td>
           <td class="mono">768</td>
-          <td class="mono">768</td>
+          <td class="mono">512</td>
         </tr>
         <tr>
           <td><strong>Tokenizer</strong></td>
@@ -1377,7 +1377,7 @@
           <td><strong>A3 vs. BM25</strong></td>
           <td><strong>MRR@10</strong></td>
           <td class="mono"><strong>+0.1477</strong></td>
-          <td class="mono">[+0.0883, +0.2070]</td>
+          <td class="mono">[+0.0962, +0.1993]</td>
           <td class="mono">72 / 25 / 103</td>
           <td class="mono"><strong>0.0001</strong></td>
           <td>p &lt; 0.001 (+44.1% Rel. Gain)</td>
@@ -1386,8 +1386,8 @@
           <td>A2 vs. BM25</td>
           <td>Recall@5</td>
           <td class="mono">+0.0042</td>
-          <td class="mono">[−0.0508, +0.0600]</td>
-          <td class="mono">33 / 34 / 133</td>
+          <td class="mono">[−0.0567, +0.0625]</td>
+          <td class="mono">26 / 25 / 149</td>
           <td class="mono">0.9031</td>
           <td>Not Significant (Parity)</td>
         </tr>
@@ -1395,9 +1395,9 @@
           <td>A3 vs. A2</td>
           <td>Recall@5</td>
           <td class="mono">+0.1025</td>
-          <td class="mono">[+0.0467, +0.1583]</td>
-          <td class="mono">38 / 12 / 150</td>
-          <td class="mono">0.0004</td>
+          <td class="mono">[+0.0492, +0.1575]</td>
+          <td class="mono">40 / 11 / 149</td>
+          <td class="mono">0.0001</td>
           <td>p &lt; 0.001 (FT &gt; Probe)</td>
         </tr>
       </tbody>
@@ -1405,7 +1405,7 @@
 
     <div class="card highlight" style="margin-top:10px; padding:10px;">
       <p style="font-size:0.80rem;">
-        <strong>Methodology:</strong> Paired studentized bootstrap with 10,000 resamples directly on query-level delta values &Delta;<sub>i</sub> = s<sub>i</sub><sup>(A)</sup> &minus; s<sub>i</sub><sup>(B)</sup>. The 95% confidence interval for A3 vs BM25 is strictly positive, definitively proving neural superiority.
+        <strong>Methodology:</strong> Paired non-parametric bootstrap with 10,000 resamples directly on query-level delta values &Delta;<sub>i</sub> = s<sub>i</sub><sup>(A)</sup> &minus; s<sub>i</sub><sup>(B)</sup>. The 95% confidence interval for A3 vs BM25 is strictly positive, definitively proving neural superiority.
       </p>
     </div>
 
