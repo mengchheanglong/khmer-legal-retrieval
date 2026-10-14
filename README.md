@@ -1,9 +1,9 @@
 # Khmer Legal Article Retrieval — Comparing Deep Learning Retrievers on Cambodian Law
 
-> **Deep Learning Final Project (Individual)** — Bachelor of Software Engineering, Department of Engineering
-> Lecturer: Mr. Soklong HIM · Academic year 2026–2027
-> **Author:** Long Mengchheang ([@mengchheanglong](https://github.com/mengchheanglong))
-> **Presentation Deck:** [`slides/final_presentation.pdf`](slides/final_presentation.pdf)
+> **Deep Learning Final Project (Individual)** — Bachelor of Software Engineering, Department of Engineering  
+> Lecturer: Mr. Soklong HIM · Academic year 2026–2027 · **Topic Status:** Approved by Lecturer (Week 7)  
+> **Author:** Long Mengchheang ([@mengchheanglong](https://github.com/mengchheanglong))  
+> **Presentation Deck:** [`slides/final_presentation.pdf`](slides/final_presentation.pdf) (10-min presentation + 5-min Q&A)
 
 [![Python 3.11+](https://img.shields.io/badge/Python-3.11+-blue.svg)](https://python.org)
 [![PyTorch](https://img.shields.io/badge/PyTorch-2.x-ee4c2c.svg)](https://pytorch.org)

@@ -10,7 +10,7 @@
 
 | Requirement (instruction §) | Status | Gap / action |
 |-----------------------------|:------:|--------------|
-| Topic approved by lecturer (§3.1, Week 7) | ⏳ | Presentation slides ready in `slides/`; record approval date in README upon Week 7 defense |
+| Topic approved by lecturer (§3.1, Week 7) | ✅ | Approved by lecturer Mr. Soklong HIM (Week 7) |
 | ≥ 2 (ideally 3) distinct DL approaches trained/fine-tuned by me (§2, §4) | ✅ | Implemented, trained, and evaluated 4 distinct approaches: A1 (BiLSTM), A2 (XLM-R Linear Probe), A3 (XLM-R Full Fine-Tuning), and A4 (PrahokBART Dual Encoder) |
 | All models in PyTorch; no Keras/TF (§5B) | ✅ | All models and loss functions implemented purely in PyTorch; dependencies pinned in `requirements.txt` |
 | Same train/val/test split and test preprocessing for all (§2, §5A) | ✅ | Fixed splits generated in `data/05_splits/` with deterministic seed 42 and leakage guard |

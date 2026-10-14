@@ -128,7 +128,7 @@ architecture and training strategy.
 | Week | Milestone | Deliverable |
 |------|-----------|-------------|
 | ✅ Done | RAG app; Khmer corpus (Limon conversion, 1,976 articles) | `data/04_chunks/*_kh_chunks.json` |
-| **Week 7** | **Topic approval** (problem, Khmer corpus, A1–A3, metrics) | Lecturer sign-off, recorded in README |
+| **Week 7** | **Topic approval** (problem, Khmer corpus, A1–A3, metrics) | ✅ Approved by lecturer Mr. Soklong HIM |
 | Week 8 | Manual spot-check of converted text; Khmer test questions; fixed splits; shared seed/checkpoint/eval modules | `data/05_splits/`, `src/dl/` |
 | **Week 10** | **Progress check:** show the split and at least one trained approach | A2 or A1 learning curves + val metrics |
 | Weeks 11–12 | Train all approaches, tune A3, final test evaluation | `results/metrics/`, `results/tuning/` |
