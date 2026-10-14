@@ -253,9 +253,9 @@ col_m1, col_m2, col_m3, col_m4 = st.columns(4)
 with col_m1:
     st.metric("Total Corpus Articles", "1,976", help="1,304 Civil Code + 672 Criminal Code (100% consecutive)")
 with col_m2:
-    st.metric("Best Model (A3 XLM-R)", "93.5% Recall@5", help="MRR@10: 0.812 on 200 Human Benchmark Questions")
+    st.metric("Best Model (A3 XLM-R)", "51.4% Recall@5", help="MRR@10: 0.4827 on 200 Human Benchmark Questions (T-Q)")
 with col_m3:
-    st.metric("Baseline (BM25)", "67.0% Recall@5", help="MRR@10: 0.518 (Native khmer-nltk segmentation)")
+    st.metric("Baseline (BM25)", "40.8% Recall@5", help="MRR@10: 0.3350 on 200 Human Benchmark Questions (T-Q)")
 with col_m4:
     st.metric("LLM Provider", "DeepSeek Flash", help="Model: deepseek-chat via DeepSeek API")
 
@@ -296,8 +296,8 @@ with st.sidebar:
         st.info(
             "**Approach A3: XLM-RoBERTa Full Fine-Tuning**\n\n"
             "- Parameters: 278,043,648 (100% trainable)\n"
-            "- Primary T-Q Recall@5: **93.5%** | MRR@10: **0.812**\n"
-            "- Secondary T-T Recall@5: **95.3%**\n"
+            "- Primary T-Q Recall@5: **51.42%** | MRR@10: **0.4827**\n"
+            "- Secondary T-T Recall@5: **99.32%** | MRR@10: **0.9456**\n"
             "- Backbone: `intfloat/multilingual-e5-base`"
         )
     elif "Hybrid" in retriever_option:
@@ -311,7 +311,8 @@ with st.sidebar:
         st.info(
             "**BM25 Sparse Baseline**\n\n"
             "- Lexical matching with `khmer-nltk` CRF word tokenization\n"
-            "- Primary T-Q Recall@5: **67.0%** | MRR@10: **0.518**\n"
+            "- Primary T-Q Recall@5: **40.75%** | MRR@10: **0.3350**\n"
+            "- Secondary T-T Recall@5: **97.30%** | MRR@10: **0.8677**\n"
             "- Inference latency: ~4ms (pure CPU)"
         )
     elif "A4" in retriever_option:
@@ -319,21 +320,24 @@ with st.sidebar:
             "**Approach A4: PrahokBART Dual Encoder**\n\n"
             "- Pre-trained Khmer BART (`seanghay/prahokbart-base`)\n"
             "- Parameters: 35.8M trainable\n"
-            "- Primary T-Q Recall@5: **85.5%** | MRR@10: **0.718**"
+            "- Primary T-Q Recall@5: **15.17%** | MRR@10: **0.1035**\n"
+            "- Secondary T-T Recall@5: **80.41%** | MRR@10: **0.6733**"
         )
     elif "A2" in retriever_option:
         st.info(
             "**Approach A2: XLM-R Linear Probe**\n\n"
             "- Frozen XLM-R backbone + trained linear projection\n"
             "- Trainable parameters: 590,592 (0.21%)\n"
-            "- Primary T-Q Recall@5: **82.5%** | MRR@10: **0.686**"
+            "- Primary T-Q Recall@5: **41.17%** | MRR@10: **0.3591**\n"
+            "- Secondary T-T Recall@5: **93.92%** | MRR@10: **0.8563**"
         )
     elif "A1" in retriever_option:
         st.info(
             "**Approach A1: BiLSTM Dual Encoder**\n\n"
             "- Trained from scratch on Khmer character n-grams\n"
-            "- Trainable parameters: 1,974,272\n"
-            "- Primary T-Q Recall@5: **72.5%** | MRR@10: **0.574**"
+            "- Trainable parameters: 1,970,784\n"
+            "- Primary T-Q Recall@5: **20.25%** | MRR@10: **0.1724**\n"
+            "- Secondary T-T Recall@5: **75.68%** | MRR@10: **0.6242**"
         )
 
     st.divider()
@@ -629,33 +633,77 @@ with tab_benchmark:
     st.markdown("### 1. Comparative Performance on Primary & Secondary Benchmarks")
     st.caption("Primary Benchmark (T-Q: 200 human questions) · Secondary Benchmark (T-T: 148 held-out article titles)")
 
-    results_data = {
-        "Approach": [
-            "BM25 Sparse Baseline",
-            "Multilingual-E5 (Zero-Shot)",
-            "A1: BiLSTM Dual Encoder",
-            "A2: XLM-R Linear Probe",
-            "A3: XLM-R Full Fine-Tune [Winner]",
-            "A4: PrahokBART Dual Encoder",
-        ],
-        "Trainable Params": ["0", "278M (Frozen)", "1.97M", "0.59M", "278M", "35.8M"],
-        "T-Q Recall@1": ["0.410", "0.525", "0.465", "0.585", "0.725", "0.615"],
-        "T-Q Recall@5": ["0.670", "0.770", "0.725", "0.825", "0.935", "0.855"],
-        "T-Q MRR@10": ["0.518", "0.627", "0.574", "0.686", "0.812", "0.718"],
-        "T-T Recall@5": ["0.777", "0.811", "0.784", "0.851", "0.953", "0.872"],
-        "Latency": ["4ms", "38ms", "8ms", "39ms", "42ms", "22ms"],
-        "Hardware": ["CPU", "CPU/GPU", "CPU", "CPU/GPU", "Tesla T4 GPU", "CPU/GPU"],
-    }
-    df_results = pd.DataFrame(results_data)
+    summary_csv = repo_root / "results" / "metrics" / "summary.csv"
+    if summary_csv.exists():
+        try:
+            df_raw = pd.read_csv(summary_csv)
+            rows = []
+            for _, r in df_raw.iterrows():
+                name = str(r["model_name"])
+                if r["model_id"] == "a3_xlmr":
+                    name += " [Winner]"
+                t_params = r["trainable_params"]
+                tot_params = r.get("total_params", 0)
+                if t_params > 0:
+                    p_str = f"{t_params / 1e6:.2f}M"
+                elif tot_params > 0:
+                    p_str = f"{tot_params / 1e6:.0f}M (Frozen)"
+                else:
+                    p_str = "0"
+
+                rows.append({
+                    "Approach": name,
+                    "Type": r.get("architecture_type", "Dense"),
+                    "Trainable Params": p_str,
+                    "T-Q Recall@1": f"{r['tq_recall@1']:.4f}",
+                    "T-Q Recall@5": f"{r['tq_recall@5']:.4f}",
+                    "T-Q MRR@10": f"{r['tq_mrr@10']:.4f}",
+                    "T-T Recall@5": f"{r['tt_recall@5']:.4f}",
+                    "Hardware": r.get("hardware", "CPU"),
+                })
+            df_results = pd.DataFrame(rows)
+        except Exception:
+            df_results = None
+    else:
+        df_results = None
+
+    if df_results is None:
+        results_data = {
+            "Approach": [
+                "BM25 Sparse Baseline",
+                "Multilingual-E5 (Zero-Shot)",
+                "A1: BiLSTM Dual Encoder",
+                "A2: XLM-R Linear Probe",
+                "A3: XLM-R Full Fine-Tune [Winner]",
+                "A4: PrahokBART Dual Encoder",
+            ],
+            "Type": [
+                "Sparse Lexical",
+                "Pretrained Dense",
+                "From Scratch Dense",
+                "Frozen + Linear Head",
+                "Full Fine-Tuning",
+                "Khmer Pretrained (Fine-Tuning)",
+            ],
+            "Trainable Params": ["0", "278M (Frozen)", "1.97M", "0.59M", "278.04M", "35.83M"],
+            "T-Q Recall@1": ["0.2025", "0.1625", "0.0875", "0.2400", "0.3375", "0.0525"],
+            "T-Q Recall@5": ["0.4075", "0.2617", "0.2025", "0.4117", "0.5142", "0.1517"],
+            "T-Q MRR@10": ["0.3350", "0.2588", "0.1724", "0.3591", "0.4827", "0.1035"],
+            "T-T Recall@5": ["0.9730", "0.7230", "0.7568", "0.9392", "0.9932", "0.8041"],
+            "Hardware": ["CPU", "CPU", "CPU", "CPU", "Tesla T4 GPU", "CPU (fp32)"],
+        }
+        df_results = pd.DataFrame(results_data)
+
     st.dataframe(df_results, use_container_width=True, hide_index=True)
 
     st.markdown(
         """
         **Key Findings:**
-        - **Approach A3 (XLM-R Full Fine-Tune)** achieves the highest overall accuracy: **93.5% Recall@5** and **0.812 MRR@10**, outperforming BM25 by **+26.5% Recall@5**.
-        - **Approach A4 (PrahokBART Dual Encoder)** achieves strong results (**85.5% Recall@5**) with only 35.8M parameters, showing the benefit of language-specific Khmer pre-training.
-        - **Approach A2 (Linear Probe)** delivers solid parameter-efficient performance (**82.5% Recall@5**) with only 0.59M trainable parameters.
-        - **Approach A1 (BiLSTM from scratch)** demonstrates that custom dual encoders trained from scratch can achieve **72.5% Recall@5** on low-resource Khmer statutory text.
+        - **Approach A3 (XLM-R Full Fine-Tune)** is the definitive winner: **51.42% Recall@5** and **0.4827 MRR@10** on the Primary Benchmark (T-Q: 200 human legal questions), outperforming BM25 by **+10.67% Recall@5** (p < 0.001) and **+44.1% relative MRR@10** (p < 0.001).
+        - **In-Distribution (T-T) vs Out-of-Distribution Shift (T-Q)**: On held-out titles (T-T), models reach near ceiling (A3: **99.32%**, BM25: **97.30%**, A2: **93.92%**). On conversational human questions (T-Q), distribution shift (colloquial phrasing, lack of exact title keywords) causes expected drop across all systems.
+        - **Approach A2 (Linear Probe)** delivers solid parameter-efficient performance (**41.17% Recall@5**, **0.3591 MRR@10**) with only 0.59M trainable parameters (0.21%), essentially matching BM25 (p = 0.9031). Deep fine-tuning across all layers is required to significantly beat sparse keyword search.
+        - **Approach A4 (PrahokBART Dual Encoder)** excels in-distribution (T-T: **80.41% Recall@5**, **0.6733 MRR@10**), but drops to **15.17% Recall@5** on conversational questions (T-Q), showing sensitivity to paraphrasing without large-scale legal fine-tuning pairs.
+        - **Approach A1 (BiLSTM from scratch)** achieves **20.25% Recall@5** and **0.1724 MRR@10** on T-Q (and **75.68% Recall@5** on T-T), constrained by vocabulary sparsity on low-resource Khmer when trained from scratch without pretraining.
         """
     )
 
