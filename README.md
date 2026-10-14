@@ -99,10 +99,10 @@ All metrics are computed via the shared evaluation harness (`src/dl/evaluate.py`
 | **E5-base Zero-Shot** | 0.1625 [0.12, 0.21] | 0.2617 [0.21, 0.32] | 0.2588 [0.20, 0.31] | 0.3200 [0.26, 0.39] | 0.7230 [0.65, 0.78] | 0.6235 [0.55, 0.69] | 0 | — | CPU |
 | **A1: BiLSTM** | 0.0875 [0.05, 0.13] | 0.2025 [0.16, 0.25] | 0.1724 [0.13, 0.22] | 0.2450 [0.19, 0.31] | 0.7568 [0.70, 0.82] | 0.6242 [0.56, 0.69] | 1.97 M | 2035.3 s | CPU |
 | **A2: XLM-R Probe** | 0.2400 [0.19, 0.30] | 0.4117 [0.35, 0.48] | 0.3591 [0.30, 0.42] | 0.4750 [0.41, 0.54] | 0.9392 [0.90, 0.97] | 0.8563 [0.81, 0.90] | 0.59 M | 5.9 s | CPU |
-| **A3: Full Fine-Tune** | **0.3375** [0.28, 0.40] | **0.5142** [0.45, 0.58] | **0.4827** [0.42, 0.55] | **0.5700** [0.50, 0.64] | **0.9932** [0.97, 1.00] | **0.9456** [0.92, 0.97] | 278.04 M | 1129.4 s | GPU (T4)* |
+| **A3: Full Fine-Tune** | **0.3375** [0.28, 0.40] | **0.5142** [0.45, 0.58] | **0.4827** [0.42, 0.55] | **0.5700** [0.50, 0.64] | **0.9932** [0.97, 1.00] | **0.9456** [0.92, 0.97] | 278.04 M | 1129.4 s | GPU (Tesla T4) |
 | **A4: PrahokBART** | 0.0525 [0.03, 0.09] | 0.1517 [0.11, 0.20] | 0.1035 [0.07, 0.14] | 0.1800 [0.13, 0.24] | 0.8041 [0.74, 0.87] | 0.6733 [0.60, 0.74] | 35.83 M | 1602.2 s | CPU (14t, fp32) |
 
-*\*Hardware Note:* Approach A3 training and grid tuning were conducted on an NVIDIA Tesla T4 GPU (recorded as `cuda:0` in `results/metrics/a3_lr2e-5_wd0.01_train.json`). The final shared evaluation benchmark was executed in CPU (fp32) mode matching `results/metrics/summary.csv`.
+*\*Hardware Note:* Approach A3 training and grid tuning were conducted on an NVIDIA Tesla T4 GPU (recorded as `cuda:0` in `results/metrics/a3_lr2e-5_wd0.01_train.json`). The final shared evaluation benchmark was executed in CPU (fp32) mode.
 
 *Paired Bootstrap Significance (T-Q):* A3's improvements over BM25 ($\Delta = +0.1067$ Recall@5, $\Delta = +0.1477$ MRR@10) and over all neural baselines (A1, A2, A4) are statistically significant at $p < 0.001$. In contrast, linear probe A2 does not significantly outperform BM25 ($p = 0.9031$). Complete 14-comparison matrix documented in [`docs/statistical_significance.md`](docs/statistical_significance.md).
 

@@ -84,8 +84,8 @@ MODELS_CONFIG = [
         "train_file": "a3_lr2e-5_wd0.01_train.json",
         "total_params": 278_043_648,
         "trainable_params": 278_043_648,
-        "train_time_sec": 319.82,
-        "hardware": "CPU (fp32)",
+        "train_time_sec": 1129.35,
+        "hardware": "GPU (Tesla T4)",
     },
     {
         "id": "a4_prahokbart",
@@ -95,8 +95,8 @@ MODELS_CONFIG = [
         "train_file": "a4_lr1e-04_wd0.01_train.json",
         "total_params": 35_827_712,
         "trainable_params": 35_827_712,
-        "train_time_sec": 0.0,
-        "hardware": "CPU (fp32)",
+        "train_time_sec": 1602.22,
+        "hardware": "CPU (14t, fp32)",
     },
 ]
 
@@ -124,6 +124,7 @@ def build_summary_table(metrics_dir: Path = Path("results/metrics")) -> pd.DataF
             continue
 
         train_time = cfg["train_time_sec"]
+        hardware = cfg["hardware"]
         if cfg.get("train_file"):
             t_file = metrics_dir / cfg["train_file"]
             if t_file.exists():
@@ -131,6 +132,9 @@ def build_summary_table(metrics_dir: Path = Path("results/metrics")) -> pd.DataF
                     with open(t_file, "r", encoding="utf-8") as f:
                         t_data = json.load(f)
                     train_time = t_data.get("total_wall_clock_seconds", train_time)
+                    dev = str(t_data.get("device", ""))
+                    if "cuda" in dev:
+                        hardware = "GPU (Tesla T4)"
                 except Exception:
                     pass
 
@@ -152,7 +156,7 @@ def build_summary_table(metrics_dir: Path = Path("results/metrics")) -> pd.DataF
             "total_params": cfg["total_params"],
             "trainable_params": cfg["trainable_params"],
             "train_time_sec": train_time,
-            "hardware": cfg["hardware"],
+            "hardware": hardware,
             # T-Q Benchmark (Overall)
             "tq_recall@1": tq_ov.get("Recall@1", {}).get("mean"),
             "tq_recall@1_ci_lower": tq_ov.get("Recall@1", {}).get("ci_lower"),
