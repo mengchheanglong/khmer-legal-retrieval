@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import ReactMarkdown from 'react-markdown'
 import {
   User,
   Copy,
@@ -73,16 +74,39 @@ export const ChatMessage: React.FC<ChatMessageProps> = ({ message }) => {
           </div>
           <button
             onClick={handleCopy}
-            className="flex items-center gap-1 text-[11px] hover:text-foreground p-1 rounded-md hover:bg-muted transition-colors opacity-70 group-hover:opacity-100"
+            className="flex items-center gap-1 text-[11px] hover:text-foreground p-1 rounded-md hover:bg-muted transition-colors opacity-70 group-hover:opacity-100 cursor-pointer"
           >
             {copied ? <Check className="w-3.5 h-3.5 text-green-500" /> : <Copy className="w-3.5 h-3.5" />}
             <span>{copied ? 'Copied' : 'Copy'}</span>
           </button>
         </div>
 
-        {/* Formatted Answer */}
-        <div className="font-khmer text-[14px] leading-relaxed text-foreground bg-card/40 border border-border/60 rounded-2xl p-4 md:p-5 shadow-xs whitespace-pre-wrap">
-          {message.content}
+        {/* Formatted Answer with ReactMarkdown */}
+        <div className="font-khmer text-[14.5px] leading-relaxed text-foreground bg-card/60 border border-border/70 rounded-2xl p-4 md:p-5 shadow-xs">
+          <ReactMarkdown
+            components={{
+              h1: ({ children }) => <h1 className="text-lg font-bold text-foreground mt-3 mb-2">{children}</h1>,
+              h2: ({ children }) => <h2 className="text-base font-bold text-foreground mt-3 mb-2">{children}</h2>,
+              h3: ({ children }) => <h3 className="text-sm font-bold text-foreground mt-2 mb-1.5">{children}</h3>,
+              p: ({ children }) => <p className="mb-2.5 last:mb-0 leading-[1.85]">{children}</p>,
+              strong: ({ children }) => <strong className="font-bold text-foreground underline-offset-2">{children}</strong>,
+              ul: ({ children }) => <ul className="list-disc pl-5 mb-2.5 space-y-1">{children}</ul>,
+              ol: ({ children }) => <ol className="list-decimal pl-5 mb-2.5 space-y-1">{children}</ol>,
+              li: ({ children }) => <li className="leading-relaxed mb-0.5">{children}</li>,
+              blockquote: ({ children }) => (
+                <blockquote className="border-l-4 border-primary/50 pl-3 italic my-2 text-muted-foreground bg-muted/20 py-1 rounded-r">
+                  {children}
+                </blockquote>
+              ),
+              code: ({ children }) => (
+                <code className="bg-muted px-1.5 py-0.5 rounded text-xs font-mono font-medium border border-border/40">
+                  {children}
+                </code>
+              ),
+            }}
+          >
+            {message.content}
+          </ReactMarkdown>
         </div>
 
         {/* Cited Authorities Verification */}

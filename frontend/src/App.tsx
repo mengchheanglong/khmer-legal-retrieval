@@ -4,6 +4,7 @@ import { Sidebar } from './components/Sidebar'
 import { ChatMessage } from './components/ChatMessage'
 import { ChatInput } from './components/ChatInput'
 import { WelcomeScreen } from './components/WelcomeScreen'
+import { LoadingMessage } from './components/LoadingMessage'
 import type { Message, ChatSession, StatuteFilter, ModelOption, SourceArticle } from './types'
 
 const AVAILABLE_MODELS: ModelOption[] = [
@@ -341,6 +342,7 @@ export const App: React.FC = () => {
               <ChatMessage key={msg.id} message={msg} />
             ))
           )}
+          {isLoading && <LoadingMessage modelName={activeModel.name} />}
           <div ref={messagesEndRef} />
         </div>
 
