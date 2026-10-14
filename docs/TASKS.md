@@ -121,7 +121,7 @@
 - [x] `tune_a3.py` supports the grid LR {1e-5, 2e-5, 3e-5} × weight decay {0, 0.01}
 - [x] Fully executed 6-configuration grid on Tesla T4 GPU ({1e-5, 2e-5, 3e-5} × {0.0, 0.01}; winning run `a3_lr2e-5_wd0.01` Val MRR@10: 0.9095)
 - [x] Save tuning table → `results/tuning/a3.csv`; select by val MRR@10 only
-- [ ] Upload best checkpoint to HF Hub/Drive; link in README §6.4
+- [x] Upload best checkpoint to Hugging Face Hub (`mengchheanglong/khmer-legal-xlmr-retriever`); link in README §6.3
 
 ### 6.6b Approach A4 — PrahokBART dual encoder (Khmer-native pre-training)
 - [x] Extract encoder from `nict-astrec-att/prahokbart_base` (35.8M parameters, 512-dim output, SentencePiece 32,004 vocab)

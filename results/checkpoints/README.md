@@ -76,5 +76,5 @@ print(f"Downloaded checkpoint to: {checkpoint_path}")
 Once downloaded, evaluate the checkpoint directly with the evaluation harness:
 
 ```bash
-python -m src.dl.evaluate --model a3_xlmr --split test_questions
+python -m src.dl.evaluate --model a3
 ```

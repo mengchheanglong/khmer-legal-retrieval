@@ -89,7 +89,7 @@ All neural models are dual encoders implemented in **PyTorch**, trained with the
 
 ## 5. Consolidated Experimental Results
 
-All metrics are computed via the shared evaluation harness (`src/dl/evaluate.py`), with 95% bootstrap confidence intervals (10,000 resamples).
+All metrics are computed via the shared evaluation harness (`src/dl/evaluate.py`), with 95% bootstrap confidence intervals (1,000 iterations for metric intervals, 10,000 paired resamples for significance testing).
 
 ### 5.1 Main Results Table (T-Q Primary & T-T Secondary Benchmarks)
 
@@ -99,8 +99,10 @@ All metrics are computed via the shared evaluation harness (`src/dl/evaluate.py`
 | **E5-base Zero-Shot** | 0.1625 [0.12, 0.21] | 0.2617 [0.21, 0.32] | 0.2588 [0.20, 0.31] | 0.3200 [0.26, 0.39] | 0.7230 [0.65, 0.78] | 0.6235 [0.55, 0.69] | 0 | — | CPU |
 | **A1: BiLSTM** | 0.0875 [0.05, 0.13] | 0.2025 [0.16, 0.25] | 0.1724 [0.13, 0.22] | 0.2450 [0.19, 0.31] | 0.7568 [0.70, 0.82] | 0.6242 [0.56, 0.69] | 1.97 M | 2035.3 s | CPU |
 | **A2: XLM-R Probe** | 0.2400 [0.19, 0.30] | 0.4117 [0.35, 0.48] | 0.3591 [0.30, 0.42] | 0.4750 [0.41, 0.54] | 0.9392 [0.90, 0.97] | 0.8563 [0.81, 0.90] | 0.59 M | 5.9 s | CPU |
-| **A3: Full Fine-Tune** | **0.3375** [0.28, 0.40] | **0.5142** [0.45, 0.58] | **0.4827** [0.42, 0.55] | **0.5700** [0.50, 0.64] | **0.9932** [0.97, 1.00] | **0.9456** [0.92, 0.97] | 278.04 M | 1129.4 s | GPU (T4, fp32) |
+| **A3: Full Fine-Tune** | **0.3375** [0.28, 0.40] | **0.5142** [0.45, 0.58] | **0.4827** [0.42, 0.55] | **0.5700** [0.50, 0.64] | **0.9932** [0.97, 1.00] | **0.9456** [0.92, 0.97] | 278.04 M | 1129.4 s | GPU (T4)* |
 | **A4: PrahokBART** | 0.0525 [0.03, 0.09] | 0.1517 [0.11, 0.20] | 0.1035 [0.07, 0.14] | 0.1800 [0.13, 0.24] | 0.8041 [0.74, 0.87] | 0.6733 [0.60, 0.74] | 35.83 M | 1602.2 s | CPU (14t, fp32) |
+
+*\*Hardware Note:* Approach A3 training and grid tuning were conducted on an NVIDIA Tesla T4 GPU (recorded as `cuda:0` in `results/metrics/a3_lr2e-5_wd0.01_train.json`). The final shared evaluation benchmark was executed in CPU (fp32) mode matching `results/metrics/summary.csv`.
 
 *Paired Bootstrap Significance (T-Q):* A3's improvements over BM25 ($\Delta = +0.1067$ Recall@5, $\Delta = +0.1477$ MRR@10) and over all neural baselines (A1, A2, A4) are statistically significant at $p < 0.001$. In contrast, linear probe A2 does not significantly outperform BM25 ($p = 0.9031$). Complete 14-comparison matrix documented in [`docs/statistical_significance.md`](docs/statistical_significance.md).
 
@@ -114,9 +116,9 @@ All metrics are computed via the shared evaluation harness (`src/dl/evaluate.py`
 *(Additional diagnostic charts: Multi-rank progression [`results/figures/recall_at_k.png`](results/figures/recall_at_k.png) and statute breakdown [`results/figures/code_breakdown.png`](results/figures/code_breakdown.png)).*
 
 ### 5.3 Discussion of Key Findings
-1. **A3 XLM-R Full Fine-Tuning is the Definitive Winner:** Achieves **0.5142 Recall@5** and **0.4827 MRR@10**, delivering a +44.1% relative gain over BM25 and +86.5% over zero-shot E5. Cross-attention layers successfully adapt multilingual representations to Khmer legal semantics.
+1. **A3 XLM-R Full Fine-Tuning is the Definitive Winner:** Achieves **0.5142 Recall@5** and **0.4827 MRR@10**, delivering a +44.1% relative gain over BM25 and +86.5% over zero-shot E5. Self-attention layers across all 12 transformer blocks successfully adapt multilingual representations to Khmer legal semantics.
 2. **Distribution Shift (In-Distribution T-T vs. Out-of-Distribution T-Q):** All models excel on held-out titles (T-T: A3 99.3%, BM25 97.3% Recall@5) because training pairs mirror title-passage formats. Conversational human questions (T-Q) induce severe distribution shift through colloquial synonyms (`សុពលភាព` [validity] vs statutory `មោឃភាព` [nullity]), causing BM25 and linear probes to degrade while A3 retains robust semantic matching.
-3. **PrahokBART (A4) Capacity Limitations:** While PrahokBART performs solidly on in-distribution titles (80.4% Recall@5), its performance drops on natural questions (15.2% Recall@5). Its sequence-to-sequence BART objective and 35.8M parameter capacity lack the contrastive sentence-level pre-training of the 278M-parameter XLM-R backbone.
+3. **PrahokBART (A4) Performance Differences:** While PrahokBART performs solidly on in-distribution titles (80.4% Recall@5), its performance drops on natural questions (15.2% Recall@5). This gap is hypothesized to arise from multiple interacting factors: PrahokBART was pre-trained using a sequence-to-sequence BART reconstruction objective rather than sentence-level contrastive alignment, and its compact 35.8M parameter capacity provides less representational bandwidth for lexical variability, although these factors were not independently ablated.
 4. **Efficiency vs. Accuracy:** A2 trains in 5.9 seconds with only 0.59M parameters and matches BM25, making it optimal for ultra-low-compute environments. A3 provides superior retrieval accuracy when GPU compute is accessible.
 
 ### 5.4 Error Analysis & Limitations (`results/error_analysis/`)
@@ -148,10 +150,10 @@ python -m src.dl.evaluate --model bm25
 python -m src.dl.evaluate --model e5_zero_shot
 
 # 3. Train and evaluate all neural approaches
-python -m src.dl.experiments.tune_a1   # A1 BiLSTM from scratch
-python -m src.dl.experiments.tune_a2   # A2 XLM-R linear probe
-python -m src.dl.experiments.tune_a3   # A3 XLM-R full fine-tuning (winning model)
-python -m src.dl.train --config configs/a4_prahokbart.yaml  # A4 PrahokBART
+python -m src.dl.experiments.tune_a1                # A1 BiLSTM from scratch
+python -m src.dl.experiments.tune_a2                # A2 XLM-R linear probe
+python -m src.dl.experiments.tune_a3 --grid full     # A3 XLM-R full fine-tuning (complete 6-run grid)
+python -m src.dl.experiments.tune_a4                # A4 PrahokBART dual encoder
 
 # 4. Generate consolidated reports, significance tests, and figures
 python -m src.dl.report
@@ -179,7 +181,7 @@ In compliance with rubric guidelines prohibiting large binaries in git, model we
   )
   ```
   ```bash
-  python -m src.dl.evaluate --model a3_xlmr --split test_questions
+  python -m src.dl.evaluate --model a3
   ```
   See [`results/checkpoints/README.md`](results/checkpoints/README.md) for full checkpoint inventory.
 
@@ -234,8 +236,8 @@ khmer-legal-retrieval/
 
 Per course requirements (Sections 5.E & 6.1):
 - **Tools Used:** Anthropic Claude, Antigravity (Google Gemini).
-- **Scope of Assistance:** Scaffolding initial file structures, Limon syllable reordering unit test generation, boilerplate data loading, visualization scripts, and documentation formatting.
-- **Student Ownership & Verification:** All neural architectures (A1–A4), InfoNCE loss implementations, training routines, evaluation pipelines (Recall@k, MRR@10, paired bootstrap hypothesis testing), and conclusions were independently verified and run locally by the author. All 138 unit tests pass. The author is fully prepared to explain and modify any repository code during defense Q&A.
+- **Scope of AI Assistance:** Generative AI tools were used extensively as primary implementation assistants across the codebase. AI generated initial boilerplate and scaffolding, data extraction logic (Limon converter and syllable reordering), PyTorch neural architectures (A1–A4 dual encoders), InfoNCE loss functions, training loops, evaluation harnesses, test suites (138 passing unit/integration tests), Streamlit interface components, and documentation drafts.
+- **Student Role, Verification & Ownership:** The author directed project scope and domain requirements, curated the Cambodian Civil and Criminal Code corpora, designed evaluation protocols and leakage quarantine boundaries, executed and supervised all training and tuning experiments locally and on GPU, analyzed retrieval errors, verified test suite execution, and maintains complete understanding of every file and algorithm in the repository to explain and modify code during the defense Q&A.
 
 ---
 
