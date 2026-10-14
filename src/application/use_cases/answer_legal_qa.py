@@ -67,7 +67,8 @@ class AnswerLegalQAUseCase:
         logger.info("Processing legal question", model=request.model)
 
         if on_stage:
-            on_stage("retrieval", "Searching 1,976 articles via A3 XLM-R & BM25...")
+            model_disp = request.model.replace('_', ' ').upper() if request.model else "A3 XLM-R & BM25"
+            on_stage("retrieval", f"Searching 1,976 articles via {model_disp}...")
 
         # Step 1: Handle cross-lingual query translation if query is in Khmer
         search_query = self._prepare_search_query(request.question)
@@ -77,6 +78,7 @@ class AnswerLegalQAUseCase:
             query=search_query,
             top_k=request.top_k,
             law_filter=request.law_filter,
+            retriever_choice=request.model,
         )
         retrieved_docs = self._retriever.execute(retrieval_request)
         logger.info("Retrieved source articles", count=len(retrieved_docs))

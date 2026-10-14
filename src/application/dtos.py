@@ -37,6 +37,7 @@ class RetrievalRequest(BaseModel):
     top_k: int = Field(default=5, description="Number of results to return")
     law_filter: Optional[str] = Field(None, description="Filter by law name")
     chapter_filter: Optional[str] = Field(None, description="Filter by chapter")
+    retriever_choice: Optional[str] = Field(None, description="Retriever choice (e.g. a3_xlmr, hybrid, bm25)")
 
 
 # ── Q&A ────────────────────────────────────────────────────────────────

@@ -111,28 +111,35 @@ export const ChatMessage: React.FC<ChatMessageProps> = ({ message }) => {
 
         {/* Cited Authorities Verification */}
         {message.citations && message.citations.length > 0 && (
-          <div className="rounded-xl border border-border/70 bg-muted/20 p-3 space-y-2">
+          <div className="rounded-xl border border-border/70 bg-muted/20 p-3.5 space-y-2.5">
             <div className="flex items-center gap-1.5 text-xs font-semibold text-foreground">
               <ShieldCheck className="w-4 h-4 text-emerald-500" />
-              <span>Cited Statutory Authorities ({message.citations.length})</span>
+              <span>Cited Statutory Authorities & Grounding Verification ({message.citations.length})</span>
             </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1">
+            <div className="space-y-2 pt-0.5">
               {message.citations.map((cit, idx) => (
                 <div
                   key={idx}
-                  className="flex items-center justify-between p-2 rounded-lg bg-card/80 border border-border/50 text-xs"
+                  className="p-2.5 rounded-lg bg-card/90 border border-border/50 text-xs space-y-1.5 transition-all shadow-xs"
                 >
-                  <span className="font-khmer font-medium text-foreground truncate pr-2">
-                    {cit.law_name} · មាត្រា {cit.article_number}
-                  </span>
-                  {cit.is_verified ? (
-                    <span className="inline-flex items-center gap-1 text-[10px] font-semibold text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/20 shrink-0">
-                      <ShieldCheck className="w-3 h-3" /> Verified
+                  <div className="flex items-center justify-between gap-2">
+                    <span className="font-khmer font-semibold text-foreground text-xs">
+                      {cit.law_name} · មាត្រា {cit.article_number}
                     </span>
-                  ) : (
-                    <span className="inline-flex items-center gap-1 text-[10px] font-semibold text-amber-600 dark:text-amber-400 bg-amber-500/10 px-2 py-0.5 rounded-full border border-amber-500/20 shrink-0">
-                      <AlertTriangle className="w-3 h-3" /> Unverified
-                    </span>
+                    {cit.is_verified ? (
+                      <span className="inline-flex items-center gap-1 text-[10px] font-semibold text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/20 shrink-0">
+                        <ShieldCheck className="w-3 h-3" /> Verified Context Match
+                      </span>
+                    ) : (
+                      <span className="inline-flex items-center gap-1 text-[10px] font-semibold text-amber-600 dark:text-amber-400 bg-amber-500/10 px-2 py-0.5 rounded-full border border-amber-500/20 shrink-0">
+                        <AlertTriangle className="w-3 h-3" /> Unverified Citation
+                      </span>
+                    )}
+                  </div>
+                  {cit.excerpt && (
+                    <blockquote className="text-[11px] font-khmer text-muted-foreground bg-muted/40 p-2 rounded border-l-2 border-emerald-500/60 leading-relaxed italic">
+                      "{cit.excerpt}"
+                    </blockquote>
                   )}
                 </div>
               ))}

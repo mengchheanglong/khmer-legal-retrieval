@@ -213,9 +213,61 @@ st.markdown(
     """
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Kantumruy+Pro:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200');
 
-    html, body, [class*="css"], [class*="st-"] {
-        font-family: 'Inter', 'Kantumruy Pro', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    /* Base Typography — Target application containers; NEVER use [class*="st-"] which breaks icon ligatures */
+    .stApp,
+    .stApp p,
+    .stApp h1,
+    .stApp h2,
+    .stApp h3,
+    .stApp h4,
+    .stApp h5,
+    .stApp h6,
+    .stApp label,
+    .stApp input,
+    .stApp textarea,
+    .stApp select {
+        font-family: 'Inter', 'Kantumruy Pro', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+    }
+
+    /* PRESERVE STREAMLIT NATIVE MATERIAL SYMBOLS & ICONS (fixes arrow_down, keyboard_double, visibility text) */
+    [data-testid="stIconMaterial"],
+    .material-symbols-rounded,
+    .material-symbols-outlined,
+    .material-icons,
+    [data-testid="stExpanderToggleIcon"],
+    [data-testid="stExpanderToggleIcon"] *,
+    button[aria-label*="password"] *,
+    button[data-testid="baseButton-headerNoPadding"] *,
+    [data-testid="stSidebarCollapseButton"] *,
+    span[class*="material-symbols"] {
+        font-family: 'Material Symbols Rounded', 'Material Icons' !important;
+        font-weight: normal !important;
+        font-style: normal !important;
+        font-size: 20px !important;
+        line-height: 1 !important;
+        letter-spacing: normal !important;
+        text-transform: none !important;
+        display: inline-block !important;
+        white-space: nowrap !important;
+        word-wrap: normal !important;
+        direction: ltr !important;
+        -webkit-font-feature-settings: 'liga' !important;
+        -webkit-font-smoothing: antialiased !important;
+        font-feature-settings: 'liga' 1 !important;
+    }
+
+    /* Expander visual refinement */
+    [data-testid="stExpander"] {
+        border-radius: 8px !important;
+        border: 1px solid rgba(128, 128, 128, 0.22) !important;
+        overflow: hidden;
+        margin-bottom: 12px;
+    }
+    [data-testid="stExpander"] summary {
+        font-weight: 600;
+        padding: 10px 14px !important;
     }
 
     /* Hero Banner */
@@ -428,7 +480,7 @@ with st.sidebar:
     retriever_option = st.selectbox(
         "Active Retrieval Architecture:",
         [
-            "A3: XLM-R Full Fine-Tune [Winner]",
+            "A3: XLM-R Fine-Tuned (Best)",
             "Hybrid: A3 Dense + BM25 Sparse",
             "BM25 Sparse (khmer-nltk)",
             "A4: PrahokBART Dual Encoder",
@@ -519,21 +571,27 @@ with st.sidebar:
     st.divider()
     st.subheader("DeepSeek LLM Key")
     env_key = (os.environ.get("DEEPSEEK_API_KEY", "") or os.environ.get("OPENAI_API_KEY", "")).strip().strip('"').strip("'")
+    api_key_input = ""
     if env_key:
         masked = f"{env_key[:4]}...{env_key[-4:]}" if len(env_key) > 8 else "***"
         st.success(f"Key loaded from `.env` (`{masked}`)", icon="🔑")
-        api_key_input = st.text_input(
-            "Override API Key (Optional):",
-            type="password",
-            placeholder="Using key from .env",
-            help="Your DEEPSEEK_API_KEY from .env is already loaded automatically. Enter a key here only if you wish to override it.",
-        )
+        with st.expander("⚙️ Change / Override Key"):
+            override_val = st.text_input(
+                "Custom DeepSeek Key:",
+                type="password",
+                placeholder="sk-...",
+                help="Leave empty to use the active key from .env",
+                key="override_deepseek_key",
+            )
+            if override_val.strip():
+                api_key_input = override_val.strip()
     else:
         api_key_input = st.text_input(
-            "API Key (Optional for Direct Search):",
+            "DeepSeek API Key:",
             type="password",
-            placeholder="sk-... (or set DEEPSEEK_API_KEY)",
+            placeholder="sk-... (or add DEEPSEEK_API_KEY to .env)",
             help="Required for Tab 1 Q&A synthesis. Direct Search in Tab 2 is 100% offline.",
+            key="direct_deepseek_key",
         )
 
     st.divider()

@@ -54,7 +54,11 @@ class HybridRetrieveUseCase:
         Returns:
             Reranked list of RetrievedDocument (length = request.top_k).
         """
-        logger.info("Starting hybrid retrieval", query=request.query)
+        logger.info("Starting hybrid retrieval", query=request.query, retriever_choice=request.retriever_choice)
+
+        choice = (request.retriever_choice or "").strip().lower()
+        is_pure_dense = any(x in choice for x in ("a3", "a1", "a2", "a4", "dense", "vector")) and "hybrid" not in choice
+        is_pure_sparse = any(x in choice for x in ("bm25", "sparse", "lexical")) and "hybrid" not in choice
 
         # Step 1 & 2: Dense retrieval (vector similarity) with fallback
         dense_results: list[RetrievedDocument] = []
@@ -75,6 +79,11 @@ class HybridRetrieveUseCase:
         except Exception as e:
             logger.warning("Dense vector retrieval unavailable, falling back to BM25 sparse search", error=str(e))
 
+        # If pure dense requested (e.g. Approach A3), return top dense matches directly (matching Streamlit)
+        if is_pure_dense and dense_results:
+            logger.info("Returning pure dense retrieval results", count=len(dense_results[:request.top_k]))
+            return dense_results[:request.top_k]
+
         # Step 3: Sparse retrieval (BM25)
         try:
             sparse_results = self._sparse_retriever.search(
@@ -89,7 +98,17 @@ class HybridRetrieveUseCase:
             )
         logger.info("Sparse retrieval complete", count=len(sparse_results))
 
-        # Step 4: Reciprocal Rank Fusion
+        # If pure sparse requested (BM25), return sparse results directly
+        if is_pure_sparse:
+            logger.info("Returning pure sparse retrieval results", count=len(sparse_results[:request.top_k]))
+            return sparse_results[:request.top_k]
+
+        # Fallback if dense was requested but failed/empty
+        if is_pure_dense:
+            logger.info("Dense retrieval empty/failed, falling back to sparse results")
+            return sparse_results[:request.top_k]
+
+        # Step 4: Reciprocal Rank Fusion for Hybrid
         if dense_results and sparse_results:
             fused_results = self._reciprocal_rank_fusion(dense_results, sparse_results)
         elif dense_results:

@@ -3,16 +3,16 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Khmer Legal Retrieval — Deep Learning Final Project (10-Minute Presentation)</title>
+<title>Khmer Legal Retrieval — Visual-First Defense Presentation</title>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Kantumruy+Pro:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Kantumruy+Pro:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
 
   body {
     font-family: 'Inter', 'Kantumruy Pro', sans-serif;
-    background-color: #0f172a;
-    color: #f8fafc;
+    background-color: #0b1120;
+    color: #0f172a;
     overflow: hidden;
     height: 100vh;
     display: flex;
@@ -27,9 +27,9 @@
     height: 50.625vw;
     max-height: 810px;
     background: #ffffff;
-    color: #1e293b;
+    color: #0f172a;
     border-radius: 12px;
-    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
     position: relative;
     overflow: hidden;
     display: flex;
@@ -40,274 +40,322 @@
     position: absolute;
     top: 0; left: 0;
     width: 100%; height: 100%;
-    padding: 36px 54px;
+    padding: 30px 48px;
     display: none;
     flex-direction: column;
     justify-content: flex-start;
     opacity: 0;
-    transition: opacity 0.2s ease-in-out;
+    transition: opacity 0.15s ease-in-out;
   }
 
   .slide.active { display: flex; opacity: 1; }
 
-  /* ---- Section badges ---- */
+  /* ---- Header & Badges ---- */
+  .slide-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 4px;
+  }
   .section-badge {
     display: inline-flex;
     align-items: center;
     gap: 6px;
-    padding: 4px 12px;
+    padding: 3px 12px;
     border-radius: 9999px;
-    font-size: 0.72rem;
+    font-size: 0.70rem;
     font-weight: 800;
     letter-spacing: 0.06em;
     text-transform: uppercase;
-    margin-bottom: 8px;
-    width: fit-content;
   }
-  .badge-core   { background: #dbeafe; color: #1e40af; }
-  .badge-appendix { background: #f1f5f9; color: #475569; border: 1px solid #cbd5e1; }
+  .badge-core      { background: #eff6ff; color: #1e40af; border: 1px solid #bfdbfe; }
+  .badge-discovery { background: #fef3c7; color: #92400e; border: 1px solid #fde68a; }
+  .badge-demo      { background: #dcfce7; color: #166534; border: 1px solid #86efac; }
+  .badge-appendix  { background: #f1f5f9; color: #475569; border: 1px solid #cbd5e1; }
 
   .time-chip {
     display: inline-flex;
     align-items: center;
     gap: 4px;
-    background: #eff6ff;
-    color: #1d4ed8;
-    border: 1px solid #bfdbfe;
-    padding: 3px 10px;
+    background: #f8fafc;
+    color: #2563eb;
+    border: 1px solid #e2e8f0;
+    padding: 2px 8px;
     border-radius: 6px;
-    font-size: 0.76rem;
+    font-size: 0.72rem;
     font-weight: 700;
     font-family: 'JetBrains Mono', monospace;
-  }
-
-  h1.title {
-    font-size: 2.2rem;
-    font-weight: 800;
-    color: #1e3a8a;
-    line-height: 1.2;
-    margin-bottom: 10px;
-  }
-  h2.subtitle {
-    font-size: 1.15rem;
-    font-weight: 600;
-    color: #2563eb;
-    margin-bottom: 18px;
   }
 
   h2.slide-title {
     font-size: 1.45rem;
     font-weight: 800;
     color: #0f172a;
-    margin-bottom: 3px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-  .slide-subtitle {
-    font-size: 0.92rem;
-    color: #64748b;
-    font-weight: 500;
-    margin-bottom: 14px;
-    padding-bottom: 10px;
-    border-bottom: 2px solid #e2e8f0;
-  }
-
-  p, li { font-size: 0.92rem; line-height: 1.48; color: #334155; }
-  ul { margin-left: 18px; margin-bottom: 6px; }
-  li { margin-bottom: 4px; }
-  strong { color: #0f172a; font-weight: 700; }
-
-  .khmer { font-family: 'Kantumruy Pro', sans-serif; }
-
-  /* ---- Layout helpers ---- */
-  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; flex: 1; align-items: start; }
-  .grid-2-wide { display: grid; grid-template-columns: 1.3fr 1fr; gap: 24px; flex: 1; align-items: center; }
-  .grid-2-compact { display: grid; grid-template-columns: 1.05fr 1fr; gap: 20px; flex: 1; align-items: start; }
-  .stack { display: flex; flex-direction: column; gap: 12px; height: 100%; justify-content: center; }
-
-  /* ---- Pipeline & Demo Styles ---- */
-  .pipeline-bar {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    background: #f8fafc;
-    border: 1px solid #e2e8f0;
-    border-radius: 8px;
-    padding: 8px 12px;
-    margin-bottom: 12px;
-  }
-  .pipeline-step {
-    flex: 1;
-    background: #ffffff;
-    border: 1px solid #cbd5e1;
-    border-radius: 6px;
-    padding: 6px 8px;
-    text-align: center;
-    box-shadow: 0 1px 2px rgba(0,0,0,0.04);
-  }
-  .pipeline-step.active-step {
-    border-color: #2563eb;
-    background: #eff6ff;
-  }
-  .pipeline-step .p-title {
-    font-size: 0.70rem;
-    font-weight: 800;
-    color: #1e40af;
-    text-transform: uppercase;
-    letter-spacing: 0.04em;
+    line-height: 1.25;
     margin-bottom: 2px;
   }
-  .pipeline-step .p-sub {
-    font-size: 0.78rem;
-    font-weight: 600;
-    color: #0f172a;
-  }
-  .pipeline-sep {
-    color: #94a3b8;
-    font-weight: 800;
-    font-size: 1.1rem;
-    padding: 0 6px;
+  .slide-subtitle {
+    font-size: 0.88rem;
+    color: #64748b;
+    font-weight: 500;
+    margin-bottom: 12px;
+    padding-bottom: 8px;
+    border-bottom: 1.5px solid #f1f5f9;
   }
 
-  .demo-cue-box {
-    background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 100%);
-    color: #ffffff;
+  p, li { font-size: 0.88rem; line-height: 1.45; color: #334155; }
+  strong { color: #0f172a; font-weight: 700; }
+  .khmer { font-family: 'Kantumruy Pro', sans-serif; }
+  .mono { font-family: 'JetBrains Mono', monospace; }
+
+  /* ---- Visual Components & Grids ---- */
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; flex: 1; align-items: start; }
+  .grid-2-equal { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; flex: 1; align-items: stretch; }
+  .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; flex: 1; align-items: stretch; }
+  .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; flex: 1; align-items: stretch; }
+  .stack { display: flex; flex-direction: column; gap: 10px; height: 100%; justify-content: center; }
+
+  .card {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
     border-radius: 8px;
-    padding: 10px 16px;
+    padding: 14px 16px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+  }
+  .card.highlight { background: #eff6ff; border-color: #bfdbfe; border-left: 4px solid #2563eb; }
+  .card.warning   { background: #fffbeb; border-color: #fde68a; border-left: 4px solid #f59e0b; }
+  .card.danger    { background: #fef2f2; border-color: #fecaca; border-left: 4px solid #dc2626; }
+  .card.success   { background: #f0fdf4; border-color: #bbf7d0; border-left: 4px solid #16a34a; }
+
+  .card-title {
+    font-size: 0.94rem;
+    font-weight: 700;
+    color: #0f172a;
+    margin-bottom: 6px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  /* ---- Pipeline Steps ---- */
+  .pipeline-flow {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin-top: 10px;
+    gap: 8px;
+    margin: 8px 0;
   }
-  .demo-cue-box h4 {
-    font-size: 1.05rem;
-    font-weight: 800;
-    color: #f8fafc;
-  }
-  .demo-cue-box .demo-badge {
-    background: #2563eb;
-    color: #ffffff;
-    padding: 4px 10px;
-    border-radius: 6px;
-    font-size: 0.8rem;
-    font-weight: 700;
-    font-family: 'JetBrains Mono', monospace;
-  }
-
-  .card {
-    background: #f8fafc;
-    border: 1px solid #e2e8f0;
-    border-radius: 8px;
-    padding: 14px 18px;
-  }
-  .card h3 {
-    font-size: 0.95rem;
-    color: #1e3a8a;
-    margin-bottom: 6px;
-    font-weight: 700;
-  }
-  .card.accent { background: #eff6ff; border-color: #bfdbfe; }
-  .card.example { background: #fefce8; border-color: #fde68a; }
-
-  /* ---- Stat chips ---- */
-  .stat-row { display: flex; gap: 12px; margin-top: 12px; }
-  .stat {
+  .pipe-node {
     flex: 1;
-    background: #0f172a;
-    color: #fff;
+    background: #f8fafc;
+    border: 1.5px solid #cbd5e1;
     border-radius: 8px;
-    padding: 12px 14px;
+    padding: 10px 8px;
     text-align: center;
   }
-  .stat .num { font-size: 1.4rem; font-weight: 800; color: #93c5fd; display: block; }
-  .stat.win .num { color: #f8fafc; }
-  .stat .lbl { font-size: 0.72rem; color: #cbd5e1; font-weight: 600; }
-
-  /* ---- Model color legend ---- */
-  .model-chip {
-    display: inline-flex; align-items: center; gap: 5px;
-    font-size: 0.82rem; font-weight: 700; padding: 2px 4px;
+  .pipe-node.active {
+    background: #eff6ff;
+    border-color: #3b82f6;
   }
-  .dot { width: 9px; height: 9px; border-radius: 50%; display: inline-block; }
-  .c-bm25   { background: #808080; }
-  .c-e5     { background: #1f77b4; }
-  .c-a1     { background: #ff7f0e; }
-  .c-a2     { background: #2ca02c; }
-  .c-a3     { background: #d62728; }
-  .c-a4     { background: #9467bd; }
+  .pipe-node .node-step {
+    font-size: 0.68rem;
+    font-weight: 800;
+    color: #2563eb;
+    text-transform: uppercase;
+  }
+  .pipe-node .node-name {
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: #0f172a;
+    margin-top: 2px;
+  }
+  .pipe-arrow {
+    color: #94a3b8;
+    font-size: 1.1rem;
+    font-weight: 800;
+  }
 
-  table { width: 100%; border-collapse: collapse; margin-top: 6px; font-size: 0.82rem; }
-  th, td { padding: 6px 9px; text-align: left; border-bottom: 1px solid #e2e8f0; }
-  th { background-color: #f1f5f9; color: #1e293b; font-weight: 700; }
-  tr.winner { background-color: #fef2f2; font-weight: 600; }
-  tr.winner td:first-child { border-left: 3px solid #d62728; }
+  /* ---- Architecture Diagrams (Slide 5) ---- */
+  .arch-box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: #f8fafc;
+    border: 1.5px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 12px 10px;
+    text-align: center;
+  }
+  .arch-box.winner {
+    background: #eff6ff;
+    border-color: #3b82f6;
+    box-shadow: 0 4px 6px -1px rgba(59, 130, 246, 0.15);
+  }
+  .arch-badge {
+    background: #e2e8f0;
+    color: #334155;
+    font-size: 0.70rem;
+    font-weight: 800;
+    padding: 2px 8px;
+    border-radius: 4px;
+    margin-bottom: 6px;
+  }
+  .arch-box.winner .arch-badge {
+    background: #2563eb;
+    color: #ffffff;
+  }
+  .arch-layer {
+    width: 90%;
+    background: #ffffff;
+    border: 1px solid #cbd5e1;
+    border-radius: 4px;
+    padding: 5px 2px;
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: #334155;
+    margin: 3px 0;
+  }
+  .arch-layer.frozen { background: #f1f5f9; color: #64748b; border-style: dashed; }
+  .arch-layer.train  { background: #dbeafe; color: #1e40af; border-color: #93c5fd; }
+  .arch-down-arrow { color: #94a3b8; font-size: 0.75rem; margin: -1px 0; }
 
-  .slide-img {
-    max-width: 100%;
-    max-height: 100%;
-    object-fit: contain;
-    display: block;
+  /* ---- Heatmap & Contrastive Visual (Slide 6) ---- */
+  .matrix-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 4px;
+    width: 140px;
+    height: 140px;
     margin: 0 auto;
   }
-  .img-frame {
+  .matrix-cell {
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.65rem;
+    font-weight: 800;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .matrix-cell.pos { background: #16a34a; color: #ffffff; }
+  .matrix-cell.neg { background: #f1f5f9; color: #94a3b8; }
+
+  /* ---- Discovery Centerpiece (Slide 9) ---- */
+  .discovery-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    margin: 8px 0;
+    flex: 1;
+  }
+  .discovery-card {
+    border-radius: 12px;
+    padding: 22px 26px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+  }
+  .discovery-card.in-dist  { background: #f0fdf4; border: 2px solid #86efac; }
+  .discovery-card.out-dist { background: #eff6ff; border: 2px solid #93c5fd; }
+  .disc-metric {
+    font-size: 3.8rem;
+    font-weight: 800;
+    line-height: 1;
+    margin: 8px 0;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .disc-metric.green { color: #16a34a; }
+  .disc-metric.blue  { color: #2563eb; }
+
+  /* ---- Live Demo Visual (Slide 11) ---- */
+  .demo-query-card {
+    background: #0f172a;
+    color: #ffffff;
+    border-radius: 8px;
+    padding: 12px 18px;
+    margin-bottom: 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .demo-query-card p { color: #ffffff !important; }
+  .demo-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px;
+    flex: 1;
+  }
+  .demo-col {
+    background: #ffffff;
+    border: 1.5px solid #cbd5e1;
+    border-radius: 8px;
+    padding: 14px 16px;
+  }
+  .demo-col.miss { border-top: 5px solid #dc2626; background: #fafafa; }
+  .demo-col.hit  { border-top: 5px solid #16a34a; background: #f8fff9; }
+
+  /* ---- Data Tables ---- */
+  table.data-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.78rem;
+    margin-top: 4px;
+  }
+  table.data-table th, table.data-table td {
+    padding: 5px 8px;
+    border: 1px solid #cbd5e1;
+    text-align: left;
+  }
+  table.data-table th { background: #f8fafc; font-weight: 700; color: #1e293b; }
+  table.data-table tr.winner { background: #eff6ff; font-weight: 700; }
+
+  /* ---- Image Container ---- */
+  .fig-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
     background: #ffffff;
     border: 1px solid #e2e8f0;
     border-radius: 8px;
     padding: 8px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    height: 100%;
   }
-
-  .takeaway-list { display: flex; flex-direction: column; gap: 8px; margin-top: 6px; }
-  .takeaway {
-    background: #f8fafc;
-    border-left: 4px solid #2563eb;
-    padding: 10px 14px;
-    border-radius: 0 8px 8px 0;
-    display: flex;
-    align-items: flex-start;
-    gap: 12px;
-  }
-  .takeaway .n {
-    background: #2563eb;
-    color: #fff;
-    font-size: 0.82rem;
-    font-weight: 800;
-    width: 22px; height: 22px;
-    border-radius: 50%;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
+  .fig-container img {
+    max-width: 100%;
+    max-height: 330px;
+    object-fit: contain;
+    border-radius: 4px;
   }
 
   .slide-footer {
     position: absolute;
-    bottom: 12px; left: 54px; right: 54px;
+    bottom: 10px; left: 48px; right: 48px;
     display: flex; justify-content: space-between;
-    font-size: 0.76rem; color: #94a3b8;
-    border-top: 1px solid #f1f5f9; padding-top: 5px;
+    font-size: 0.72rem; color: #94a3b8;
+    border-top: 1px solid #f1f5f9; padding-top: 4px;
   }
 
+  /* ---- Interactive Controls ---- */
   .controls {
-    position: fixed; bottom: 16px;
-    display: flex; gap: 14px; align-items: center;
-    background: rgba(30, 41, 59, 0.9);
+    position: fixed; bottom: 14px;
+    display: flex; gap: 12px; align-items: center;
+    background: rgba(15, 23, 42, 0.95);
     padding: 6px 14px; border-radius: 9999px;
     backdrop-filter: blur(8px);
-    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5);
     z-index: 100;
   }
   .btn {
     background: #3b82f6; color: #fff; border: none;
-    padding: 4px 10px; border-radius: 6px; font-size: 0.84rem;
-    cursor: pointer; font-weight: 600; transition: background 0.15s;
+    padding: 4px 10px; border-radius: 6px; font-size: 0.82rem;
+    cursor: pointer; font-weight: 600;
   }
   .btn:hover { background: #2563eb; }
-  .slide-counter { color: #f8fafc; font-size: 0.88rem; font-weight: 500; min-width: 58px; text-align: center; }
+  .slide-counter { color: #f8fafc; font-size: 0.84rem; font-weight: 600; min-width: 65px; text-align: center; }
 
+  /* ---- Vector Print to PDF ---- */
   @media print {
     body { background: #ffffff; color: #000000; height: auto; overflow: visible; }
     .controls { display: none !important; }
@@ -319,7 +367,7 @@
     .slide {
       position: relative !important; display: flex !important; opacity: 1 !important;
       page-break-after: always !important; page-break-inside: avoid !important;
-      width: 16in !important; height: 9in !important; padding: 36px 54px !important;
+      width: 16in !important; height: 9in !important; padding: 30px 48px !important;
     }
     @page { size: 16in 9in; margin: 0; }
   }
@@ -330,588 +378,1109 @@
 <div class="slide-viewport">
 
   <!-- ============================================================ -->
-  <!-- SLIDE 1: TITLE & RESEARCH QUESTION -->
+  <!-- SLIDE 1: TITLE & HOOK -->
   <!-- ============================================================ -->
   <div class="slide active">
     <div style="flex:1; display:flex; flex-direction:column; justify-content:center;">
-      <h1 class="title">Finding the Right Law, in Khmer</h1>
-      <h2 class="subtitle">Comparing Four Deep-Learning Retrievers on Cambodian Statutory Law &amp; Citation-Grounded Assistant</h2>
-      <p style="margin-bottom: 18px;">
-        <strong>Deep Learning Final Project (Individual Assessment — 50%)</strong> · Mengchheang Long<br>
-        Department of Engineering · Bachelor of Software Engineering · Lecturer: Mr. Soklong HIM<br>
-        <strong>10-Minute Presentation + 5-Minute Q&amp;A (Course Syllabus §6.2 &amp; §6.3)</strong>
+      <div class="slide-header">
+        <span class="section-badge badge-core">Oral Defense · Deep Learning Final Project</span>
+        <span class="time-chip">⏱ 0:00 – 0:30 (30s)</span>
+      </div>
+      <h1 style="font-size: 2.2rem; font-weight: 800; color: #1e3a8a; line-height: 1.15; margin: 6px 0;">
+        Finding the Right Law, in Khmer
+      </h1>
+      <p style="font-size: 1.10rem; font-weight: 600; color: #2563eb; margin-bottom: 16px;">
+        Can Deep Learning Match Everyday Khmer Questions to Official Statutory Articles?
       </p>
-      <div class="stat-row">
-        <div class="stat"><span class="num">1,976</span><span class="lbl">Khmer statutory articles (100% consecutive)</span></div>
-        <div class="stat"><span class="num">200</span><span class="lbl">Real human legal test questions</span></div>
-        <div class="stat"><span class="num">4 Architectures</span><span class="lbl">PyTorch DL models (A1–A4)</span></div>
-        <div class="stat win"><span class="num">+44.1%</span><span class="lbl">MRR@10 gain vs. keyword search (p &lt; 0.001)</span></div>
-      </div>
-    </div>
-    <div class="slide-footer">
-      <span>Khmer Legal Retrieval — Deep Learning Final Project</span>
-      <span>Slide 1 / 15 · Title &amp; Motivation</span>
-    </div>
-  </div>
 
-  <!-- ============================================================ -->
-  <!-- SLIDE 2: PROBLEM DEFINITION & PRACTICAL MOTIVATION -->
-  <!-- ============================================================ -->
-  <div class="slide">
-    <div style="display:flex; justify-content:space-between; align-items:center;">
-      <span class="section-badge badge-core">Presentation</span>
-      <span class="time-chip">⏱ 0:20 – 1:10 (50s)</span>
-    </div>
-    <h2 class="slide-title">1. Problem Definition &amp; Practical Motivation</h2>
-    <p class="slide-subtitle">A citizen asks a question in plain Khmer — can deep learning retrieve the exact statutory article out of 1,976?</p>
-
-    <div class="grid-2">
-      <div class="card accent">
-        <h3>Task Definition (§5.A)</h3>
-        <p style="margin-bottom:8px;"><strong>Input:</strong> Unstructured legal question in natural Khmer ($q$).</p>
-        <p style="margin-bottom:8px;"><strong>Output:</strong> Top-$k$ ranked statutory articles $\{d_1, \dots, d_k\}$ from the full 1,976-article corpus without statute/chapter filter hints.</p>
-        <p class="khmer" style="font-size:1rem; color:#1e3a8a; font-weight:600;">
-          «តើកិច្ចសន្យាបង្កើតឡើងដោយរបៀបណា?»
+      <div class="card highlight" style="padding: 16px 20px; margin-bottom: 16px;">
+        <span style="font-size: 0.72rem; font-weight: 800; color: #1e40af; letter-spacing: 0.05em; text-transform: uppercase;">
+          The Central Research Question
+        </span>
+        <p class="khmer" style="font-size: 1.25rem; font-weight: 700; color: #0f172a; margin: 6px 0;">
+          «តើកិច្ចសន្យាត្រូវបង្កើតឡើងដោយរបៀបណា យោងតាមក្រមរដ្ឋប្បវេណី?»
         </p>
-        <p style="color:#64748b; font-size:0.86rem; margin-bottom:6px;">("How is a contract formed under the Civil Code?")</p>
-        <p style="font-size:0.88rem;">→ Ground Truth: <strong>Civil Code Art. 336</strong> <span class="khmer">(ការបង្កើតកិច្ចសន្យា...)</span> &amp; <strong>Art. 311</strong> <span class="khmer">(និយមន័យនៃកិច្ចសន្យា)</span></p>
-      </div>
-
-      <div class="card">
-        <h3>Why Lexical Keyword Search (BM25) Fails</h3>
-        <ul>
-          <li><strong>Severe Vocabulary Mismatch (57.5% of BM25 misses):</strong> Citizens ask in conversational phrasing; statutes use formal civil law terminology.</li>
-          <li><strong>Misleading Term Distraction:</strong> BM25 matches common query words like <span class="khmer">"របៀប"</span> (manner) and retrieves irrelevant procedural articles (e.g., Art. 623 "Manner of dividing proceeds") while completely missing Art. 336.</li>
-          <li><strong>Dense Semantic Representation:</strong> Neural bi-encoders map queries and statutes into a shared latent geometry, bridging vocabulary discrepancies via contextual meaning.</li>
-        </ul>
-      </div>
-    </div>
-    <div class="slide-footer">
-      <span>Khmer Legal Retrieval — Deep Learning Final Project</span>
-      <span>Slide 2 / 15 · Problem Definition</span>
-    </div>
-  </div>
-
-  <!-- ============================================================ -->
-  <!-- SLIDE 3: DATASET & PREPROCESSING: THE LIMON FONT CHALLENGE -->
-  <!-- ============================================================ -->
-  <div class="slide">
-    <div style="display:flex; justify-content:space-between; align-items:center;">
-      <span class="section-badge badge-core">Presentation</span>
-      <span class="time-chip">⏱ 1:10 – 2:10 (60s)</span>
-    </div>
-    <h2 class="slide-title">2. Dataset &amp; Preprocessing: The Limon Font Challenge</h2>
-    <p class="slide-subtitle">Official government PDFs were typed in legacy 1990s ASCII fonts — extraction had to be engineered from scratch</p>
-
-    <div class="grid-2">
-      <div class="card">
-        <h3>The Legacy Limon Problem</h3>
-        <ul>
-          <li><strong>Corpus Source:</strong> Official PDFs from Open Development Cambodia (Civil Code 2007: 1,304 articles, Criminal Code 2009: 672 articles).</li>
-          <li><strong>Obsolete ASCII Encoding:</strong> Text layer contains raw Latin keystrokes (e.g. <code>maRta 336&gt;- karbegáItkic©snñ...</code>). Standard PDF tools produce unreadable gibberish.</li>
-          <li><strong>Visual Grapheme Inversion:</strong> Khmer pre-base vowels (<span class="khmer">េ ែ ៃ</span>) and subscript consonants are typed *before* the base consonant visually, violating Unicode logical character ordering.</li>
-        </ul>
-      </div>
-
-      <div class="card accent">
-        <h3>Engineered Solution &amp; Validation</h3>
-        <ul>
-          <li><strong>Custom Pipeline:</strong> Engineered <code>LimonPdfExtractor</code> with byte-level font mapping and a finite-state machine for syllable reordering into Unicode.</li>
-          <li><strong>100% Consecutive Extraction:</strong> Cleanly extracted all 1,976 articles (Civil 1–1304, Criminal 1–672) with zero missing provisions, audited against physical gazettes.</li>
-          <li><strong>Structural Metadata:</strong> Preserved full hierarchical breadcrumbs (Book → Title → Chapter → Section → Article Number).</li>
-        </ul>
-      </div>
-    </div>
-    <div class="slide-footer">
-      <span>Khmer Legal Retrieval — Deep Learning Final Project</span>
-      <span>Slide 3 / 15 · Dataset &amp; Preprocessing</span>
-    </div>
-  </div>
-
-  <!-- ============================================================ -->
-  <!-- SLIDE 4: SPLITS & ZERO-LEAKAGE PROTOCOL -->
-  <!-- ============================================================ -->
-  <div class="slide">
-    <div style="display:flex; justify-content:space-between; align-items:center;">
-      <span class="section-badge badge-core">Presentation</span>
-      <span class="time-chip">⏱ 2:10 – 3:00 (50s)</span>
-    </div>
-    <h2 class="slide-title">3. Training, Validation &amp; Test Splits (Zero Leakage)</h2>
-    <p class="slide-subtitle">Rigorous split quarantine and data sanitization protocol enforced across all models (Seed 42)</p>
-
-    <div class="grid-2">
-      <div class="card">
-        <h3>Weak Supervision Data Generation</h3>
-        <ul>
-          <li><strong>Title-to-Body Pairs:</strong> Because labeled Khmer legal QA datasets do not exist, 1,472 unique article titles served as natural query-body training pairs.</li>
-          <li><strong>Ambiguous Titles Excluded:</strong> 270 articles sharing identical titles (e.g., "Definitions", "Competence") were quarantined to prevent ambiguous label noise.</li>
-          <li><strong>Passage Title Stripping:</strong> Titles were strictly removed from passages during training to prevent trivial lexical copy-matching.</li>
-        </ul>
-      </div>
-
-      <div class="card accent">
-        <h3>Benchmark Splits &amp; Leakage Guard (§5.A)</h3>
-        <ul>
-          <li><strong>Fixed Splits (Seed 42):</strong> 1,176 Train (80%) · 148 Validation (10%) · 148 Held-Out Test Titles (T-T Secondary Benchmark).</li>
-          <li><strong>Primary T-Q Benchmark:</strong> 200 authentic human legal questions (100 Civil + 100 Criminal).</li>
-          <li><strong>Zero Test Leakage:</strong> All 200 questions and their 261 relevant statutory articles were strictly quarantined from training. Test sets evaluated strictly once.</li>
-        </ul>
-      </div>
-    </div>
-    <div class="slide-footer">
-      <span>Khmer Legal Retrieval — Deep Learning Final Project</span>
-      <span>Slide 4 / 15 · Splits &amp; Data Hygiene</span>
-    </div>
-  </div>
-
-  <!-- ============================================================ -->
-  <!-- SLIDE 5: FOUR NEURAL ARCHITECTURES & STRATEGIES -->
-  <!-- ============================================================ -->
-  <div class="slide">
-    <div style="display:flex; justify-content:space-between; align-items:center;">
-      <span class="section-badge badge-core">Presentation</span>
-      <span class="time-chip">⏱ 3:00 – 4:15 (75s)</span>
-    </div>
-    <h2 class="slide-title">4. Model Architectures &amp; Strategies</h2>
-    <p class="slide-subtitle">Comparing 4 distinct PyTorch deep learning approaches across model families and training strategies (§4)</p>
-
-    <table>
-      <tr><th>Approach</th><th>Encoder Architecture (Dim. A)</th><th>Training Strategy (Dim. B)</th><th>Trainable Params</th><th>Tokenization</th></tr>
-      <tr><td><span class="model-chip"><span class="dot c-bm25"></span>BM25</span></td><td>Sparse lexical inverted index (Baseline)</td><td>Frequency heuristics ($k_1=1.5, b=0.75$)</td><td>0</td><td>khmer-nltk CRF</td></tr>
-      <tr><td><span class="model-chip"><span class="dot c-e5"></span>E5 Zero-Shot</span></td><td>Pretrained multilingual transformer</td><td>Zero-shot inference (Frozen)</td><td>0 (278M)</td><td>SentencePiece</td></tr>
-      <tr><td><span class="model-chip"><span class="dot c-a1"></span>A1 BiLSTM</span></td><td>Bidirectional LSTM (2 layers, hidden 256)</td><td>Trained from scratch (Random init)</td><td>1.97 M</td><td>khmer-nltk CRF</td></tr>
-      <tr><td><span class="model-chip"><span class="dot c-a2"></span>A2 Linear Probe</span></td><td>multilingual-e5-base (XLM-RoBERTa)</td><td>Frozen backbone + trained linear head</td><td>0.59 M</td><td>SentencePiece</td></tr>
-      <tr class="winner"><td><span class="model-chip"><span class="dot c-a3"></span>A3 Full Fine-Tune ★</span></td><td>multilingual-e5-base (XLM-RoBERTa)</td><td>Full fine-tuning (All 12 layers adapted)</td><td>278.04 M</td><td>SentencePiece</td></tr>
-      <tr><td><span class="model-chip"><span class="dot c-a4"></span>A4 PrahokBART</span></td><td>prahokbart-base (Native Khmer seq2seq)</td><td>Full fine-tuning with mean-pooling</td><td>35.83 M</td><td>SentencePiece (32k)</td></tr>
-    </table>
-
-    <div class="card" style="margin-top:12px;">
-      <p style="font-size:0.86rem;"><strong>Course Rubric Compliance (§4):</strong> Approaches differ in <strong>architecture</strong> (BiLSTM vs Transformer vs BART) AND <strong>training strategy</strong> (scratch vs linear probe vs fine-tuning), exceeding the 3-approach requirement.</p>
-    </div>
-    <div class="slide-footer">
-      <span>Khmer Legal Retrieval — Deep Learning Final Project</span>
-      <span>Slide 5 / 15 · Model Architectures</span>
-    </div>
-  </div>
-
-  <!-- ============================================================ -->
-  <!-- SLIDE 6: TRAINING PROCESS & INFONCE CONTRASTIVE LOSS -->
-  <!-- ============================================================ -->
-  <div class="slide">
-    <div style="display:flex; justify-content:space-between; align-items:center;">
-      <span class="section-badge badge-core">Presentation</span>
-      <span class="time-chip">⏱ 4:15 – 5:15 (60s)</span>
-    </div>
-    <h2 class="slide-title">5. Training Process &amp; InfoNCE Contrastive Loss</h2>
-    <p class="slide-subtitle">Shared contrastive learning formulation with in-batch negatives and symmetric cross-entropy</p>
-
-    <div class="grid-2">
-      <div class="card accent">
-        <h3>Symmetric InfoNCE Objective</h3>
-        <p style="font-size:0.88rem; margin-bottom:8px;">Both query-to-document and document-to-query contrastive losses are averaged across batch size $B$:</p>
-        <p style="font-family:'JetBrains Mono',monospace; font-size:0.80rem; background:#ffffff; padding:8px; border-radius:6px; border:1px solid #bfdbfe; margin-bottom:8px;">
-          L = -1/(2B) * Σ [ log( e^(sim(q_i,d_i)/τ) / Σ_j e^(sim(q_i,d_j)/τ) ) + log( e^(sim(d_i,q_i)/τ) / Σ_j e^(sim(d_j,q_i)/τ) ) ]
+        <p style="font-size: 0.86rem; color: #475569;">
+          <em>"How is a contract formed under the Civil Code?"</em> — Citizens ask questions in conversational language.
+          Statutes are drafted in formal legal prose across nearly two thousand articles.
         </p>
-        <ul>
-          <li><strong>Temperature $\tau = 0.05$:</strong> Sharply penalizes hard negative false positives.</li>
-          <li><strong>In-Batch Negatives:</strong> $B-1$ negative articles per sample without mining overhead.</li>
-        </ul>
       </div>
 
-      <div class="card">
-        <h3>Optimization &amp; Engineering Controls</h3>
-        <ul>
-          <li><strong>Optimizer:</strong> AdamW with linear warmup (10% of total steps) and cosine learning rate decay.</li>
-          <li><strong>Regularization:</strong> Weight decay (0.01) + embedding dropout + contrastive repulsion.</li>
-          <li><strong>Checkpointing (§5.B):</strong> <code>torch.save</code> saves model weights, optimizer, scheduler, and RNG state each epoch (<code>last.pt</code>, <code>best.pt</code>) with <code>--resume</code> flag support.</li>
-        </ul>
-      </div>
-    </div>
-    <div class="slide-footer">
-      <span>Khmer Legal Retrieval — Deep Learning Final Project</span>
-      <span>Slide 6 / 15 · Training &amp; Loss Formulation</span>
-    </div>
-  </div>
-
-  <!-- ============================================================ -->
-  <!-- SLIDE 7: EXPERIMENTAL SETUP & HYPERPARAMETER TUNING -->
-  <!-- ============================================================ -->
-  <div class="slide">
-    <div style="display:flex; justify-content:space-between; align-items:center;">
-      <span class="section-badge badge-core">Presentation</span>
-      <span class="time-chip">⏱ 5:15 – 6:10 (55s)</span>
-    </div>
-    <h2 class="slide-title">6. Experimental Setup &amp; Hyperparameter Tuning</h2>
-    <p class="slide-subtitle">Systematic hyperparameter search recorded across learning rates and weight decay on Tesla T4 GPU (§5.C)</p>
-
-    <div class="grid-2">
-      <div>
-        <h3 style="font-size:0.92rem; color:#1e3a8a; margin-bottom:4px;">Approach A3: 6-Run Grid Search (Tesla T4)</h3>
-        <table style="font-size:0.75rem;">
-          <tr><th>Run Name</th><th>LR</th><th>WD</th><th>Best Epoch</th><th>Val MRR@10</th></tr>
-          <tr class="winner"><td><strong>a3_lr2e-5_wd0.01 ★</strong></td><td>2e-5</td><td>0.01</td><td>4</td><td><strong>0.9095</strong></td></tr>
-          <tr><td>a3_lr2e-5_wd0.0</td><td>2e-5</td><td>0.00</td><td>4</td><td>0.9095</td></tr>
-          <tr><td>a3_lr3e-5_wd0.0</td><td>3e-5</td><td>0.00</td><td>4</td><td>0.9082</td></tr>
-          <tr><td>a3_lr3e-5_wd0.01</td><td>3e-5</td><td>0.01</td><td>4</td><td>0.9081</td></tr>
-          <tr><td>a3_lr1e-5_wd0.01</td><td>1e-5</td><td>0.01</td><td>3</td><td>0.9023</td></tr>
-          <tr><td>a3_lr1e-5_wd0.0</td><td>1e-5</td><td>0.00</td><td>3</td><td>0.9023</td></tr>
-        </table>
-      </div>
-
-      <div class="card">
-        <h3>Controlled Environments &amp; Other Models</h3>
-        <ul>
-          <li><strong>A1 BiLSTM Tuning:</strong> LR {1e-3, 3e-3} × Dropout {0.1, 0.3} → Best: LR 3e-3, Drop 0.3 (Val MRR: 0.7679).</li>
-          <li><strong>A2 Linear Probe Tuning:</strong> LR {1e-3, 1e-2} × WD {0, 0.01} → Best: LR 1e-3, WD 0.01 (Val MRR: 0.7894).</li>
-          <li><strong>A4 PrahokBART Tuning:</strong> LR {5e-5, 1e-4} × WD {0.01} → Best: LR 1e-4 (Val MRR: 0.6116).</li>
-          <li><strong>Reproducibility:</strong> Global seed 42 fixed across Python, NumPy, PyTorch, cuDNN.</li>
-        </ul>
-      </div>
-    </div>
-    <div class="slide-footer">
-      <span>Khmer Legal Retrieval — Deep Learning Final Project</span>
-      <span>Slide 7 / 15 · Experimental Setup &amp; Tuning</span>
-    </div>
-  </div>
-
-  <!-- ============================================================ -->
-  <!-- SLIDE 8: EMPIRICAL RESULTS & LEARNING CURVES -->
-  <!-- ============================================================ -->
-  <div class="slide">
-    <div style="display:flex; justify-content:space-between; align-items:center;">
-      <span class="section-badge badge-core">Presentation</span>
-      <span class="time-chip">⏱ 6:10 – 7:25 (75s)</span>
-    </div>
-    <h2 class="slide-title">7. Empirical Results &amp; Overlaid Learning Curves</h2>
-    <p class="slide-subtitle">Evaluated on 200 real human legal questions across 1,976 articles — explained by capacity and transfer (§5.C)</p>
-
-    <div class="grid-2-compact">
-      <div style="display:flex; flex-direction:column; gap:8px;">
-        <div class="img-frame" style="max-height:205px;">
-          <img src="../results/figures/primary_metrics_bar.png" class="slide-img" alt="Primary metrics bar chart">
-        </div>
-        <table style="font-size:0.75rem;">
-          <tr><th>Model</th><th>Recall@1</th><th>Recall@5</th><th>MRR@10</th><th>Hit@5</th></tr>
-          <tr class="winner"><td>A3 XLM-R Fine-Tuned ★</td><td><strong>0.3375</strong></td><td><strong>0.5142</strong></td><td><strong>0.4827</strong></td><td><strong>57.0%</strong></td></tr>
-          <tr><td>A2 XLM-R Linear Probe</td><td>0.2400</td><td>0.4117</td><td>0.3591</td><td>47.5%</td></tr>
-          <tr><td>BM25 Baseline</td><td>0.2025</td><td>0.4075</td><td>0.3350</td><td>47.0%</td></tr>
-          <tr><td>E5 Zero-Shot</td><td>0.1625</td><td>0.2617</td><td>0.2588</td><td>32.0%</td></tr>
-          <tr><td>A1 BiLSTM</td><td>0.0875</td><td>0.2025</td><td>0.1724</td><td>24.5%</td></tr>
-          <tr><td>A4 PrahokBART</td><td>0.0525</td><td>0.1517</td><td>0.1035</td><td>18.0%</td></tr>
-        </table>
-      </div>
-
-      <div style="display:flex; flex-direction:column; gap:6px;">
-        <div class="img-frame" style="max-height:190px;">
-          <img src="../results/figures/learning_curves.png" class="slide-img" alt="Learning curves">
-        </div>
-        <div class="stack" style="gap:6px;">
-          <div class="card" style="padding:8px 12px;"><p style="font-size:0.80rem;"><strong>A1 (scratch):</strong> Overfits severely (train loss → 0.02, val stalls). With only ~1.1k pairs, random embeddings fail to capture Khmer legal morphology.</p></div>
-          <div class="card" style="padding:8px 12px;"><p style="font-size:0.80rem;"><strong>A2 (frozen):</strong> Cannot overfit, but linear projection head hits an expressive capacity ceiling (ties BM25 at p = 0.9031).</p></div>
-          <div class="card accent" style="padding:8px 12px;"><p style="font-size:0.80rem;"><strong>A3 (fine-tuned):</strong> Adapts all 12 transformer layers, achieving statistically validated superiority (+44.1% MRR@10, p &lt; 0.001).</p></div>
-        </div>
-      </div>
-    </div>
-    <div class="slide-footer">
-      <span>Khmer Legal Retrieval — Deep Learning Final Project</span>
-      <span>Slide 8 / 15 · Empirical Results &amp; Curves</span>
-    </div>
-  </div>
-
-  <!-- ============================================================ -->
-  <!-- SLIDE 9: ERROR ANALYSIS & STUDY LIMITATIONS -->
-  <!-- ============================================================ -->
-  <div class="slide">
-    <div style="display:flex; justify-content:space-between; align-items:center;">
-      <span class="section-badge badge-core">Presentation</span>
-      <span class="time-chip">⏱ 7:25 – 8:20 (55s)</span>
-    </div>
-    <h2 class="slide-title">8. Qualitative Error Analysis &amp; Study Limitations</h2>
-    <p class="slide-subtitle">Categorizing failure modes on the 200 benchmark questions and measuring distribution shift (§5.C)</p>
-
-    <div class="grid-2">
-      <div>
-        <h3 style="font-size:0.92rem; color:#1e3a8a; margin-bottom:4px;">Error Taxonomy at k=5 (T-Q: 200 Questions)</h3>
-        <table style="font-size:0.75rem;">
-          <tr><th>Model</th><th>Misses</th><th>Hit@5</th><th>Vocab Mismatch</th><th>Multi-Article</th><th>Near-Miss</th></tr>
-          <tr class="winner"><td>A3 XLM-R</td><td><strong>86</strong></td><td><strong>57.0%</strong></td><td>52 (60.5%)</td><td>15 (17.4%)</td><td>17 (19.8%)</td></tr>
-          <tr><td>A2 Linear Probe</td><td>105</td><td>47.5%</td><td>66 (62.9%)</td><td>27 (25.7%)</td><td>7 (6.7%)</td></tr>
-          <tr><td>BM25 Baseline</td><td>106</td><td>47.0%</td><td>61 (57.5%)</td><td>26 (24.5%)</td><td>15 (14.2%)</td></tr>
-          <tr><td>A1 BiLSTM</td><td>151</td><td>24.5%</td><td>79 (52.3%)</td><td>37 (24.5%)</td><td>19 (12.6%)</td></tr>
-          <tr><td>A4 PrahokBART</td><td>164</td><td>18.0%</td><td>96 (58.5%)</td><td>44 (26.8%)</td><td>8 (4.9%)</td></tr>
-        </table>
-        <p style="font-size:0.78rem; color:#64748b; margin-top:6px;">Near-misses represent relevant articles correctly placed at rank 6–10.</p>
-      </div>
-
-      <div class="card">
-        <h3>Distribution Shift &amp; Limitations (§5.D)</h3>
-        <ul>
-          <li><strong>In-Distribution (T-T: 97–99% Recall@5):</strong> On held-out title-to-body retrieval, performance is near ceiling because training pairs shared structural alignment.</li>
-          <li><strong>Out-of-Distribution (T-Q: 15–51% Recall@5):</strong> Human questions cause severe distribution shift due to colloquial phrasing, scenario narratives, and synonym variations.</li>
-          <li><strong>Study Limitations:</strong> Evaluated on Civil and Criminal Codes (1,976 articles); scanned labor law PDFs requiring OCR left for future work.</li>
-        </ul>
-      </div>
-    </div>
-    <div class="slide-footer">
-      <span>Khmer Legal Retrieval — Deep Learning Final Project</span>
-      <span>Slide 9 / 15 · Error Analysis &amp; Limitations</span>
-    </div>
-  </div>
-
-  <!-- ============================================================ -->
-  <!-- SLIDE 10: PROTOTYPE ARCHITECTURE & DEMO -->
-  <!-- ============================================================ -->
-  <div class="slide">
-    <div style="display:flex; justify-content:space-between; align-items:center;">
-      <span class="section-badge badge-core">Prototype &amp; Live Demo</span>
-      <span class="time-chip">⏱ 8:20 – 9:20 (60s Live Demo)</span>
-    </div>
-    <h2 class="slide-title">9. Citation-Grounded Prototype Demonstration</h2>
-    <p class="slide-subtitle">End-to-end RAG assistant running on localhost:8501 (PyTorch A3 Retriever + FastAPI + Streamlit + DeepSeek Flash)</p>
-
-    <div class="pipeline-bar">
-      <div class="pipeline-step">
-        <div class="p-title">1. Citizen Query</div>
-        <div class="p-sub khmer">តើកិច្ចសន្យាបង្កើតឡើង...</div>
-      </div>
-      <div class="pipeline-sep">→</div>
-      <div class="pipeline-step active-step">
-        <div class="p-title">2. A3 Dense Encoder</div>
-        <div class="p-sub">768-d Vector (&lt;100ms)</div>
-      </div>
-      <div class="pipeline-sep">→</div>
-      <div class="pipeline-step">
-        <div class="p-title">3. 1,976 Articles</div>
-        <div class="p-sub">Cosine Similarity Ranking</div>
-      </div>
-      <div class="pipeline-sep">→</div>
-      <div class="pipeline-step">
-        <div class="p-title">4. Citation Guard</div>
-        <div class="p-sub">Verbatim Statute Check</div>
-      </div>
-      <div class="pipeline-sep">→</div>
-      <div class="pipeline-step active-step">
-        <div class="p-title">5. DeepSeek Flash</div>
-        <div class="p-sub">Khmer Legal Synthesis</div>
-      </div>
-    </div>
-
-    <div class="grid-2">
-      <div class="card example">
-        <h3 style="font-size:0.90rem;">Resolving The Semantic Mismatch</h3>
-        <p class="khmer" style="font-size:0.86rem; font-weight:600; color:#1e3a8a;">
-          "តើកិច្ចសន្យាបង្កើតឡើងដោយរបៀបណា យោងតាមក្រមរដ្ឋប្បវេណី?"
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 14px;">
+        <p style="font-size: 0.84rem; color: #475569;">
+          <strong>Author:</strong> Mengchheang Long · Bachelor of Software Engineering, Department of Engineering<br>
+          <strong>Lecturer:</strong> Mr. Soklong HIM · Academic Year 2026–2027 · Format: 10-Min Talk + 5-Min Q&amp;A
         </p>
-        <p style="font-size:0.82rem; margin-top:4px;">BM25 matches "របៀប" → Art. 623 (Miss). A3 Neural maps semantic intent → <strong>Art. 311</strong> (Rank 1, sim 0.61) &amp; <strong>Art. 336</strong> (Rank 2, sim 0.53)!</p>
       </div>
 
-      <div class="card accent">
-        <h3 style="font-size:0.90rem;">Anti-Hallucination Citation Guard</h3>
-        <p style="font-size:0.82rem; margin-bottom:6px;">Generates grounded Khmer analysis with automated statutory verification tags matched against retrieved legal chunks:</p>
-        <div style="background:#d4edda; border:1px solid #c3e6cb; border-radius:6px; padding:4px 8px; font-size:0.78rem; color:#155724; font-weight:600;">
-          ✓ Civil Code 2007 — Article 336 [Verified Citation]
+      <div style="display:grid; grid-template-columns: repeat(4, 1fr); gap: 14px;">
+        <div class="card" style="text-align:center; padding:10px;">
+          <span class="mono" style="font-size:1.6rem; font-weight:800; color:#1e3a8a;">1,976</span>
+          <span style="font-size:0.70rem; color:#64748b; font-weight:700; display:block; text-transform:uppercase;">Statutory Articles</span>
+        </div>
+        <div class="card" style="text-align:center; padding:10px;">
+          <span class="mono" style="font-size:1.6rem; font-weight:800; color:#1e3a8a;">4 Models</span>
+          <span style="font-size:0.70rem; color:#64748b; font-weight:700; display:block; text-transform:uppercase;">Scratch to Fine-Tuned</span>
+        </div>
+        <div class="card" style="text-align:center; padding:10px;">
+          <span class="mono" style="font-size:1.6rem; font-weight:800; color:#1e3a8a;">200 Qs</span>
+          <span style="font-size:0.70rem; color:#64748b; font-weight:700; display:block; text-transform:uppercase;">Human Benchmark (T-Q)</span>
+        </div>
+        <div class="card highlight" style="text-align:center; padding:10px;">
+          <span class="mono" style="font-size:1.6rem; font-weight:800; color:#2563eb;">+44.1%</span>
+          <span style="font-size:0.70rem; color:#1e40af; font-weight:700; display:block; text-transform:uppercase;">MRR Gain vs BM25 (p &lt; 0.001)</span>
         </div>
       </div>
     </div>
-
-    <div class="demo-cue-box">
-      <div>
-        <h4>Live Demonstration at localhost:8501</h4>
-        <p style="font-size:0.80rem; color:#cbd5e1;">Streamlit UI running full PyTorch A3 encoder and automated benchmark comparison dashboard</p>
-      </div>
-      <div class="demo-badge">http://localhost:8501</div>
-    </div>
-
     <div class="slide-footer">
-      <span>Khmer Legal Retrieval — Deep Learning Final Project</span>
-      <span>Slide 10 / 15 · Prototype Demonstration</span>
+      <span>Khmer Legal Retrieval — Final Defense</span>
+      <span>Slide 1 / 16 · Research Overview</span>
     </div>
   </div>
 
   <!-- ============================================================ -->
-  <!-- SLIDE 11: CONCLUSIONS & FUTURE WORK -->
+  <!-- SLIDE 2: THE LEXICAL KEYWORD TRAP -->
   <!-- ============================================================ -->
   <div class="slide">
-    <div style="display:flex; justify-content:space-between; align-items:center;">
-      <span class="section-badge badge-core">Conclusion</span>
-      <span class="time-chip">⏱ 9:20 – 10:00 (40s)</span>
+    <div class="slide-header">
+      <span class="section-badge badge-core">1. Motivation &amp; Problem Statement</span>
+      <span class="time-chip">⏱ 0:30 – 1:15 (45s)</span>
     </div>
-    <h2 class="slide-title">10. Conclusions &amp; Defense Summary</h2>
-    <p class="slide-subtitle">Three key takeaways, engineering rigor, and transition to Q&amp;A (§6.2)</p>
+    <h2 class="slide-title">The Lexical Keyword Trap: Why Keyword Search Fails</h2>
+    <p class="slide-subtitle">Keyword overlap is misleading on formal statutory codes</p>
 
-    <div class="takeaway-list">
-      <div class="takeaway">
-        <span class="n">1</span>
-        <p><strong>Pre-training is Indispensable:</strong> Models trained from scratch (BiLSTM) fail outright on small legal data (0.1724 MRR@10) due to vocabulary sparsity; multilingual pretraining provides necessary structural priors.</p>
-      </div>
-      <div class="takeaway">
-        <span class="n">2</span>
-        <p><strong>Full Fine-Tuning is Decisive:</strong> Adapting all transformer layers (A3) is strictly required to surpass keyword search on conversational legal queries (+44.1% relative MRR@10 over BM25, p &lt; 0.001).</p>
-      </div>
-      <div class="takeaway">
-        <span class="n">3</span>
-        <p><strong>Reproducible Engineering:</strong> 100% consecutive Limon extraction (1,976 articles), zero test leakage, 136 passing automated unit tests, and GPL-3.0 open-source code.</p>
-      </div>
-    </div>
-
-    <div style="margin-top:10px; background:#eff6ff; border:1px solid #bfdbfe; border-radius:8px; padding:8px 14px; display:flex; justify-content:space-between; align-items:center;">
-      <strong style="color:#1e40af; font-size:0.90rem;">Thank you for your attention. I welcome your questions.</strong>
-      <span style="font-size:0.78rem; color:#64748b; font-family:'JetBrains Mono',monospace;">Appendix Slides A1–A4 Ready for 5-Min Q&amp;A</span>
-    </div>
-
-    <div class="slide-footer">
-      <span>Khmer Legal Retrieval — Deep Learning Final Project</span>
-      <span>Slide 11 / 15 · Conclusions</span>
-    </div>
-  </div>
-
-  <!-- ============================================================ -->
-  <!-- APPENDIX A1: STATISTICAL SIGNIFICANCE (10,000 RESAMPLES) -->
-  <!-- ============================================================ -->
-  <div class="slide">
-    <div style="display:flex; justify-content:space-between; align-items:center;">
-      <span class="section-badge badge-appendix">Q&amp;A Appendix</span>
-      <span class="time-chip">Backup Slide A1</span>
-    </div>
-    <h2 class="slide-title">A1. Paired Bootstrap Hypothesis Testing</h2>
-    <p class="slide-subtitle">10,000 bootstrap resamples on paired per-query score differences (Primary Benchmark T-Q: 200 Questions)</p>
-
-    <table style="font-size:0.78rem;">
-      <tr><th>Comparison</th><th>Metric</th><th>Mean A</th><th>Mean B</th><th>Difference (Δ) [95% CI]</th><th>p-value</th><th>Wins / Losses / Ties</th></tr>
-      <tr class="winner"><td><strong>A3 vs BM25 Baseline</strong></td><td>Recall@5</td><td>0.5142</td><td>0.4075</td><td>+0.1067 [+0.0500, +0.1633]</td><td><strong>0.0002</strong></td><td>41W / 13L / 146T</td></tr>
-      <tr class="winner"><td><strong>A3 vs BM25 Baseline</strong></td><td>MRR@10</td><td>0.4827</td><td>0.3350</td><td>+0.1477 [+0.0962, +0.1993]</td><td><strong>0.0001</strong></td><td>72W / 25L / 103T</td></tr>
-      <tr><td>A3 vs E5 Zero-Shot</td><td>MRR@10</td><td>0.4827</td><td>0.2588</td><td>+0.2239 [+0.1685, +0.2787]</td><td>0.0001</td><td>80W / 15L / 105T</td></tr>
-      <tr><td>A3 vs A1 BiLSTM</td><td>MRR@10</td><td>0.4827</td><td>0.1724</td><td>+0.3103 [+0.2483, +0.3705]</td><td>0.0001</td><td>104W / 13L / 83T</td></tr>
-      <tr><td>A3 vs A2 Linear Probe</td><td>MRR@10</td><td>0.4827</td><td>0.3591</td><td>+0.1236 [+0.0796, +0.1697]</td><td>0.0001</td><td>65W / 21L / 114T</td></tr>
-      <tr><td><strong>A2 vs BM25 Baseline</strong></td><td>Recall@5</td><td>0.4117</td><td>0.4075</td><td>+0.0042 [-0.0567, +0.0625]</td><td><strong>0.9031 (n.s.)</strong></td><td>26W / 25L / 149T</td></tr>
-      <tr><td>A3 vs A4 PrahokBART</td><td>MRR@10</td><td>0.4827</td><td>0.1035</td><td>+0.3792 [+0.3195, +0.4396]</td><td>0.0001</td><td>116W / 6L / 78T</td></tr>
-      <tr><td>A4 vs BM25 Baseline</td><td>MRR@10</td><td>0.1035</td><td>0.3350</td><td>-0.2315 [-0.2869, -0.1775]</td><td>0.0001</td><td>12W / 90L / 98T</td></tr>
-    </table>
-    <p style="margin-top:8px; font-size:0.80rem; color:#475569;">
-      <strong>Interpretation:</strong> A3's gain over BM25 is statistically significant ($p &lt; 0.001$). A2 vs BM25 ($p = 0.9031$) proves statistical parity: frozen representations match keyword search but require fine-tuning to surpass it.
-    </p>
-    <div class="slide-footer">
-      <span>Khmer Legal Retrieval — Q&amp;A Appendix</span>
-      <span>Slide 12 / 15 · Statistical Significance</span>
-    </div>
-  </div>
-
-  <!-- ============================================================ -->
-  <!-- APPENDIX A2: FULL BENCHMARK LEADERBOARD WITH 95% CIS -->
-  <!-- ============================================================ -->
-  <div class="slide">
-    <div style="display:flex; justify-content:space-between; align-items:center;">
-      <span class="section-badge badge-appendix">Q&amp;A Appendix</span>
-      <span class="time-chip">Backup Slide A2</span>
-    </div>
-    <h2 class="slide-title">A2. Complete Empirical Benchmark Leaderboard</h2>
-    <p class="slide-subtitle">Primary (T-Q: 200 Questions) &amp; Secondary (T-T: 148 Titles) with 95% Bootstrap Confidence Intervals</p>
-
-    <p style="font-weight:700; font-size:0.82rem; margin-bottom:2px;">Primary Benchmark (T-Q: 200 Human Legal Questions)</p>
-    <table style="font-size:0.74rem;">
-      <tr><th>Model</th><th>Recall@1 [95% CI]</th><th>Recall@5 [95% CI]</th><th>MRR@10 [95% CI]</th><th>Hit@5 [95% CI]</th><th>Params</th><th>Hardware</th></tr>
-      <tr class="winner"><td>A3 XLM-R Full FT ★</td><td>0.3375 [0.28, 0.40]</td><td>0.5142 [0.45, 0.58]</td><td>0.4827 [0.42, 0.55]</td><td>57.0% [50, 64]</td><td>278.04M</td><td>GPU (T4, fp32)</td></tr>
-      <tr><td>A2 XLM-R Linear Probe</td><td>0.2400 [0.19, 0.30]</td><td>0.4117 [0.35, 0.48]</td><td>0.3591 [0.30, 0.42]</td><td>47.5% [41, 54]</td><td>0.59M</td><td>CPU (5.9s)</td></tr>
-      <tr><td>BM25 Baseline</td><td>0.2025 [0.15, 0.25]</td><td>0.4075 [0.35, 0.47]</td><td>0.3350 [0.28, 0.39]</td><td>47.0% [41, 54]</td><td>0</td><td>CPU (4ms)</td></tr>
-      <tr><td>E5 Zero-Shot</td><td>0.1625 [0.12, 0.21]</td><td>0.2617 [0.21, 0.32]</td><td>0.2588 [0.20, 0.31]</td><td>32.0% [26, 39]</td><td>0</td><td>CPU</td></tr>
-      <tr><td>A1 BiLSTM (scratch)</td><td>0.0875 [0.05, 0.13]</td><td>0.2025 [0.16, 0.25]</td><td>0.1724 [0.13, 0.22]</td><td>24.5% [19, 31]</td><td>1.97M</td><td>CPU (2,035s)</td></tr>
-      <tr><td>A4 PrahokBART</td><td>0.0525 [0.03, 0.09]</td><td>0.1517 [0.11, 0.20]</td><td>0.1035 [0.07, 0.14]</td><td>18.0% [13, 24]</td><td>35.83M</td><td>CPU (1,602s)</td></tr>
-    </table>
-
-    <p style="font-weight:700; font-size:0.82rem; margin:8px 0 2px;">Secondary Benchmark (T-T: 148 Held-Out Article Titles)</p>
-    <table style="font-size:0.74rem;">
-      <tr><th>Model</th><th>Recall@1 [95% CI]</th><th>Recall@5 [95% CI]</th><th>MRR@10 [95% CI]</th><th>Hit@5 [95% CI]</th></tr>
-      <tr class="winner"><td>A3 XLM-R Full FT ★</td><td>0.9054 [0.85, 0.95]</td><td>0.9932 [0.97, 1.00]</td><td>0.9456 [0.92, 0.97]</td><td>99.3% [97, 100]</td></tr>
-      <tr><td>BM25 Baseline</td><td>0.7973 [0.74, 0.86]</td><td>0.9730 [0.95, 0.99]</td><td>0.8677 [0.82, 0.91]</td><td>97.3% [95, 99]</td></tr>
-      <tr><td>A2 XLM-R Linear Probe</td><td>0.7905 [0.72, 0.85]</td><td>0.9392 [0.90, 0.97]</td><td>0.8563 [0.81, 0.90]</td><td>93.9% [90, 97]</td></tr>
-      <tr><td>A4 PrahokBART</td><td>0.5946 [0.51, 0.68]</td><td>0.8041 [0.74, 0.87]</td><td>0.6733 [0.60, 0.74]</td><td>80.4% [74, 87]</td></tr>
-      <tr><td>A1 BiLSTM (scratch)</td><td>0.5135 [0.43, 0.60]</td><td>0.7568 [0.70, 0.82]</td><td>0.6242 [0.56, 0.69]</td><td>75.7% [70, 82]</td></tr>
-      <tr><td>E5 Zero-Shot</td><td>0.5405 [0.46, 0.61]</td><td>0.7230 [0.65, 0.78]</td><td>0.6235 [0.55, 0.69]</td><td>72.3% [65, 78]</td></tr>
-    </table>
-    <div class="slide-footer">
-      <span>Khmer Legal Retrieval — Q&amp;A Appendix</span>
-      <span>Slide 13 / 15 · Full Benchmark Leaderboard</span>
-    </div>
-  </div>
-
-  <!-- ============================================================ -->
-  <!-- APPENDIX A3: PER-CODE BREAKDOWN -->
-  <!-- ============================================================ -->
-  <div class="slide">
-    <div style="display:flex; justify-content:space-between; align-items:center;">
-      <span class="section-badge badge-appendix">Q&amp;A Appendix</span>
-      <span class="time-chip">Backup Slide A3</span>
-    </div>
-    <h2 class="slide-title">A3. Per-Code Breakdown (Civil Code vs Criminal Code)</h2>
-    <p class="slide-subtitle">Evaluating performance separately on Civil Code (100 questions) and Criminal Code (100 questions)</p>
-
-    <div class="grid-2-wide">
-      <div class="img-frame" style="max-height:280px;">
-        <img src="../results/figures/code_breakdown.png" class="slide-img" alt="Civil vs Criminal Code breakdown">
-      </div>
+    <div class="grid-2">
       <div class="stack">
-        <table style="font-size:0.78rem;">
-          <tr><th>Model</th><th>Civil R@5</th><th>Civil MRR</th><th>Criminal R@5</th><th>Criminal MRR</th></tr>
-          <tr class="winner"><td>A3 XLM-R</td><td><strong>45.8%</strong></td><td><strong>0.4232</strong></td><td><strong>57.0%</strong></td><td><strong>0.5422</strong></td></tr>
-          <tr><td>BM25 Baseline</td><td>30.5%</td><td>0.2374</td><td>51.0%</td><td>0.4327</td></tr>
-          <tr><td>A2 Linear Probe</td><td>37.0%</td><td>0.3015</td><td>45.3%</td><td>0.4167</td></tr>
-          <tr><td>A1 BiLSTM</td><td>13.0%</td><td>0.1177</td><td>27.5%</td><td>0.2270</td></tr>
-          <tr><td>A4 PrahokBART</td><td>13.3%</td><td>0.0898</td><td>17.0%</td><td>0.1173</td></tr>
-        </table>
-        <p style="font-size:0.80rem; color:#475569;">
-          <strong>Key Insight:</strong> Criminal Code performance is systematically higher across models (+10% to +15% MRR) because criminal offenses have sharper conceptual boundaries (theft, homicide, forgery) compared to abstract civil contracts.
-        </p>
+        <div class="card danger">
+          <div class="card-title" style="color:#b91c1c;">
+            <span>❌</span> Concrete Retrieval Failure (BM25)
+          </div>
+          <p class="khmer" style="font-size:0.96rem; font-weight:700; color:#0f172a; margin-bottom:4px;">
+            «តើកិច្ចសន្យាបង្កើតឡើងដោយរបៀបណា?»
+          </p>
+          <p style="font-size:0.80rem; color:#64748b; margin-bottom:8px;">
+            Target: <strong>Civil Code Art. 336</strong> (Offer and Acceptance) &amp; <strong>Art. 311</strong> (Contract Definition).
+          </p>
+          <div style="background:#ffffff; border:1px solid #fecaca; border-radius:6px; padding:8px 12px; font-size:0.80rem;">
+            <p><strong>BM25 Top Match:</strong> Article 623 (<em>Manner of dividing proceeds in co-ownership</em>)</p>
+            <p style="color:#b91c1c; font-weight:600; margin-top:2px;">
+              Trap: Matched the colloquial question word <code>«របៀប»</code> (manner/how) instead of contract law!
+            </p>
+          </div>
+        </div>
+
+        <div class="card warning">
+          <div class="card-title" style="color:#b45309;">
+            <span>⚠️</span> Orthographic Challenge: No Word Spaces
+          </div>
+          <p style="font-size:0.81rem;">
+            Khmer text contains <strong>zero whitespace between words</strong>: <code>«ការបង្កើតកិច្ចសន្យា...»</code>.
+            Keyword search relies on CRF tokenizers; a single compound split error breaks term matching.
+          </p>
+        </div>
+      </div>
+
+      <div class="stack">
+        <div class="card highlight" style="text-align:center; padding:18px;">
+          <span style="font-size:0.75rem; font-weight:800; color:#1e40af; text-transform:uppercase;">Quantitative Error Audit</span>
+          <div class="mono" style="font-size:3.2rem; font-weight:800; color:#2563eb; line-height:1; margin:10px 0;">57.5%</div>
+          <p style="font-size:0.84rem; color:#1e40af; font-weight:600;">
+            of BM25's retrieval misses on human questions are caused purely by Vocabulary Mismatch.
+          </p>
+        </div>
+
+        <div class="card success">
+          <div class="card-title" style="color:#15803d;">
+            <span>✅</span> The Deep Learning Solution
+          </div>
+          <p style="font-size:0.82rem;">
+            Project queries and legal articles into a <strong>continuous dense vector space</strong> where proximity reflects semantic meaning rather than shared keywords.
+          </p>
+        </div>
       </div>
     </div>
+
     <div class="slide-footer">
-      <span>Khmer Legal Retrieval — Q&amp;A Appendix</span>
-      <span>Slide 14 / 15 · Per-Code Performance Breakdown</span>
+      <span>Khmer Legal Retrieval — Final Defense</span>
+      <span>Slide 2 / 16 · The Problem</span>
     </div>
   </div>
 
   <!-- ============================================================ -->
-  <!-- APPENDIX A4: WORKED QUALITATIVE FAILURE CASES -->
+  <!-- SLIDE 3: DATA EXTRACTION: THE LIMON HURDLE -->
   <!-- ============================================================ -->
   <div class="slide">
-    <div style="display:flex; justify-content:space-between; align-items:center;">
-      <span class="section-badge badge-appendix">Q&amp;A Appendix</span>
-      <span class="time-chip">Backup Slide A4</span>
+    <div class="slide-header">
+      <span class="section-badge badge-core">2. Data Engineering &amp; Extraction</span>
+      <span class="time-chip">⏱ 1:15 – 2:05 (50s)</span>
     </div>
-    <h2 class="slide-title">A4. Concrete Qualitative Failure Cases (from results/error_analysis/)</h2>
-    <p class="slide-subtitle">Four verified ground-truth query walkthroughs illustrating specific linguistic failure modes</p>
+    <h2 class="slide-title">Before AI, We Needed Usable Data: The Limon Font Hurdle</h2>
+    <p class="slide-subtitle">Solving 1990s legacy font encoding to extract 1,976 consecutive articles without OCR noise</p>
+
+    <div class="card danger" style="margin-bottom:12px; padding:10px 14px;">
+      <div style="display:flex; justify-content:space-between; align-items:center;">
+        <div>
+          <span style="font-size:0.70rem; font-weight:800; color:#b91c1c; text-transform:uppercase;">Raw PDF Text Layer (Limon ASCII Keystrokes)</span>
+          <div class="mono" style="font-size:0.82rem; color:#991b1b; font-weight:700;">maRta 336>- karbegáItkic©snñaedaysMeNI nig sVIkar</div>
+        </div>
+        <span style="font-size:1.5rem; color:#dc2626;">➔</span>
+        <div>
+          <span style="font-size:0.70rem; font-weight:800; color:#15803d; text-transform:uppercase;">Normalized Logical Unicode</span>
+          <div class="khmer" style="font-size:0.95rem; color:#15803d; font-weight:700;">មាត្រា ៣៣៦.- ការបង្កើតកិច្ចសន្យាដោយសំណើ និង ស្វីការ</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="pipeline-flow">
+      <div class="pipe-node">
+        <div class="node-step">Input</div>
+        <div class="node-name">Official PDFs</div>
+        <span style="font-size:0.70rem; color:#64748b;">ODC Civil &amp; Criminal</span>
+      </div>
+      <div class="pipe-arrow">➔</div>
+      <div class="pipe-node active">
+        <div class="node-step">Step 1</div>
+        <div class="node-name">Limon Extractor</div>
+        <span style="font-size:0.70rem; color:#2563eb;">Byte-level glyph mapping</span>
+      </div>
+      <div class="pipe-arrow">➔</div>
+      <div class="pipe-node active">
+        <div class="node-step">Step 2</div>
+        <div class="node-name">FSM Syllable Engine</div>
+        <span style="font-size:0.70rem; color:#2563eb;">Vowel reordering (34 tests)</span>
+      </div>
+      <div class="pipe-arrow">➔</div>
+      <div class="pipe-node">
+        <div class="node-step">Output</div>
+        <div class="node-name">1,976 Articles</div>
+        <span style="font-size:0.70rem; color:#16a34a; font-weight:700;">0 missing articles</span>
+      </div>
+    </div>
+
+    <div class="grid-2" style="margin-top:10px;">
+      <div class="card">
+        <div class="card-title">Audited Article Counts</div>
+        <ul style="font-size:0.80rem;">
+          <li><strong>Civil Code 2007:</strong> 1,304 articles (591k characters)</li>
+          <li><strong>Criminal Code 2009:</strong> 672 articles (286k characters)</li>
+          <li><strong>Verification:</strong> 100% consecutive numbering audited with 0 gaps.</li>
+        </ul>
+      </div>
+
+      <div class="card highlight">
+        <div class="card-title" style="color:#1e40af;">Statutory Hierarchy Preserved</div>
+        <div class="khmer" style="font-size:0.84rem; font-weight:600; color:#1e40af; margin-top:4px;">
+          គន្ថី (Book) ➔ មាតិកា (Title) ➔ ជំពូក (Chapter) ➔ ផ្នែក (Section) ➔ មាត្រា (Article)
+        </div>
+        <p style="font-size:0.78rem; color:#475569; margin-top:4px;">
+          Complete hierarchy retained as metadata for retrieval filtering and context attribution.
+        </p>
+      </div>
+    </div>
+
+    <div class="slide-footer">
+      <span>Khmer Legal Retrieval — Final Defense</span>
+      <span>Slide 3 / 16 · Data Extraction</span>
+    </div>
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- SLIDE 4: WEAK SUPERVISION & LEAKAGE GUARD -->
+  <!-- ============================================================ -->
+  <div class="slide">
+    <div class="slide-header">
+      <span class="section-badge badge-core">3. Training Formulation &amp; Quarantine</span>
+      <span class="time-chip">⏱ 2:05 – 2:55 (50s)</span>
+    </div>
+    <h2 class="slide-title">Weak Supervision &amp; The Zero-Leakage Protocol</h2>
+    <p class="slide-subtitle">Training without human QA pairs while strictly isolating test evaluation</p>
 
     <div class="grid-2">
-      <div class="card example">
-        <h3 style="font-size:0.88rem;">1. Sub-Clause Specificity (A3 Rank 6)</h3>
-        <p class="khmer" style="font-size:0.84rem; font-weight:600;">«តើអ្នកលក់ត្រូវទទួលខុសត្រូវលើវិការៈកំបាំងនៃវត្ថុទិញដូរយ៉ាងដូចម្តេច?»</p>
-        <p style="font-size:0.80rem;">Latent defect in sales contract. Expected: Civil Code Art. 544.<br>
-        A3 retrieves Art. 547 (Remedies for defect) at Rank 1, and Art. 544 at Rank 6 (near-miss).</p>
+      <div class="card">
+        <div class="card-title">1. Weak Supervision Training Pairs</div>
+        <p style="font-size:0.81rem; margin-bottom:8px;">
+          Zero public Khmer legal QA datasets exist. We leveraged the inherent structure of statutory articles:
+        </p>
+        <div style="background:#f8fafc; border:1px solid #cbd5e1; border-radius:6px; padding:10px; font-size:0.80rem;">
+          <p><strong>Query:</strong> Article Title (<em>«ការបង្កើតកិច្ចសន្យា...»</em>)</p>
+          <div style="text-align:center; color:#2563eb; font-weight:800; font-size:1.1rem; margin:2px 0;">⬇</div>
+          <p><strong>Passage:</strong> Article Body (with title line stripped via regex)</p>
+        </div>
+        <p style="font-size:0.77rem; color:#64748b; margin-top:6px;">
+          Removed 270 duplicate titles (e.g. 63 identical penalty titles) to prevent ambiguous labels ➔ 1,471 unique pairs.
+        </p>
       </div>
 
-      <div class="card example">
-        <h3 style="font-size:0.88rem;">2. Multi-Article Query Coverage</h3>
-        <p class="khmer" style="font-size:0.84rem; font-weight:600;">«តើប្រភេទនៃសិទ្ធិប្រត្យក្សមានអ្វីខ្លះនៅក្នុងក្រមរដ្ឋប្បវេណី?»</p>
-        <p style="font-size:0.80rem;">Classes of real rights. Expected: Civil Code Art. 130 &amp; 131.<br>
-        BM25 catches only 1 in top-5; A3 catches <strong>both</strong> at ranks 2 and 3.</p>
-      </div>
-
-      <div class="card example">
-        <h3 style="font-size:0.88rem;">3. Code Confusion (A1 Failure)</h3>
-        <p class="khmer" style="font-size:0.84rem; font-weight:600;">«តើច្បាប់ហាមឃាត់ការប្រើប្រាស់សិទ្ធិដោយបំពានយ៉ាងដូចម្តេច?»</p>
-        <p style="font-size:0.80rem;">Abuse of rights. Expected: Civil Code Art. 4.<br>
-        A1 BiLSTM guesses Criminal Code Art. 579 (wrong statute!). A3 gets Art. 4 at Rank 1.</p>
-      </div>
-
-      <div class="card example">
-        <h3 style="font-size:0.88rem;">4. Exact Article Term Overlap (BM25 Win)</h3>
-        <p class="khmer" style="font-size:0.84rem; font-weight:600;">«តើអ្វីជាការការពារស្របច្បាប់?»</p>
-        <p style="font-size:0.80rem;">Legitimate self-defense. Expected: Criminal Code Art. 33.<br>
-        Both BM25 and A3 achieve Rank 1 (100% Top-1) due to clean exact phrase match.</p>
+      <div class="card highlight">
+        <div class="card-title" style="color:#1e40af;">2. Zero-Leakage Protocol (Course §5.A)</div>
+        <div style="background:#fee2e2; border:1.5px solid #fca5a5; border-radius:6px; padding:8px 12px; margin-bottom:8px;">
+          <span style="font-size:0.74rem; font-weight:800; color:#991b1b; text-transform:uppercase;">Quarantine Shield</span>
+          <p style="font-size:0.80rem; color:#991b1b; font-weight:600;">
+            All 261 articles cited by the 200 benchmark questions were strictly removed from training and validation!
+          </p>
+        </div>
+        <div class="pipeline-flow" style="margin:4px 0;">
+          <div class="pipe-node" style="padding:6px 4px;">
+            <div class="node-step">Train (80%)</div>
+            <div class="mono" style="font-weight:700; font-size:0.80rem;">1,176 pairs</div>
+          </div>
+          <div class="pipe-node" style="padding:6px 4px;">
+            <div class="node-step">Val (10%)</div>
+            <div class="mono" style="font-weight:700; font-size:0.80rem;">147 pairs</div>
+          </div>
+          <div class="pipe-node" style="padding:6px 4px;">
+            <div class="node-step">Test T-T (10%)</div>
+            <div class="mono" style="font-weight:700; font-size:0.80rem;">148 titles</div>
+          </div>
+        </div>
+        <p style="font-size:0.76rem; color:#475569; margin-top:4px;">
+          Deterministic split with fixed seed 42. Test sets evaluated strictly once.
+        </p>
       </div>
     </div>
+
+    <div class="slide-footer">
+      <span>Khmer Legal Retrieval — Final Defense</span>
+      <span>Slide 4 / 16 · Data Splits &amp; Leakage Guard</span>
+    </div>
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- SLIDE 5: FOUR EXPERIMENTS, FOUR IDEAS -->
+  <!-- ============================================================ -->
+  <div class="slide">
+    <div class="slide-header">
+      <span class="section-badge badge-core">4. Neural Architectures &amp; Hypotheses</span>
+      <span class="time-chip">⏱ 2:55 – 4:05 (70s)</span>
+    </div>
+    <h2 class="slide-title">Four Experiments, Four Different Architectural Hypotheses</h2>
+    <p class="slide-subtitle">Testing capacity, pre-training, parameter efficiency, and language specialization</p>
+
+    <div class="grid-4">
+      <!-- A1 -->
+      <div class="arch-box">
+        <span class="arch-badge">A1: From Scratch</span>
+        <strong style="font-size:0.84rem; color:#0f172a;">BiLSTM Dual Encoder</strong>
+        <span class="mono" style="font-size:0.72rem; color:#64748b; margin-bottom:6px;">1.97M Trainable Params</span>
+        
+        <div class="arch-layer">Word Tokens (CRF)</div>
+        <div class="arch-down-arrow">▼</div>
+        <div class="arch-layer train">Embedding (300-d)</div>
+        <div class="arch-down-arrow">▼</div>
+        <div class="arch-layer train">1-Layer BiLSTM (512-d)</div>
+        <div class="arch-down-arrow">▼</div>
+        <div class="arch-layer">Masked Mean Pooling</div>
+        
+        <p style="font-size:0.72rem; color:#475569; margin-top:8px;">
+          <em>Hypothesis:</em> Can a model learn legal semantics without any pre-training?
+        </p>
+      </div>
+
+      <!-- A2 -->
+      <div class="arch-box">
+        <span class="arch-badge">A2: Parameter-Efficient</span>
+        <strong style="font-size:0.84rem; color:#0f172a;">XLM-R Linear Probe</strong>
+        <span class="mono" style="font-size:0.72rem; color:#64748b; margin-bottom:6px;">0.59M Trainable (0.21%)</span>
+        
+        <div class="arch-layer">Subword Tokens</div>
+        <div class="arch-down-arrow">▼</div>
+        <div class="arch-layer frozen">Frozen XLM-R (278M)</div>
+        <div class="arch-down-arrow">▼</div>
+        <div class="arch-layer">Mean Pooling</div>
+        <div class="arch-down-arrow">▼</div>
+        <div class="arch-layer train">Linear Head (768→768)</div>
+        
+        <p style="font-size:0.72rem; color:#475569; margin-top:8px;">
+          <em>Hypothesis:</em> Can a fast 5.9s linear head adapt generic multilingual space?
+        </p>
+      </div>
+
+      <!-- A3 -->
+      <div class="arch-box winner">
+        <span class="arch-badge">A3: Winner 🏆</span>
+        <strong style="font-size:0.84rem; color:#1e40af;">XLM-R Full Fine-Tune</strong>
+        <span class="mono" style="font-size:0.72rem; color:#2563eb; margin-bottom:6px;">278.04M Trainable Params</span>
+        
+        <div class="arch-layer">Subword Tokens</div>
+        <div class="arch-down-arrow">▼</div>
+        <div class="arch-layer train">12-Layer Transformer</div>
+        <div class="arch-down-arrow">▼</div>
+        <div class="arch-layer train">All Attention Heads</div>
+        <div class="arch-down-arrow">▼</div>
+        <div class="arch-layer">Mean Pooling + L2</div>
+        
+        <p style="font-size:0.72rem; color:#1e40af; font-weight:600; margin-top:8px;">
+          <em>Hypothesis:</em> Does full self-attention bridge citizen speech and legal clauses?
+        </p>
+      </div>
+
+      <!-- A4 -->
+      <div class="arch-box">
+        <span class="arch-badge">A4: Khmer-Native</span>
+        <strong style="font-size:0.84rem; color:#0f172a;">PrahokBART Encoder</strong>
+        <span class="mono" style="font-size:0.72rem; color:#64748b; margin-bottom:6px;">35.83M Trainable Params</span>
+        
+        <div class="arch-layer">Khmer 32k Vocab</div>
+        <div class="arch-down-arrow">▼</div>
+        <div class="arch-layer train">BART Encoder (6 Layers)</div>
+        <div class="arch-down-arrow">▼</div>
+        <div class="arch-layer">Mean Pooling</div>
+        <div class="arch-down-arrow">▼</div>
+        <div class="arch-layer">L2 Normalization</div>
+        
+        <p style="font-size:0.72rem; color:#475569; margin-top:8px;">
+          <em>Hypothesis:</em> Does native Khmer pretraining beat larger multilingual models?
+        </p>
+      </div>
+    </div>
+
+    <div class="slide-footer">
+      <span>Khmer Legal Retrieval — Final Defense</span>
+      <span>Slide 5 / 16 · Architectures &amp; Hypotheses</span>
+    </div>
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- SLIDE 6: CONTRASTIVE TRAINING & INFONCE -->
+  <!-- ============================================================ -->
+  <div class="slide">
+    <div class="slide-header">
+      <span class="section-badge badge-core">5. Training Mechanics &amp; Objective</span>
+      <span class="time-chip">⏱ 4:05 – 4:50 (45s)</span>
+    </div>
+    <h2 class="slide-title">Contrastive Metric Learning: InfoNCE in Action</h2>
+    <p class="slide-subtitle">Pulling matching query-article pairs together while repelling in-batch negatives</p>
+
+    <div class="grid-2">
+      <div class="card highlight">
+        <div class="card-title" style="color:#1e40af;">In-Batch Negative Similarity Matrix</div>
+        <p style="font-size:0.80rem; margin-bottom:10px;">
+          In a batch of <em>B</em> = 32 pairs, for query <em>q<sub>i</sub></em>, passage <em>p<sub>i</sub></em> is positive. The remaining 31 passages serve as negatives:
+        </p>
+        <div class="matrix-grid">
+          <div class="matrix-cell pos">+1</div><div class="matrix-cell neg">-1</div><div class="matrix-cell neg">-1</div><div class="matrix-cell neg">-1</div>
+          <div class="matrix-cell neg">-1</div><div class="matrix-cell pos">+1</div><div class="matrix-cell neg">-1</div><div class="matrix-cell neg">-1</div>
+          <div class="matrix-cell neg">-1</div><div class="matrix-cell neg">-1</div><div class="matrix-cell pos">+1</div><div class="matrix-cell neg">-1</div>
+          <div class="matrix-cell neg">-1</div><div class="matrix-cell neg">-1</div><div class="matrix-cell neg">-1</div><div class="matrix-cell pos">+1</div>
+        </div>
+        <p style="font-size:0.76rem; color:#1e40af; text-align:center; margin-top:8px; font-weight:600;">
+          Diagonal = Positives · Off-Diagonal = 31 Negatives
+        </p>
+      </div>
+
+      <div class="stack">
+        <div class="card">
+          <div class="card-title">Symmetric InfoNCE Loss (&tau; = 0.05)</div>
+          <p style="font-size:0.80rem;">
+            Maximizes mutual information between query and passage representations:
+          </p>
+          <div style="background:#f8fafc; border:1px solid #cbd5e1; border-radius:6px; padding:6px 10px; margin:6px 0; font-size:0.74rem;" class="mono">
+            L = - 1/(2B) * [ log(pos / sum_j exp(sim_ij/&tau;)) + log(pos / sum_j exp(sim_ji/&tau;)) ]
+          </div>
+          <p style="font-size:0.78rem; color:#475569;">
+            <strong>Why &tau; = 0.05?</strong> Sharp scaling creates strong gradient penalization on hard negative false positives.
+          </p>
+        </div>
+
+        <div class="card">
+          <div class="card-title">Optimization Protocol (§5.B)</div>
+          <ul style="font-size:0.78rem;">
+            <li><strong>Optimizer:</strong> AdamW + 10% Linear Warmup + Cosine Decay.</li>
+            <li><strong>Checkpointing:</strong> <code>best.pt</code> and <code>last.pt</code> with full RNG state and <code>--resume</code>.</li>
+            <li><strong>Early Stopping:</strong> Monitored on Validation MRR@10 (patience = 5).</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="slide-footer">
+      <span>Khmer Legal Retrieval — Final Defense</span>
+      <span>Slide 6 / 16 · Contrastive Learning</span>
+    </div>
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- SLIDE 7: TRAINING DYNAMICS & LEARNING CURVES -->
+  <!-- ============================================================ -->
+  <div class="slide">
+    <div class="slide-header">
+      <span class="section-badge badge-core">6. Training Dynamics &amp; Learning Curves</span>
+      <span class="time-chip">⏱ 4:50 – 5:40 (50s)</span>
+    </div>
+    <h2 class="slide-title">Training Dynamics: Why Some Models Failed</h2>
+    <p class="slide-subtitle">Empirical learning curves reveal overfitting vs capacity bottleneck vs generalization</p>
+
+    <div class="grid-2">
+      <div class="fig-container">
+        <img src="../results/figures/learning_curves.png" alt="Empirical Learning Curves" style="max-height:330px;">
+        <span style="font-size:0.70rem; color:#64748b; margin-top:4px;">
+          Generated directly from results/figures/learning_curves.png
+        </span>
+      </div>
+
+      <div class="stack">
+        <div class="card danger">
+          <div class="card-title" style="color:#b91c1c;">1. A1 BiLSTM: Severe Overfitting</div>
+          <p style="font-size:0.78rem;">
+            Train loss collapsed to 0.02 while validation loss stalled at 0.82. ~1,100 pairs cannot train randomly initialized word embeddings from scratch.
+          </p>
+        </div>
+
+        <div class="card warning">
+          <div class="card-title" style="color:#b45309;">2. A2 Linear Probe: Capacity Bottleneck</div>
+          <p style="font-size:0.78rem;">
+            Validation loss hovered at 0.55. A single linear layer cannot warp rigid multilingual embeddings into legal geometry.
+          </p>
+        </div>
+
+        <div class="card success">
+          <div class="card-title" style="color:#15803d;">3. A3 Fine-Tune: Smooth Generalization</div>
+          <p style="font-size:0.78rem;">
+            Validation loss descended to 0.1032, achieving Validation MRR@10 of <strong>0.9095</strong>. Attention heads successfully adapted.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div class="slide-footer">
+      <span>Khmer Legal Retrieval — Final Defense</span>
+      <span>Slide 7 / 16 · Training Dynamics</span>
+    </div>
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- SLIDE 8: THE BENCHMARK LEADERBOARD -->
+  <!-- ============================================================ -->
+  <div class="slide">
+    <div class="slide-header">
+      <span class="section-badge badge-core">7. Empirical Results &amp; Leaderboard</span>
+      <span class="time-chip">⏱ 5:40 – 6:25 (45s)</span>
+    </div>
+    <h2 class="slide-title">The Benchmark Leaderboard: A3 Outperforms BM25</h2>
+    <p class="slide-subtitle">Primary Benchmark (T-Q: 200 real human legal questions evaluated on full 1,976 articles)</p>
+
+    <div class="grid-2">
+      <div>
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Model</th>
+              <th>Params</th>
+              <th>Recall@1</th>
+              <th>Recall@5</th>
+              <th>MRR@10</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>BM25 Baseline</strong></td>
+              <td class="mono">0</td>
+              <td class="mono">0.2025</td>
+              <td class="mono">0.4075</td>
+              <td class="mono">0.3350</td>
+            </tr>
+            <tr>
+              <td><strong>Multilingual-E5</strong></td>
+              <td class="mono">278M (Fz)</td>
+              <td class="mono">0.1625</td>
+              <td class="mono">0.2617</td>
+              <td class="mono">0.2588</td>
+            </tr>
+            <tr>
+              <td><strong>A1: BiLSTM</strong></td>
+              <td class="mono">1.97M</td>
+              <td class="mono">0.0875</td>
+              <td class="mono">0.2025</td>
+              <td class="mono">0.1724</td>
+            </tr>
+            <tr>
+              <td><strong>A2: Linear Probe</strong></td>
+              <td class="mono">0.59M</td>
+              <td class="mono">0.2400</td>
+              <td class="mono">0.4117</td>
+              <td class="mono">0.3591</td>
+            </tr>
+            <tr class="winner">
+              <td><strong>A3: XLM-R FT 🏆</strong></td>
+              <td class="mono">278.04M</td>
+              <td class="mono"><strong>0.3375</strong></td>
+              <td class="mono"><strong>0.5142</strong></td>
+              <td class="mono"><strong>0.4827</strong></td>
+            </tr>
+            <tr>
+              <td><strong>A4: PrahokBART</strong></td>
+              <td class="mono">35.83M</td>
+              <td class="mono">0.0525</td>
+              <td class="mono">0.1517</td>
+              <td class="mono">0.1035</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="card highlight" style="margin-top:10px; padding:10px;">
+          <p style="font-size:0.80rem; color:#1e40af; font-weight:700;">
+            🏆 Statistical Confirmation (Paired Bootstrap 10,000 resamples):
+          </p>
+          <p style="font-size:0.77rem; color:#1e40af;">
+            A3 beats BM25 by <strong>+10.67% Recall@5</strong> (<em>p</em> = 0.0002) and <strong>+44.1% relative MRR@10</strong> (<em>p</em> = 0.0001).
+            A2 probe achieves true statistical parity with BM25 (<em>p</em> = 0.9031).
+          </p>
+        </div>
+      </div>
+
+      <div class="fig-container">
+        <img src="../results/figures/primary_metrics_bar.png" alt="Primary Metrics Comparison Chart" style="max-height:330px;">
+        <span style="font-size:0.70rem; color:#64748b; margin-top:4px;">
+          Primary Benchmark: Recall@1, Recall@5, MRR@10 with 95% bootstrap CIs
+        </span>
+      </div>
+    </div>
+
+    <div class="slide-footer">
+      <span>Khmer Legal Retrieval — Final Defense</span>
+      <span>Slide 8 / 16 · Empirical Leaderboard</span>
+    </div>
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- SLIDE 9: THE DISCOVERY: 99% VS 51% (CENTERPIECE) -->
+  <!-- ============================================================ -->
+  <div class="slide">
+    <div class="slide-header">
+      <span class="section-badge badge-discovery">⭐ The Central Discovery of This Project</span>
+      <span class="time-chip">⏱ 6:25 – 7:20 (55s)</span>
+    </div>
+    <h2 class="slide-title">The Surprising Discovery: 99.32% vs 51.42%</h2>
+    <p class="slide-subtitle">Why could our best model retrieve titles almost perfectly, but struggle on real questions?</p>
+
+    <div class="discovery-container">
+      <div class="discovery-card in-dist">
+        <div>
+          <span class="time-chip" style="background:#dcfce7; color:#166534; border-color:#86efac;">Test A: Legal Titles (T-T)</span>
+          <h3 style="font-size:1.15rem; color:#166534; margin-top:6px;">148 Held-Out Article Titles</h3>
+          <p style="font-size:0.82rem; color:#166534;">
+            Queries mirror formal, title-based training pairs.
+          </p>
+        </div>
+        <div class="disc-metric green">99.32%</div>
+        <p style="font-size:0.84rem; color:#166534; font-weight:700;">
+          Recall@5 on Titles (MRR@10: <strong>0.9456</strong>)
+        </p>
+        <p style="font-size:0.78rem; color:#15803d; margin-top:2px;">
+          The model learned statutory legal terminology almost flawlessly.
+        </p>
+      </div>
+
+      <div class="discovery-card out-dist">
+        <div>
+          <span class="time-chip" style="background:#eff6ff; color:#1e40af; border-color:#bfdbfe;">Test B: Natural Questions (T-Q)</span>
+          <h3 style="font-size:1.15rem; color:#1e40af; margin-top:6px;">200 Human Benchmark Questions</h3>
+          <p style="font-size:0.82rem; color:#1e40af;">
+            Queries introduce conversational syntax and colloquial phrasing.
+          </p>
+        </div>
+        <div class="disc-metric blue">51.42%</div>
+        <p style="font-size:0.84rem; color:#1e40af; font-weight:700;">
+          Recall@5 on Questions (MRR@10: <strong>0.4827</strong>)
+        </p>
+        <p style="font-size:0.78rem; color:#1d4ed8; margin-top:2px;">
+          Authentic linguistic distribution shift causes a ~48% performance drop.
+        </p>
+      </div>
+    </div>
+
+    <div class="card highlight" style="padding:10px 16px;">
+      <p style="font-size:0.86rem; color:#0f172a;">
+        <strong>The Key Research Finding:</strong>
+        A model can achieve 99% on title-based benchmarks while only getting 51% on real user queries.
+        Choosing a stronger architecture (A3 vs BM25) gave a <strong>+44% MRR boost</strong>, but the <strong>training data distribution</strong> defines the real-world performance ceiling!
+      </p>
+    </div>
+
+    <div class="slide-footer">
+      <span>Khmer Legal Retrieval — Final Defense</span>
+      <span>Slide 9 / 16 · The 99% vs 51% Discovery</span>
+    </div>
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- SLIDE 10: ERROR ANALYSIS & LIMITATIONS -->
+  <!-- ============================================================ -->
+  <div class="slide">
+    <div class="slide-header">
+      <span class="section-badge badge-core">8. Qualitative Error Analysis &amp; Limitations</span>
+      <span class="time-chip">⏱ 7:20 – 8:00 (40s)</span>
+    </div>
+    <h2 class="slide-title">Where the Model Still Fails: Error Breakdown</h2>
+    <p class="slide-subtitle">Categorizing failure modes across 200 benchmark questions (from results/error_analysis/)</p>
+
+    <div class="grid-2">
+      <div class="stack">
+        <div class="card">
+          <div class="card-title">Failure Modes at k=5 (Error Breakdown)</div>
+          <div style="margin: 8px 0;">
+            <div style="display:flex; justify-content:space-between; font-size:0.78rem; margin-bottom:2px;">
+              <span>Vocabulary Mismatch</span><strong>60.5%</strong>
+            </div>
+            <div style="background:#f1f5f9; height:8px; border-radius:4px; overflow:hidden;">
+              <div style="background:#dc2626; width:60.5%; height:100%;"></div>
+            </div>
+          </div>
+          <div style="margin: 8px 0;">
+            <div style="display:flex; justify-content:space-between; font-size:0.78rem; margin-bottom:2px;">
+              <span>Near-Misses (Ranks 6–10)</span><strong>19.8%</strong>
+            </div>
+            <div style="background:#f1f5f9; height:8px; border-radius:4px; overflow:hidden;">
+              <div style="background:#f59e0b; width:19.8%; height:100%;"></div>
+            </div>
+          </div>
+          <div style="margin: 8px 0;">
+            <div style="display:flex; justify-content:space-between; font-size:0.78rem; margin-bottom:2px;">
+              <span>Multi-Article Questions</span><strong>17.4%</strong>
+            </div>
+            <div style="background:#f1f5f9; height:8px; border-radius:4px; overflow:hidden;">
+              <div style="background:#3b82f6; width:17.4%; height:100%;"></div>
+            </div>
+          </div>
+          <p style="font-size:0.76rem; color:#64748b; margin-top:8px;">
+            Near-misses push A3 Recall@10 to <strong>64.3%</strong>, showing strong candidate ranking.
+          </p>
+        </div>
+      </div>
+
+      <div class="stack">
+        <div class="card warning">
+          <div class="card-title" style="color:#b45309;">Honest Scope Limitations (§5.D)</div>
+          <ul style="font-size:0.79rem;">
+            <li><strong>Two Codes:</strong> Civil Code 2007 and Criminal Code 2009. Commercial Arbitration was excluded (no official ODC Khmer PDF).</li>
+            <li><strong>Scanned Laws (Labour Law 1997):</strong> Scanned image PDFs require OCR and were excluded.</li>
+            <li><strong>Bi-Encoder Compression:</strong> Compressing entire statutes into a single 768-d vector loses sub-clause nuance.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="slide-footer">
+      <span>Khmer Legal Retrieval — Final Defense</span>
+      <span>Slide 10 / 16 · Error Analysis &amp; Limitations</span>
+    </div>
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- SLIDE 11: LIVE LOCALHOST DEMONSTRATION -->
+  <!-- ============================================================ -->
+  <div class="slide">
+    <div class="slide-header">
+      <span class="section-badge badge-demo">9. Live Demonstration (90 Seconds)</span>
+      <span class="time-chip">⏱ 8:00 – 9:30 (90s Localhost Demo)</span>
+    </div>
+    <h2 class="slide-title">Live Demonstration: BM25 vs A3 on Localhost (Port 8501)</h2>
+    <p class="slide-subtitle">Demonstrating semantic retrieval advantage on authentic benchmark query TQ-CIV-009</p>
+
+    <div class="demo-query-card">
+      <div>
+        <span style="font-size:0.72rem; color:#93c5fd; text-transform:uppercase; font-weight:800; letter-spacing:0.04em;">Benchmark Question (TQ-CIV-009)</span>
+        <p class="khmer" style="font-size:1.18rem; font-weight:700; color:#ffffff !important; margin:3px 0;">
+          «តើនរណាខ្លះអាចស្នើសុំឱ្យតុលាការប្រកាសបើកអាណាព្យាបាលទូទៅ?»
+        </p>
+        <span style="font-size:0.78rem; color:#cbd5e1;">"Who can request that a court initiate general guardianship?" · Expected Target: <strong>Civil Code Article 24</strong></span>
+      </div>
+      <span class="time-chip" style="background:#2563eb; color:#ffffff; border-color:#60a5fa; font-size:0.78rem; padding:4px 10px;">Target: Art. 24</span>
+    </div>
+
+    <div class="demo-grid">
+      <div class="demo-col miss">
+        <strong style="font-size:0.88rem; color:#b91c1c;">BM25 Keyword Search: Miss (Rank &gt; 10)</strong>
+        <p style="font-size:0.76rem; color:#64748b; margin:4px 0 8px 0;">Superficial word matching fails on legal concepts</p>
+        <div style="background:#fff; padding:8px 10px; border-radius:6px; border:1px solid #e2e8f0; font-size:0.76rem;">
+          <div style="color:#b91c1c; font-weight:700; margin-bottom:4px;">❌ Target Article 24 completely missing from Top 10</div>
+          1. Art. 1105 (ជ្រើសតាំងអ្នកអាណាព្យាបាល) · BM25: 14.82<br>
+          2. Art. 1125 (ការត្រួតពិនិត្យតួនាទី) · BM25: 13.91<br>
+          3. Art. 1107 (ករណីយកិច្ចជ្រើសតាំង) · BM25: 13.44<br>
+          <div style="font-size:0.72rem; color:#64748b; margin-top:6px; border-top:1px dashed #cbd5e1; padding-top:4px;">
+            <em>Cause:</em> Matches repeated word "អាណាព្យាបាល" across Book 8; misses "ស្នើសុំបើក" (court initiation).
+          </div>
+        </div>
+      </div>
+
+      <div class="demo-col hit">
+        <strong style="font-size:0.88rem; color:#15803d;">A3 XLM-R Fine-Tuned: Rank #1 (Hit! Sim: 0.6205)</strong>
+        <p style="font-size:0.76rem; color:#64748b; margin:4px 0 8px 0;">Learned legal semantic embeddings bridge phrasing</p>
+        <div style="background:#fff; padding:8px 10px; border-radius:6px; border:1px solid #bbf7d0; font-size:0.76rem;">
+          <div style="color:#15803d; font-weight:700; margin-bottom:4px;">✅ Target Article 24 retrieved at Rank #1</div>
+          <strong>1. Civil Code Art. 24 (ការប្រកាសចាប់ផ្តើម...) · Sim: 0.6205</strong><br>
+          2. Art. 27 (ការលុបចោលការប្រកាស) · Sim: 0.5759<br>
+          3. Art. 1104 (ការចាប់ផ្តើមអាណាព្យាបាល) · Sim: 0.5246<br>
+          <div style="font-size:0.72rem; color:#15803d; margin-top:6px; border-top:1px dashed #86efac; padding-top:4px;">
+            <em>Mechanism:</em> Self-attention vector aligns "ស្នើសុំឱ្យតុលាការប្រកាសបើក" directly with Article 24's commencement provisions.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:10px; padding:8px 12px; background:#f8fafc;">
+      <p style="font-size:0.78rem; color:#334155;">
+        <strong>90-Second Demo Sequence:</strong> (1) Open <code>localhost:8501</code> → (2) Select <em>⭐ [LIVE DEFENSE DEMO] TQ-CIV-009</em> → (3) Show BM25 misses Art. 24 → (4) Switch to A3 and show Art. 24 at Rank 1 → (5) DeepSeek synthesizes answer citing Article 24 with green <code>[Verified Citation]</code> badge.
+      </p>
+    </div>
+
+    <div class="slide-footer">
+      <span>Khmer Legal Retrieval — Final Defense</span>
+      <span>Slide 11 / 16 · Live Localhost Demo</span>
+    </div>
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- SLIDE 12: WHAT WE LEARNED & TAKEAWAYS -->
+  <!-- ============================================================ -->
+  <div class="slide">
+    <div class="slide-header">
+      <span class="section-badge badge-core">10. Conclusions &amp; Takeaways</span>
+      <span class="time-chip">⏱ 9:30 – 10:00 (30s)</span>
+    </div>
+    <h2 class="slide-title">What We Learned: Three Core Takeaways &amp; Future Work</h2>
+    <p class="slide-subtitle">Summary of findings from comparing four neural retrievers on 1,976 Cambodian articles</p>
+
+    <div class="grid-3">
+      <div class="card highlight" style="display:flex; flex-direction:column; justify-content:space-between;">
+        <div>
+          <div style="font-size:1.8rem; font-weight:800; color:#dc2626; font-family:'JetBrains Mono', monospace; line-height:1; margin-bottom:6px;">
+            20.25%
+          </div>
+          <h3 style="font-size:0.88rem; color:#1e40af; margin-bottom:6px;">1. Pretraining is Essential</h3>
+          <p style="font-size:0.77rem; color:#334155; line-height:1.4;">
+            From-scratch BiLSTM (A1) severely overfit (loss 0.02 → val 0.82). ~1,100 legal pairs are insufficient to initialize Khmer word embeddings without catastrophic sparsity.
+          </p>
+        </div>
+        <div style="background:#eff6ff; border-radius:4px; padding:6px; margin-top:8px; border-left:3px solid #2563eb;">
+          <span style="font-size:0.70rem; font-weight:700; color:#1e40af; text-transform:uppercase;">Rule:</span>
+          <span style="font-size:0.73rem; color:#1e40af;">Always bootstrap low-resource retrieval from pretrained backbones.</span>
+        </div>
+      </div>
+
+      <div class="card highlight" style="display:flex; flex-direction:column; justify-content:space-between;">
+        <div>
+          <div style="font-size:1.8rem; font-weight:800; color:#16a34a; font-family:'JetBrains Mono', monospace; line-height:1; margin-bottom:6px;">
+            +44.1%
+          </div>
+          <h3 style="font-size:0.88rem; color:#1e40af; margin-bottom:6px;">2. Full Fine-Tuning Wins</h3>
+          <p style="font-size:0.77rem; color:#334155; line-height:1.4;">
+            Linear probing (A2) merely achieves parity with BM25 (<em>p</em> = 0.9031). Only end-to-end backpropagation across all 12 transformer layers adapts attention to Khmer legal phrasing.
+          </p>
+        </div>
+        <div style="background:#f0fdf4; border-radius:4px; padding:6px; margin-top:8px; border-left:3px solid #16a34a;">
+          <span style="font-size:0.70rem; font-weight:700; color:#15803d; text-transform:uppercase;">Rule:</span>
+          <span style="font-size:0.73rem; color:#15803d;">Parameter efficiency cannot compensate for cross-domain representation shift.</span>
+        </div>
+      </div>
+
+      <div class="card highlight" style="display:flex; flex-direction:column; justify-content:space-between;">
+        <div>
+          <div style="font-size:1.8rem; font-weight:800; color:#2563eb; font-family:'JetBrains Mono', monospace; line-height:1; margin-bottom:6px;">
+            99% ➔ 51%
+          </div>
+          <h3 style="font-size:0.88rem; color:#1e40af; margin-bottom:6px;">3. Distribution Gap is Real</h3>
+          <p style="font-size:0.77rem; color:#334155; line-height:1.4;">
+            99.32% on title retrieval vs 51.42% on human benchmark questions confirms that model architecture is only half the battle. Real questions introduce conversational vocabulary mismatch.
+          </p>
+        </div>
+        <div style="background:#eff6ff; border-radius:4px; padding:6px; margin-top:8px; border-left:3px solid #3b82f6;">
+          <span style="font-size:0.70rem; font-weight:700; color:#1d4ed8; text-transform:uppercase;">Next Step:</span>
+          <span style="font-size:0.73rem; color:#1d4ed8;">Synthesize conversational queries to close the colloquial gap.</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="card success" style="margin-top:12px;">
+      <div class="card-title" style="color:#15803d;">Engineering Integrity &amp; Open Science</div>
+      <p style="font-size:0.80rem;">
+        100% consecutive Limon extraction (0 OCR artifacts) · Zero data leakage protocol · 138 passing unit tests · Open-source code under GPL-3.0 · Fully reproducible with random seed 42.
+      </p>
+    </div>
+
+    <div style="text-align:center; margin-top:8px;">
+      <p style="font-size:0.88rem; font-weight:700; color:#1e3a8a;">
+        Thank you, Mr. Soklong and committee members. I welcome your questions.
+      </p>
+    </div>
+
+    <div class="slide-footer">
+      <span>Khmer Legal Retrieval — Final Defense</span>
+      <span>Slide 12 / 16 · Conclusions</span>
+    </div>
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- APPENDIX A1: ARCHITECTURE DETAILS -->
+  <!-- ============================================================ -->
+  <div class="slide">
+    <div class="slide-header">
+      <span class="section-badge badge-appendix">Reserve Q&amp;A Appendix A1</span>
+      <span class="time-chip">5-Min Q&amp;A Defense</span>
+    </div>
+    <h2 class="slide-title">A1. Architecture, Layer &amp; Parameter Breakdown</h2>
+    <p class="slide-subtitle">Full technical specifications across all four implemented PyTorch neural retrievers</p>
+
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Specification</th>
+          <th>A1: BiLSTM</th>
+          <th>A2: XLM-R Linear Probe</th>
+          <th>A3: XLM-R Full Fine-Tune</th>
+          <th>A4: PrahokBART</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Base Model</strong></td>
+          <td>None (Scratch)</td>
+          <td><code>multilingual-e5-base</code></td>
+          <td><code>multilingual-e5-base</code></td>
+          <td><code>prahokbart-base</code></td>
+        </tr>
+        <tr>
+          <td><strong>Architecture</strong></td>
+          <td>1-Layer BiLSTM</td>
+          <td>Transformer + Linear</td>
+          <td>12-Layer Transformer</td>
+          <td>6-Layer BART Encoder</td>
+        </tr>
+        <tr>
+          <td><strong>Total Parameters</strong></td>
+          <td class="mono">1,970,784</td>
+          <td class="mono">278,634,240</td>
+          <td class="mono">278,043,648</td>
+          <td class="mono">35,830,784</td>
+        </tr>
+        <tr>
+          <td><strong>Trainable Params</strong></td>
+          <td class="mono">1,970,784 (100%)</td>
+          <td class="mono">590,592 (0.21%)</td>
+          <td class="mono">278,043,648 (100%)</td>
+          <td class="mono">35,830,784 (100%)</td>
+        </tr>
+        <tr>
+          <td><strong>Embedding Dim</strong></td>
+          <td class="mono">512</td>
+          <td class="mono">768</td>
+          <td class="mono">768</td>
+          <td class="mono">768</td>
+        </tr>
+        <tr>
+          <td><strong>Tokenizer</strong></td>
+          <td><code>khmer-nltk</code> (Words)</td>
+          <td>XLM-R SentencePiece (250k)</td>
+          <td>XLM-R SentencePiece (250k)</td>
+          <td>BART SentencePiece (32k)</td>
+        </tr>
+        <tr>
+          <td><strong>Pooling Method</strong></td>
+          <td>Masked Mean Pooling</td>
+          <td>Mean Pooling</td>
+          <td>Mean Pooling</td>
+          <td>Mean Pooling</td>
+        </tr>
+      </tbody>
+    </table>
+
     <div class="slide-footer">
       <span>Khmer Legal Retrieval — Q&amp;A Appendix</span>
-      <span>Slide 15 / 15 · Qualitative Error Analysis</span>
+      <span>Slide 13 / 16 · Architecture Deep-Dive</span>
+    </div>
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- APPENDIX A2: LOSS & METRICS MATH -->
+  <!-- ============================================================ -->
+  <div class="slide">
+    <div class="slide-header">
+      <span class="section-badge badge-appendix">Reserve Q&amp;A Appendix A2</span>
+      <span class="time-chip">5-Min Q&amp;A Defense</span>
+    </div>
+    <h2 class="slide-title">A2. Loss Function, Temperature &amp; Evaluation Metrics</h2>
+    <p class="slide-subtitle">Mathematical formulations for InfoNCE contrastive loss, Recall@k, and MRR@10</p>
+
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-title">InfoNCE &amp; Temperature Dynamics</div>
+        <p style="font-size:0.79rem;">
+          InfoNCE optimizes a lower bound on mutual information <em>I(Q; P)</em>:
+        </p>
+        <div style="background:#f8fafc; border:1px solid #cbd5e1; border-radius:4px; padding:8px 10px; margin:6px 0; font-size:0.76rem;" class="mono">
+          p(p<sub>i</sub> | q<sub>i</sub>) = exp(sim(q<sub>i</sub>, p<sub>i</sub>) / &tau;) &divide; &sum;<sub>j=1</sub><sup>B</sup> exp(sim(q<sub>i</sub>, p<sub>j</sub>) / &tau;)
+        </div>
+        <p style="font-size:0.78rem;">
+          When <strong>&tau; = 0.05</strong>, the similarity distribution becomes sharp, heavily penalizing hard negative false positives instead of diffusing gradients.
+        </p>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Evaluation Metrics Formulation</div>
+        <div style="margin-bottom:8px;">
+          <strong style="font-size:0.80rem;">Recall@k:</strong>
+          <span style="font-size:0.76rem; color:#475569;">Fraction of ground-truth articles retrieved in top-k:</span>
+          <div style="background:#f8fafc; border:1px solid #cbd5e1; border-radius:4px; padding:6px 10px; margin:4px 0; font-size:0.74rem;" class="mono">
+            Recall@k = (1 / N) &times; &sum;<sub>i=1</sub><sup>N</sup> (| R<sub>k</sub>(q<sub>i</sub>) &cap; G(q<sub>i</sub>) |) / (| G(q<sub>i</sub>) |)
+          </div>
+        </div>
+        <div>
+          <strong style="font-size:0.80rem;">MRR@10 (Mean Reciprocal Rank):</strong>
+          <span style="font-size:0.76rem; color:#475569;">Inverse rank of first relevant article:</span>
+          <div style="background:#f8fafc; border:1px solid #cbd5e1; border-radius:4px; padding:6px 10px; margin:4px 0; font-size:0.74rem;" class="mono">
+            MRR@10 = (1 / N) &times; &sum;<sub>i=1</sub><sup>N</sup> (1 / rank<sub>i</sub>) &nbsp; [if rank<sub>i</sub> &le; 10 else 0]
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="slide-footer">
+      <span>Khmer Legal Retrieval — Q&amp;A Appendix</span>
+      <span>Slide 14 / 16 · Mathematical Formulations</span>
+    </div>
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- APPENDIX A3: BOOTSTRAP SIGNIFICANCE -->
+  <!-- ============================================================ -->
+  <div class="slide">
+    <div class="slide-header">
+      <span class="section-badge badge-appendix">Reserve Q&amp;A Appendix A3</span>
+      <span class="time-chip">5-Min Q&amp;A Defense</span>
+    </div>
+    <h2 class="slide-title">A3. Paired Bootstrap Statistical Significance (10,000 Resamples)</h2>
+    <p class="slide-subtitle">Rigorous hypothesis testing confirming A3 superiority is not stochastic variance</p>
+
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Comparison</th>
+          <th>Metric</th>
+          <th>Delta (Model − Baseline)</th>
+          <th>95% Confidence Interval</th>
+          <th>Win / Loss / Tie</th>
+          <th>p-value</th>
+          <th>Significance</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="winner">
+          <td><strong>A3 vs. BM25</strong></td>
+          <td><strong>Recall@5</strong></td>
+          <td class="mono"><strong>+0.1067</strong></td>
+          <td class="mono">[+0.0500, +0.1633]</td>
+          <td class="mono">41 / 13 / 146</td>
+          <td class="mono"><strong>0.0002</strong></td>
+          <td>p &lt; 0.001 (Highly Significant)</td>
+        </tr>
+        <tr class="winner">
+          <td><strong>A3 vs. BM25</strong></td>
+          <td><strong>MRR@10</strong></td>
+          <td class="mono"><strong>+0.1477</strong></td>
+          <td class="mono">[+0.0883, +0.2070]</td>
+          <td class="mono">72 / 25 / 103</td>
+          <td class="mono"><strong>0.0001</strong></td>
+          <td>p &lt; 0.001 (+44.1% Rel. Gain)</td>
+        </tr>
+        <tr>
+          <td>A2 vs. BM25</td>
+          <td>Recall@5</td>
+          <td class="mono">+0.0042</td>
+          <td class="mono">[−0.0508, +0.0600]</td>
+          <td class="mono">33 / 34 / 133</td>
+          <td class="mono">0.9031</td>
+          <td>Not Significant (Parity)</td>
+        </tr>
+        <tr>
+          <td>A3 vs. A2</td>
+          <td>Recall@5</td>
+          <td class="mono">+0.1025</td>
+          <td class="mono">[+0.0467, +0.1583]</td>
+          <td class="mono">38 / 12 / 150</td>
+          <td class="mono">0.0004</td>
+          <td>p &lt; 0.001 (FT &gt; Probe)</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="card highlight" style="margin-top:10px; padding:10px;">
+      <p style="font-size:0.80rem;">
+        <strong>Methodology:</strong> Paired studentized bootstrap with 10,000 resamples directly on query-level delta values &Delta;<sub>i</sub> = s<sub>i</sub><sup>(A)</sup> &minus; s<sub>i</sub><sup>(B)</sup>. The 95% confidence interval for A3 vs BM25 is strictly positive, definitively proving neural superiority.
+      </p>
+    </div>
+
+    <div class="slide-footer">
+      <span>Khmer Legal Retrieval — Q&amp;A Appendix</span>
+      <span>Slide 15 / 16 · Statistical Significance</span>
+    </div>
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- APPENDIX A4: CODE NAVIGATION -->
+  <!-- ============================================================ -->
+  <div class="slide">
+    <div class="slide-header">
+      <span class="section-badge badge-appendix">Reserve Q&amp;A Appendix A4</span>
+      <span class="time-chip">5-Min Q&amp;A Defense</span>
+    </div>
+    <h2 class="slide-title">A4. Repository Code Navigation Quick-Reference</h2>
+    <p class="slide-subtitle">Instant file path and function reference for committee oral questioning (§6.3)</p>
+
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Component</th>
+          <th>File Path</th>
+          <th>Key Functions / Classes</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>A3 Full Fine-Tune</strong></td>
+          <td><code>src/dl/models/xlmr_finetune.py</code></td>
+          <td><code>XLMRFullFinetuneRetriever</code>, <code>forward()</code>, <code>_pool()</code></td>
+        </tr>
+        <tr>
+          <td><strong>A2 Linear Probe</strong></td>
+          <td><code>src/dl/models/linear_probe.py</code></td>
+          <td><code>XLMRLinearProbeRetriever</code>, frozen backbone projection</td>
+        </tr>
+        <tr>
+          <td><strong>A1 BiLSTM Dual Encoder</strong></td>
+          <td><code>src/dl/models/bilstm.py</code></td>
+          <td><code>BiLSTMEncoder</code>, <code>pack_padded_sequence</code></td>
+        </tr>
+        <tr>
+          <td><strong>A4 Khmer PrahokBART</strong></td>
+          <td><code>src/dl/models/prahokbart.py</code></td>
+          <td><code>PrahokBARTDualEncoder</code>, mean pooling over attention mask</td>
+        </tr>
+        <tr>
+          <td><strong>Contrastive InfoNCE Loss</strong></td>
+          <td><code>src/dl/losses.py</code></td>
+          <td><code>InfoNCELoss</code>, symmetric logit scaling by &tau; = 0.05</td>
+        </tr>
+        <tr>
+          <td><strong>Data Quarantine Protocol</strong></td>
+          <td><code>src/dl/prepare_splits.py</code></td>
+          <td><code>quarantine_test_articles()</code>, <code>strip_title_from_passage()</code></td>
+        </tr>
+        <tr>
+          <td><strong>Limon FSM Extractor</strong></td>
+          <td><code>src/infrastructure/extractors/limon_converter.py</code></td>
+          <td><code>LimonConverter</code>, syllable reordering rules</td>
+        </tr>
+        <tr>
+          <td><strong>Streamlit Interface</strong></td>
+          <td><code>src/interfaces/ui/app.py</code></td>
+          <td><code>execute_unified_retrieval()</code>, <code>load_cached_torch_embedder()</code></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="slide-footer">
+      <span>Khmer Legal Retrieval — Q&amp;A Appendix</span>
+      <span>Slide 16 / 16 · Code Reference</span>
     </div>
   </div>
 
@@ -920,7 +1489,7 @@
 <!-- Presentation Controls -->
 <div class="controls">
   <button class="btn" id="prevBtn" onclick="prevSlide()">◀ Prev</button>
-  <div class="slide-counter" id="counter">1 / 15</div>
+  <div class="slide-counter" id="counter">1 / 16</div>
   <button class="btn" id="nextBtn" onclick="nextSlide()">Next ▶</button>
 </div>
 
