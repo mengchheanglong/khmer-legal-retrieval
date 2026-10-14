@@ -7,8 +7,9 @@ Uses 'deepseek-chat' (DeepSeek Flash) for fast, cost-effective, cited legal ques
 
 from typing import Optional
 
+import openai
 from openai import OpenAI
-from tenacity import retry, stop_after_attempt, wait_exponential
+from tenacity import retry, retry_if_not_exception_type, stop_after_attempt, wait_exponential
 
 from src.config.logging import get_logger
 from src.config.settings import Settings, get_settings
@@ -111,8 +112,14 @@ class OpenAILLM(LLMPort):
             raise GenerationError(f"DeepSeek Flash generation error: {e}")
 
     @retry(
-        stop=stop_after_attempt(3),
-        wait=wait_exponential(multiplier=1, min=2, max=10),
+        retry=retry_if_not_exception_type((
+            openai.AuthenticationError,
+            openai.PermissionDeniedError,
+            openai.NotFoundError,
+            openai.BadRequestError,
+        )),
+        stop=stop_after_attempt(2),
+        wait=wait_exponential(multiplier=0.5, min=0.5, max=2),
         reraise=True,
     )
     def _call_chat_completion(

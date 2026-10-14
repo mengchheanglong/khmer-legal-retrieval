@@ -145,6 +145,7 @@ export const App: React.FC = () => {
   const [darkMode, setDarkMode] = useState<boolean>(true)
   const [input, setInput] = useState('')
   const [isLoading, setIsLoading] = useState(false)
+  const [backendStage, setBackendStage] = useState<{ stage: string; message: string } | null>(null)
   const [activeModel, setActiveModel] = useState<ModelOption>(AVAILABLE_MODELS[0])
   const [statuteFilter, setStatuteFilter] = useState<StatuteFilter>('ALL')
   const [topK, setTopK] = useState(5)
@@ -229,6 +230,7 @@ export const App: React.FC = () => {
     )
 
     setIsLoading(true)
+    setBackendStage({ stage: 'retrieval', message: `Searching 1,976 articles via ${activeModel.name}...` })
     const t0 = performance.now()
 
     try {
@@ -236,41 +238,96 @@ export const App: React.FC = () => {
       if (statuteFilter === 'CIVIL') lawFilterParam = 'Civil Code 2007'
       if (statuteFilter === 'CRIMINAL') lawFilterParam = 'Criminal Code 2009'
 
-      const response = await fetch('/api/v1/qa', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          question: queryText,
-          top_k: topK,
-          law_filter: lawFilterParam,
-        }),
-      })
+      let data: any = null
 
-      if (response.ok) {
-        const data = await response.json()
-        const elapsed = performance.now() - t0
+      // 1. Try real-time streaming endpoint to mirror actual backend pipeline progress
+      try {
+        const streamRes = await fetch('/api/v1/qa/stream', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            question: queryText,
+            top_k: topK,
+            law_filter: lawFilterParam,
+            model: activeModel.id,
+          }),
+        })
 
-        const assistantMsg: Message = {
-          id: `msg-resp-${Date.now()}`,
-          role: 'assistant',
-          content: data.answer || 'No analysis generated.',
-          timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-          citations: data.citations || [],
-          sourceArticles: data.source_articles || [],
-          retrievalMs: elapsed,
-          modelUsed: data.model_used || activeModel.name,
+        if (streamRes.ok && streamRes.body) {
+          const reader = streamRes.body.getReader()
+          const decoder = new TextDecoder()
+          let buffer = ''
+
+          while (true) {
+            const { value, done } = await reader.read()
+            if (done) break
+
+            buffer += decoder.decode(value, { stream: true })
+            const lines = buffer.split('\n\n')
+            buffer = lines.pop() || ''
+
+            for (const line of lines) {
+              const trimmed = line.trim()
+              if (!trimmed.startsWith('data: ')) continue
+              try {
+                const event = JSON.parse(trimmed.slice(6))
+                if (event.type === 'stage') {
+                  setBackendStage({ stage: event.stage, message: event.message })
+                } else if (event.type === 'complete') {
+                  data = event.response
+                } else if (event.type === 'error') {
+                  throw new Error(event.message)
+                }
+              } catch (e) {
+                // Ignore transient JSON parse chunk errors
+              }
+            }
+          }
         }
-
-        setSessions((prev) =>
-          prev.map((s) =>
-            s.id === currentSessionId
-              ? { ...s, messages: [...s.messages, assistantMsg], updatedAt: new Date().toISOString() }
-              : s
-          )
-        )
-      } else {
-        throw new Error(`Backend returned HTTP ${response.status}`)
+      } catch (streamErr) {
+        console.warn('Streaming error, falling back to standard POST:', streamErr)
       }
+
+      // 2. Fallback to standard QA endpoint if stream did not return complete response
+      if (!data) {
+        const response = await fetch('/api/v1/qa', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            question: queryText,
+            top_k: topK,
+            law_filter: lawFilterParam,
+            model: activeModel.id,
+          }),
+        })
+
+        if (response.ok) {
+          data = await response.json()
+        } else {
+          throw new Error(`Backend returned HTTP ${response.status}`)
+        }
+      }
+
+      const elapsed = performance.now() - t0
+
+      const assistantMsg: Message = {
+        id: `msg-resp-${Date.now()}`,
+        role: 'assistant',
+        content: data.answer || 'No analysis generated.',
+        timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+        citations: data.citations || [],
+        sourceArticles: data.source_articles || [],
+        retrievalMs: elapsed,
+        modelUsed: data.model_used || activeModel.name,
+      }
+
+      setSessions((prev) =>
+        prev.map((s) =>
+          s.id === currentSessionId
+            ? { ...s, messages: [...s.messages, assistantMsg], updatedAt: new Date().toISOString() }
+            : s
+        )
+      )
     } catch (err) {
       // Offline fallback using authentic legal corpus data
       console.warn('API error, using authentic offline legal fallback:', err)
@@ -302,6 +359,7 @@ export const App: React.FC = () => {
       )
     } finally {
       setIsLoading(false)
+      setBackendStage(null)
     }
   }
 
@@ -342,7 +400,7 @@ export const App: React.FC = () => {
               <ChatMessage key={msg.id} message={msg} />
             ))
           )}
-          {isLoading && <LoadingMessage modelName={activeModel.name} />}
+          {isLoading && <LoadingMessage modelName={activeModel.name} backendStage={backendStage} />}
           <div ref={messagesEndRef} />
         </div>
 

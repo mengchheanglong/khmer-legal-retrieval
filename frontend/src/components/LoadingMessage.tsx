@@ -3,9 +3,10 @@ import { Sparkles, Loader2, Database, BrainCircuit, Scale } from 'lucide-react'
 
 interface LoadingMessageProps {
   modelName: string
+  backendStage?: { stage: string; message: string } | null
 }
 
-export const LoadingMessage: React.FC<LoadingMessageProps> = ({ modelName }) => {
+export const LoadingMessage: React.FC<LoadingMessageProps> = ({ modelName, backendStage }) => {
   const [elapsed, setElapsed] = useState(0)
 
   useEffect(() => {
@@ -16,24 +17,52 @@ export const LoadingMessage: React.FC<LoadingMessageProps> = ({ modelName }) => 
     return () => clearInterval(timer)
   }, [])
 
-  // Dynamic step message based on elapsed seconds
+  // Dynamic step message based on real backend stage, with graceful local fallback
   let currentStep = {
     icon: Database,
     text: `Searching 1,976 articles via ${modelName}...`,
     stage: 'Passage Retrieval',
   }
 
-  if (elapsed >= 1.4 && elapsed < 3.0) {
-    currentStep = {
-      icon: Scale,
-      text: 'Matching Civil Code (2007) & Criminal Code (2009) provisions...',
-      stage: 'Context Grounding',
+  if (backendStage) {
+    if (backendStage.stage === 'retrieval') {
+      currentStep = {
+        icon: Database,
+        text: backendStage.message,
+        stage: 'Passage Retrieval',
+      }
+    } else if (backendStage.stage === 'ranking') {
+      currentStep = {
+        icon: Scale,
+        text: backendStage.message,
+        stage: 'Context Grounding',
+      }
+    } else if (backendStage.stage === 'generation') {
+      currentStep = {
+        icon: BrainCircuit,
+        text: backendStage.message,
+        stage: 'Legal Synthesis',
+      }
+    } else if (backendStage.stage === 'verification') {
+      currentStep = {
+        icon: Sparkles,
+        text: backendStage.message,
+        stage: 'Citation Verification',
+      }
     }
-  } else if (elapsed >= 3.0) {
-    currentStep = {
-      icon: BrainCircuit,
-      text: 'Synthesizing citation-grounded legal response with DeepSeek Flash...',
-      stage: 'LLM Generation',
+  } else {
+    if (elapsed >= 0.8 && elapsed < 2.0) {
+      currentStep = {
+        icon: Scale,
+        text: 'Matching Civil Code (2007) & Criminal Code (2009) provisions...',
+        stage: 'Context Grounding',
+      }
+    } else if (elapsed >= 2.0) {
+      currentStep = {
+        icon: BrainCircuit,
+        text: 'Synthesizing citation-grounded legal response with DeepSeek Flash...',
+        stage: 'Legal Synthesis',
+      }
     }
   }
 

@@ -25,10 +25,10 @@ def test_retrieval_endpoint(client: TestClient):
     """POST /api/v1/retrieve should return ranked results."""
     response = client.post(
         "/api/v1/retrieve",
-        json={"query": "arbitration agreement dispute", "top_k": 3},
+        json={"query": "កិច្ចសន្យា", "top_k": 3},
     )
     assert response.status_code == 200
     data = response.json()
-    assert data["query"] == "arbitration agreement dispute"
+    assert data["query"] == "កិច្ចសន្យា"
     assert "results" in data
     assert len(data["results"]) > 0

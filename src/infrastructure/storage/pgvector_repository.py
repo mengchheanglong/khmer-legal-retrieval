@@ -53,6 +53,9 @@ class PgVectorRepository(VectorStorePort):
         if self._local_store_path.exists():
             self._load_local_store()
 
+        if len(self._local_chunks) == 0:
+            self._load_precomputed_embeddings(base_dir)
+
     def store(
         self,
         chunks: list[LegalChunk],
@@ -265,3 +268,55 @@ class PgVectorRepository(VectorStorePort):
             logger.info(f"Loaded {len(self._local_chunks)} vectors from local store.")
         except Exception as e:
             logger.warning(f"Could not load local vector store: {e}")
+
+    def _load_precomputed_embeddings(self, base_dir: Path) -> None:
+        """Load precomputed 1,976 embeddings from data/indices/khmer_article_embeddings.pt."""
+        emb_path = base_dir / "data" / "indices" / "khmer_article_embeddings.pt"
+        chunks_dir = base_dir / "data" / "04_chunks"
+        if not emb_path.exists() or not chunks_dir.exists():
+            return
+
+        try:
+            import torch
+            emb_data = torch.load(emb_path, map_location="cpu")
+            chunk_ids = emb_data.get("chunk_ids", [])
+            raw_embs = emb_data.get("embeddings")
+
+            if raw_embs is None or not chunk_ids:
+                return
+
+            if hasattr(raw_embs, "numpy"):
+                embeddings_np = raw_embs.numpy().astype(np.float32)
+            else:
+                embeddings_np = np.array(raw_embs, dtype=np.float32)
+
+            # Load chunks from json files
+            chunks_map: dict[str, LegalChunk] = {}
+            for json_file in sorted(chunks_dir.glob("*_chunks.json")):
+                try:
+                    with open(json_file, encoding="utf-8") as f:
+                        for item in json.load(f):
+                            chunk = LegalChunk.model_validate(item)
+                            chunks_map[chunk.chunk_id] = chunk
+                except Exception as e:
+                    logger.warning(f"Error reading {json_file}: {e}")
+
+            # Align chunks in the exact same order as chunk_ids
+            aligned_chunks = []
+            valid_indices = []
+            for i, cid in enumerate(chunk_ids):
+                if cid in chunks_map:
+                    aligned_chunks.append(chunks_map[cid])
+                    valid_indices.append(i)
+
+            if aligned_chunks:
+                self._local_chunks = aligned_chunks
+                self._local_embeddings = embeddings_np[valid_indices]
+                logger.info(
+                    "Loaded precomputed article embeddings into local vector store",
+                    count=len(self._local_chunks),
+                    shape=list(self._local_embeddings.shape),
+                )
+                self._save_local_store()
+        except Exception as e:
+            logger.warning(f"Could not load precomputed embeddings: {e}")

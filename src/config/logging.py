@@ -12,6 +12,19 @@ import sys
 import structlog
 
 
+# Ensure sys.stdout and sys.stderr support UTF-8 on Windows
+if sys.stdout and hasattr(sys.stdout, "reconfigure"):
+    try:
+        sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+    except Exception:
+        pass
+if sys.stderr and hasattr(sys.stderr, "reconfigure"):
+    try:
+        sys.stderr.reconfigure(encoding="utf-8", errors="replace")
+    except Exception:
+        pass
+
+
 def setup_logging(log_level: str = "INFO", log_format: str = "console") -> None:
     """
     Configure structured logging for the application.
