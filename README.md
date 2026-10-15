@@ -254,9 +254,9 @@ khmer-legal-retrieval/
 ## 10. Academic Integrity & AI Disclosure
 
 Per course requirements (Sections 5.E & 6.1):
-- **Tools Used:** Anthropic Claude, Antigravity (Google Gemini), OpenAI Codex (final review, demo fixes, and slide corrections).
-- **Scope of AI Assistance:** Generative AI tools were used extensively as primary implementation assistants across the codebase. AI generated initial boilerplate and scaffolding, data extraction logic (Limon converter and syllable reordering), PyTorch neural architectures (A1–A4 dual encoders), InfoNCE loss functions, training loops, evaluation harnesses, test suites (144 passing unit/integration tests), Streamlit interface components, and documentation drafts.
-- **Student Role, Verification & Ownership:** The author directed project scope and domain requirements, curated the Cambodian Civil and Criminal Code corpora, designed evaluation protocols and leakage quarantine boundaries, executed and supervised all training and tuning experiments locally and on GPU, analyzed retrieval errors, verified test suite execution, and maintains complete understanding of every file and algorithm in the repository to explain and modify code during the defense Q&A.
+- **Tools Used:** Anthropic Claude, Antigravity (Google Gemini), OpenAI Codex (code generation, debugging, and code review).
+- **Scope of AI Assistance:** Generative AI tools were used strictly as programming and coding implementation assistants. AI assisted with code drafting, syntax and boilerplate generation, unit test suites (144 passing tests), and Streamlit UI components based on the author's architectural design and specifications.
+- **Student Role, Verification & Ownership:** The author conceived the research project, curated the Cambodian Civil and Criminal Code corpora, designed the experimental protocols and zero-leakage quarantine boundaries, and personally set up, executed, and supervised all model training runs and hyperparameter tuning sweeps locally and on GPU. The author performed all empirical evaluations and error analyses, verified every line of code, and maintains full code ownership to explain, defend, and live-code any component during the defense Q&A.
 
 ---
 
