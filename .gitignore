@@ -61,3 +61,5 @@ Thumbs.db
 
 # Local Vector Pickle Cache
 data/indices/*.pkl
+
+tmp/

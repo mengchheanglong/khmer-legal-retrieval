@@ -83,7 +83,7 @@ conditions for every approach.
 - [x] Working prototype: the best trained retriever over the Khmer corpus in the RAG app
 
 ### Presentation, Communication, Q&A (35%)
-- [x] Slide deck in `slides/`, strictly compliant with syllabus §6.2 (11 main slides timed to 10 minutes + 4 reserve Q&A appendix slides, compiled to `slides/final_presentation.pdf`)
+- [x] Slide deck in `slides/`, strictly compliant with syllabus §6.2 (14 main slides plus 4 reserve Q&A appendix slides; rehearsal required to stay within 10 minutes, compiled to `slides/Khmer_Legal_Retrieval_Defense.pdf`)
 - [ ] Able to explain and modify every line of code during Q&A, including Limon converter, InfoNCE loss, pooling, and checkpointing (§6.3)
 
 ---
@@ -128,7 +128,7 @@ architecture and training strategy.
 | Week | Milestone | Deliverable |
 |------|-----------|-------------|
 | ✅ Done | RAG app; Khmer corpus (Limon conversion, 1,976 articles) | `data/04_chunks/*_kh_chunks.json` |
-| **Week 7** | **Topic approval** (problem, Khmer corpus, A1–A3, metrics) | ✅ Approved by lecturer Mr. Soklong HIM |
+| **Week 7** | **Topic approval** (problem, Khmer corpus, A1–A3, metrics) | ✅ Verbally approved by lecturer Mr. Soklong HIM; original date not recorded |
 | Week 8 | Manual spot-check of converted text; Khmer test questions; fixed splits; shared seed/checkpoint/eval modules | `data/05_splits/`, `src/dl/` |
 | **Week 10** | **Progress check:** show the split and at least one trained approach | A2 or A1 learning curves + val metrics |
 | Weeks 11–12 | Train all approaches, tune A3, final test evaluation | `results/metrics/`, `results/tuning/` |

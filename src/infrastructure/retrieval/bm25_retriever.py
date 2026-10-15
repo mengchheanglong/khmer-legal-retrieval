@@ -8,6 +8,7 @@ and auto-building from data/04_chunks/*.json on first run.
 
 import json
 import pickle
+import numpy as np
 from pathlib import Path
 from typing import Optional
 
@@ -78,7 +79,9 @@ class BM25Retriever(SparseRetrieverPort):
     and statutory terminology.
     """
 
-    def __init__(self, index_path: Optional[Path] = None) -> None:
+    def __init__(self, index_path: Optional[Path] = None, benchmark_mode: bool = False) -> None:
+        """Load an index, optionally matching the frozen evaluation preprocessing."""
+        self._benchmark_mode = benchmark_mode
         self._chunks: list[LegalChunk] = []
         self._corpus_tokens: list[list[str]] = []
         self._bm25: Optional[BM25Okapi] = None
@@ -97,12 +100,20 @@ class BM25Retriever(SparseRetrieverPort):
             # Auto-build from data/04_chunks/*.json if index.pkl is not found
             self._auto_index_from_chunks(base_dir / "data" / "04_chunks")
 
+        if benchmark_mode:
+            from src.dl.text import tokenize_khmer
+
+            # Match BM25KhmerRetriever: article text, no hierarchy or query boosting.
+            self._corpus_tokens = [tokenize_khmer(c.content) for c in self._chunks]
+            self._bm25 = BM25Okapi(self._corpus_tokens)
+
     def _auto_index_from_chunks(self, chunks_dir: Path) -> None:
         """Automatically load and build index from data/04_chunks/*.json if index.pkl is missing."""
         if not chunks_dir.exists():
             return
         all_chunks: list[LegalChunk] = []
-        for json_file in sorted(chunks_dir.glob("*_chunks.json")):
+        pattern = "*_kh_chunks.json" if self._benchmark_mode else "*_chunks.json"
+        for json_file in sorted(chunks_dir.glob(pattern)):
             try:
                 with open(json_file, encoding="utf-8") as f:
                     data = json.load(f)
@@ -163,7 +174,11 @@ class BM25Retriever(SparseRetrieverPort):
             logger.warning("BM25 search called on uninitialized index.")
             return []
 
-        query_tokens = tokenize_legal_text(query, is_query=True)
+        if self._benchmark_mode:
+            from src.dl.text import tokenize_khmer
+            query_tokens = tokenize_khmer(query)
+        else:
+            query_tokens = tokenize_legal_text(query, is_query=True)
         if not query_tokens:
             return []
 
@@ -174,7 +189,7 @@ class BM25Retriever(SparseRetrieverPort):
             t for t in query_tokens
             if t not in ["ក្រម", "រដ្ឋប្បវេណី", "ព្រហ្មទណ្ឌ", "ច្បាប់", "មាត្រា", "នៃ", "និង", "ក្នុង"]
         ]
-        if core_tokens:
+        if core_tokens and not self._benchmark_mode:
             for idx, chunk in enumerate(self._chunks):
                 title = chunk.metadata.article_title or ""
                 matches = sum(1 for kw in core_tokens if kw in title)
@@ -189,12 +204,14 @@ class BM25Retriever(SparseRetrieverPort):
             key=lambda i: doc_scores[i],
             reverse=True,
         )
+        if self._benchmark_mode:
+            scored_indices = np.argsort(-np.asarray(doc_scores)).tolist()
 
         results: list[RetrievedDocument] = []
         clean_filter = law_filter.lower() if law_filter else None
         for idx in scored_indices:
             score = float(doc_scores[idx])
-            if score <= 0.0:
+            if score <= 0.0 and not self._benchmark_mode:
                 break  # Scores are sorted descending
             chunk = self._chunks[idx]
             if clean_filter:

@@ -86,7 +86,7 @@ class TorchEncoderEmbedding(EmbeddingPort):
                 logger.info(f"Loading checkpoint weights from {self._checkpoint_path}...")
                 ckpt = torch.load(self._checkpoint_path, map_location=self._device, weights_only=False)
                 state_dict = ckpt.get("model_state_dict", ckpt)
-                model.load_state_dict(state_dict, strict=False)
+                model.load_state_dict(state_dict, strict=True)
                 logger.info("Successfully loaded fine-tuned model checkpoint.")
             else:
                 logger.warning(

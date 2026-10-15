@@ -10,7 +10,7 @@
 
 | Requirement (instruction §) | Status | Gap / action |
 |-----------------------------|:------:|--------------|
-| Topic approved by lecturer (§3.1, Week 7) | ✅ | Approved by lecturer Mr. Soklong HIM (Week 7) |
+| Topic approved by lecturer (§3.1, Week 7) | ✅ | Verbal approval confirmed by author on 2026-10-15; original approval date not recorded |
 | ≥ 2 (ideally 3) distinct DL approaches trained/fine-tuned by me (§2, §4) | ✅ | Implemented, trained, and evaluated 4 distinct approaches: A1 (BiLSTM), A2 (XLM-R Linear Probe), A3 (XLM-R Full Fine-Tuning), and A4 (PrahokBART Dual Encoder) |
 | All models in PyTorch; no Keras/TF (§5B) | ✅ | All models and loss functions implemented purely in PyTorch; dependencies pinned in `requirements.txt` |
 | Same train/val/test split and test preprocessing for all (§2, §5A) | ✅ | Fixed splits generated in `data/05_splits/` with deterministic seed 42 and leakage guard |
@@ -31,7 +31,7 @@
 | `requirements.txt` with exact packages (§6.1) | ✅ | Exact package versions pinned in `requirements.txt` |
 | Weights > 50 MB hosted externally with link (§9) | 🟡 | A3 checkpoint (~1.1 GB) saved locally; upload instructions documented in `results/checkpoints/README.md` |
 | Regular commit history (§6.1) | ✅ | Regular, small, descriptive commits maintained across all PRs #1–#7 |
-| Slides 10–20, required structure (§6.2, §6.3) | ✅ | 15 slides: 11 main slides timed to 10 minutes + 4 reserve Q&A appendix slides, compiled to `slides/final_presentation.pdf` |
+| Slides 10–20, required structure (§6.2, §6.3) | ✅ | 18 slides: 14 main slides plus 4 reserve Q&A appendix slides; rehearsal required to stay within 10 minutes, compiled to `slides/Khmer_Legal_Retrieval_Defense.pdf` |
 
 ---
 
@@ -78,7 +78,7 @@
 
 ### 6.0 Topic approval (before final experiments)
 - [x] One-slide pitch: Khmer problem, corpus (1,976 articles), A1–A4, Recall@5 / MRR@10 (12-slide deck in `slides/`)
-- [ ] Lecturer approval by **Week 7**; record the date in README
+- [x] Topic approved verbally when the author explained the project (confirmed by author on 2026-10-15; approval date not recorded).
 
 ### 6.1 Khmer test set and splits
 - [x] Translate the 41 Civil Code questions in `tests/evaluation/ground_truth_qa.json` into Khmer; re-verify `expected_articles` against the Khmer text
@@ -161,7 +161,7 @@
 - [x] Results (single table, learning curves, metric chart)
 - [x] Discussion & error analysis (why the winner won, Khmer failure cases, limitations)
 - [x] Conclusion & future work; appendix (tuning table, examples, parameter counts)
-- [x] Export to `slides/final_presentation.pdf`; rehearse to ≤ 10 minutes (§6.2, §6.3)
+- [x] Export to `slides/Khmer_Legal_Retrieval_Defense.pdf`; rehearse to ≤ 10 minutes (§6.2, §6.3)
 - [x] Q&A prep: Limon reordering, InfoNCE, in-batch negatives, pooling, freezing, checkpoint/resume, each metric, every line of `src/dl/`
 
 ---

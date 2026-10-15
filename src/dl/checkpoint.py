@@ -68,9 +68,8 @@ def save_checkpoint(
 
     # Atomic write pattern: save to temporary file, then replace
     torch.save(state, temp_path)
-    if path.exists():
-        path.unlink()
-    temp_path.rename(path)
+    # Replace in one filesystem operation; unlinking first leaves a crash window.
+    os.replace(temp_path, path)
 
     logger.info(
         f"Checkpoint saved atomically -> {path.name} "

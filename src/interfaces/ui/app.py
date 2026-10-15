@@ -6,18 +6,18 @@ Lecturer: Mr. Soklong HIM · Academic Year 2026-2027
 Author: Long Mengchheang (@mengchheanglong)
 
 Features:
-- Multi-Retriever Architecture (A3 XLM-R Full Fine-Tune, Hybrid, BM25, A4 PrahokBART, A2, A1)
+- Multi-Retriever Architecture (A3 XLM-R Full Fine-Tune, Hybrid, BM25)
 - 1,976 Official Khmer Statutory Articles (Civil Code 2007 + Criminal Code 2009)
 - Citation-Grounded Legal Q&A powered by DeepSeek Flash
 - Interactive Deep Learning Benchmark Dashboard & Publication Figures
 """
 
 import html
+import json
 import os
 import sys
 import time
 from pathlib import Path
-from typing import Optional
 
 # Ensure repo root is always in sys.path
 repo_root = Path(__file__).resolve().parent.parent.parent.parent
@@ -31,10 +31,8 @@ try:
 except ImportError:
     pass
 
-import numpy as np
 import pandas as pd
 import streamlit as st
-import torch
 
 # Sync Streamlit Cloud secrets into environment if present
 try:
@@ -46,156 +44,16 @@ except Exception:
     pass
 
 from src.application.dtos import LegalQARequest, RetrievalRequest
-from src.domain.entities import LegalChunk, RetrievedDocument
-from src.infrastructure.retrieval.bm25_retriever import BM25Retriever
-from src.interfaces.api.dependencies import get_hybrid_retriever, get_qa_use_case
+from src.domain.entities import RetrievedDocument
+from src.application.use_cases.answer_legal_qa import AnswerLegalQAUseCase
+from src.infrastructure.ai.openai_llm import OpenAILLM
 
 
 # ─────────────────────────────────────────────────────────────────────────────
 # Cached Model & Index Loaders
 # ─────────────────────────────────────────────────────────────────────────────
 
-@st.cache_resource(show_spinner="Loading Khmer BM25 Sparse Index (1,976 articles)...")
-def load_cached_bm25_retriever() -> BM25Retriever:
-    """Load singleton BM25 retriever with 1,976 official Khmer legal chunks."""
-    idx_path = repo_root / "data" / "indices" / "bm25_khmer_index.pkl"
-    return BM25Retriever(index_path=idx_path if idx_path.exists() else None)
-
-
-@st.cache_resource(show_spinner="Loading A3 XLM-R Fine-Tuned Encoder...")
-def load_cached_torch_embedder():
-    """Load fine-tuned Approach A3 (XLM-R) embedding adapter."""
-    try:
-        from src.infrastructure.ai.torch_encoder_embedding import TorchEncoderEmbedding
-        ckpt = repo_root / "results" / "checkpoints" / "a3_xlmr_finetune" / "best.pt"
-        if not ckpt.exists():
-            return None
-        embedder = TorchEncoderEmbedding(
-            checkpoint_path=ckpt,
-            device="cpu",
-        )
-        return embedder
-    except Exception as e:
-        return None
-
-
-@st.cache_resource(show_spinner="Loading Precomputed Corpus Embeddings...")
-def load_cached_corpus_embeddings():
-    """Load pre-encoded matrix for the 1,976 Khmer statutory articles if present."""
-    emb_file = repo_root / "data" / "indices" / "khmer_article_embeddings.pt"
-    if emb_file.exists():
-        try:
-            data = torch.load(emb_file, map_location="cpu", weights_only=False)
-            matrix = data["embeddings"].numpy()
-            chunk_ids = data["chunk_ids"]
-            # Unit normalize
-            norms = np.linalg.norm(matrix, axis=1, keepdims=True)
-            norms[norms == 0] = 1e-12
-            matrix = matrix / norms
-            return matrix, chunk_ids
-        except Exception:
-            return None, None
-    return None, None
-
-
-def execute_unified_retrieval(
-    query: str,
-    retriever_choice: str,
-    top_k: int = 5,
-    law_filter: Optional[str] = None,
-) -> list[RetrievedDocument]:
-    """Execute article retrieval according to the user's selected architecture."""
-    bm25 = load_cached_bm25_retriever()
-
-    # 1. Pure BM25 Sparse Search
-    if "BM25" in retriever_choice:
-        return bm25.search(query=query, top_k=top_k, law_filter=law_filter)
-
-    # 2. A3 Full Fine-Tune Dense Search
-    if "A3" in retriever_choice or "Hybrid" in retriever_choice:
-        corpus_matrix, chunk_ids = load_cached_corpus_embeddings()
-        embedder = load_cached_torch_embedder()
-
-        dense_docs: list[RetrievedDocument] = []
-        if corpus_matrix is not None and embedder is not None:
-            try:
-                q_emb = np.array(embedder.embed_query(query), dtype=np.float32)
-                norm = np.linalg.norm(q_emb)
-                if norm > 0:
-                    q_emb = q_emb / norm
-                sims = np.dot(corpus_matrix, q_emb)
-
-                # Map chunks by chunk_id
-                chunks_map = {c.chunk_id: c for c in bm25._chunks}
-                sorted_idx = np.argsort(-sims)
-
-                clean_law = law_filter.lower() if law_filter else None
-                for idx in sorted_idx:
-                    cid = chunk_ids[idx]
-                    chunk = chunks_map.get(cid)
-                    if not chunk:
-                        continue
-                    if clean_law:
-                        c_law = chunk.metadata.law_name.lower()
-                        if "civil" in clean_law and "civil" not in c_law:
-                            continue
-                        if "crim" in clean_law and "crim" not in c_law:
-                            continue
-                    dense_docs.append(
-                        RetrievedDocument(
-                            chunk=chunk,
-                            dense_score=float(sims[idx]),
-                        )
-                    )
-                    if len(dense_docs) >= (top_k * 2 if "Hybrid" in retriever_choice else top_k):
-                        break
-            except Exception as e:
-                st.info(f"Dense vector search note: {e}")
-
-        # If pure A3 requested and dense results found
-        if "A3" in retriever_choice and "Hybrid" not in retriever_choice:
-            if dense_docs:
-                return dense_docs[:top_k]
-            # Fallback to BM25 if dense weights not present on disk
-            st.info("ℹ️ Cloud Notice: Approach A3 PyTorch weights (best.pt, 3.17 GB) are excluded from git. Running high-precision Khmer BM25 Sparse search across 1,976 articles.")
-            res = bm25.search(query=query, top_k=top_k, law_filter=law_filter)
-            if not res and law_filter:
-                res = bm25.search(query=query, top_k=top_k, law_filter=None)
-            return res
-
-        # 3. Hybrid Search (RRF of Dense + BM25)
-        bm25_docs = bm25.search(query=query, top_k=top_k * 2, law_filter=law_filter)
-        if not bm25_docs and law_filter:
-            bm25_docs = bm25.search(query=query, top_k=top_k * 2, law_filter=None)
-        if not dense_docs:
-            return bm25_docs[:top_k]
-
-        # Reciprocal Rank Fusion
-        rrf_k = 60
-        scores: dict[str, float] = {}
-        doc_store: dict[str, LegalChunk] = {}
-
-        for rank, d in enumerate(dense_docs):
-            cid = d.chunk.chunk_id
-            doc_store[cid] = d.chunk
-            scores[cid] = scores.get(cid, 0.0) + 1.0 / (rrf_k + rank + 1)
-
-        for rank, d in enumerate(bm25_docs):
-            cid = d.chunk.chunk_id
-            doc_store[cid] = d.chunk
-            scores[cid] = scores.get(cid, 0.0) + 1.0 / (rrf_k + rank + 1)
-
-        sorted_cids = sorted(scores.keys(), key=lambda x: scores[x], reverse=True)[:top_k]
-        return [
-            RetrievedDocument(chunk=doc_store[cid], rrf_score=scores[cid])
-            for cid in sorted_cids
-        ]
-
-    # Default fallback
-    res = bm25.search(query=query, top_k=top_k, law_filter=law_filter)
-    if not res and law_filter:
-        res = bm25.search(query=query, top_k=top_k, law_filter=None)
-    return res
+from src.interfaces.ui.retrieval import execute_unified_retrieval
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -360,7 +218,7 @@ st.markdown(
 )
 
 
-def render_article_card(doc: RetrievedDocument, index: Optional[int] = None) -> None:
+def render_article_card(doc: RetrievedDocument, index: int | None = None) -> None:
     """Render a statutory article in a beautifully styled reading card."""
     meta = doc.chunk.metadata
     is_crim = "criminal" in meta.law_name.lower()
@@ -447,7 +305,7 @@ with col_m2:
     st.metric(
         "A3 XLM-R (Best)",
         "51.42%",
-        delta="Recall@5 (+10.7% vs BM25)",
+        delta="Recall@5 (+10.7 pp vs BM25)",
         help="MRR@10: 0.4827 on 200 Human Benchmark Questions (T-Q)",
     )
 with col_m3:
@@ -462,7 +320,7 @@ with col_m4:
     st.metric(
         "Grounded LLM",
         "DeepSeek",
-        delta="Flash (Verified)",
+        delta="deepseek-chat",
         help="deepseek-chat with compound (law, article) verification guard",
     )
 
@@ -483,9 +341,6 @@ with st.sidebar:
             "A3: XLM-R Fine-Tuned (Best)",
             "Hybrid: A3 Dense + BM25 Sparse",
             "BM25 Sparse (khmer-nltk)",
-            "A4: PrahokBART Dual Encoder",
-            "A2: XLM-R Linear Probe",
-            "A1: BiLSTM Dual Encoder",
         ],
         index=0 if has_local_a3 else 2,
     )
@@ -522,31 +377,6 @@ with st.sidebar:
             "- Secondary T-T Recall@5: **97.30%** | MRR@10: **0.8677**\n"
             "- Inference latency: ~4ms (pure CPU)"
         )
-    elif "A4" in retriever_option:
-        st.info(
-            "**Approach A4: PrahokBART Dual Encoder**\n\n"
-            "- Pre-trained Khmer BART (`seanghay/prahokbart-base`)\n"
-            "- Parameters: 35.8M trainable\n"
-            "- Primary T-Q Recall@5: **15.17%** | MRR@10: **0.1035**\n"
-            "- Secondary T-T Recall@5: **80.41%** | MRR@10: **0.6733**"
-        )
-    elif "A2" in retriever_option:
-        st.info(
-            "**Approach A2: XLM-R Linear Probe**\n\n"
-            "- Frozen XLM-R backbone + trained linear projection\n"
-            "- Trainable parameters: 590,592 (0.21%)\n"
-            "- Primary T-Q Recall@5: **41.17%** | MRR@10: **0.3591**\n"
-            "- Secondary T-T Recall@5: **93.92%** | MRR@10: **0.8563**"
-        )
-    elif "A1" in retriever_option:
-        st.info(
-            "**Approach A1: BiLSTM Dual Encoder**\n\n"
-            "- Trained from scratch on Khmer character n-grams\n"
-            "- Trainable parameters: 1,970,784\n"
-            "- Primary T-Q Recall@5: **20.25%** | MRR@10: **0.1724**\n"
-            "- Secondary T-T Recall@5: **75.68%** | MRR@10: **0.6242**"
-        )
-
     st.divider()
     st.subheader("Filters & Scope")
 
@@ -573,8 +403,7 @@ with st.sidebar:
     env_key = (os.environ.get("DEEPSEEK_API_KEY", "") or os.environ.get("OPENAI_API_KEY", "")).strip().strip('"').strip("'")
     api_key_input = ""
     if env_key:
-        masked = f"{env_key[:4]}...{env_key[-4:]}" if len(env_key) > 8 else "***"
-        st.success(f"Key loaded from `.env` (`{masked}`)", icon="🔑")
+        st.success("API key loaded from environment", icon="🔑")
         with st.expander("⚙️ Change / Override Key"):
             override_val = st.text_input(
                 "Custom DeepSeek Key:",
@@ -628,31 +457,16 @@ with tab_qa:
     st.subheader("Ask a Cambodian Legal Question")
     st.caption("Ground truth statutory retrieval combined with citation-verified LLM analysis.")
 
-    benchmark_questions = [
-        ("-- Select an authentic Khmer legal question --", ""),
-        # Recommended Live Defense Demo Query (TQ-CIV-009: BM25 miss vs A3 Rank 1)
-        ("⭐ [LIVE DEFENSE DEMO] តើនរណាខ្លះអាចស្នើសុំឱ្យតុលាការប្រកាសបើកអាណាព្យាបាលទូទៅ? (Civil Code Art. 24 - អាណាព្យាបាលទូទៅ)", "តើនរណាខ្លះអាចស្នើសុំឱ្យតុលាការប្រកាសបើកអាណាព្យាបាលទូទៅ?"),
-        # Civil Code (2007)
-        ("តើកិច្ចសន្យាបង្កើតឡើងដោយរបៀបណា យោងតាមក្រមរដ្ឋប្បវេណី? (Civil Code Art. 311/336 - ការបង្កើតកិច្ចសន្យា)", "តើកិច្ចសន្យាបង្កើតឡើងដោយរបៀបណា យោងតាមក្រមរដ្ឋប្បវេណី?"),
-        ("តើគោលការណ៍ស្វ័យភាពនៃបុគ្គលឯកជនមានន័យដូចម្តេច? (Civil Code Art. 3 - គោលការណ៍ស្វ័យភាព)", "តើគោលការណ៍ស្វ័យភាពនៃបុគ្គលឯកជនមានន័យដូចម្តេច?"),
-        ("តើគោលការណ៍នៃសេចក្តីស្មោះត្រង់និងសុចរិតក្នុងច្បាប់រដ្ឋប្បវេណីមានន័យដូចម្តេច? (Civil Code Art. 5 - សេចក្តីស្មោះត្រង់និងសុចរិត)", "តើគោលការណ៍នៃសេចក្តីស្មោះត្រង់និងសុចរិតក្នុងច្បាប់រដ្ឋប្បវេណីមានន័យដូចម្តេច?"),
-        ("តើជនបរទេសអាចមានកម្រិតក្នុងការទទួលបានសិទ្ធិក្នុងករណីណាខ្លះ? (Civil Code Art. 8 - សិទ្ធិរបស់ជនបរទេស)", "តើជនបរទេសអាចមានកម្រិតក្នុងការទទួលបានសិទ្ធិក្នុងករណីណាខ្លះ?"),
-        ("តើទារកក្នុងផ្ទៃមានសមត្ថភាពទទួលសិទ្ធិដែរឬទេ? (Civil Code Art. 9 - សមត្ថភាពទទួលសិទ្ធិរបស់ទារក)", "តើទារកក្នុងផ្ទៃមានសមត្ថភាពទទួលសិទ្ធិដែរឬទេ?"),
-        ("តើអ្វីទៅជាការទទួលខុសត្រូវលើអំពើអនីត្យានុកូល? (Civil Code Art. 743 - អំពើអនីត្យានុកូល)", "តើអ្វីទៅជាការទទួលខុសត្រូវលើអំពើអនីត្យានុកូល?"),
-        ("តើលក្ខខណ្ឌនៃការរំលត់កាតព្វកិច្ចដោយសារការទូទាត់មានអ្វីខ្លះ? (Civil Code Art. 415 - ការរំលត់កាតព្វកិច្ច)", "តើលក្ខខណ្ឌនៃការរំលត់កាតព្វកិច្ចដោយសារការទូទាត់មានអ្វីខ្លះ?"),
-        ("តើអ្វីទៅជាសិទ្ធិភតិសន្យា និងការជួលអចលនវត្ថុ? (Civil Code Art. 596 - ភតិសន្យា)", "តើអ្វីទៅជាសិទ្ធិភតិសន្យា និងការជួលអចលនវត្ថុ?"),
-        ("តើអ្នកលក់មានការទទួលខុសត្រូវលើវិការៈនៃវត្ថុទិញលក់យ៉ាងដូចម្តេច? (Civil Code Art. 544 - ការទទួលខុសត្រូវលើវិការៈ)", "តើអ្នកលក់មានការទទួលខុសត្រូវលើវិការៈនៃវត្ថុទិញលក់យ៉ាងដូចម្តេច?"),
-        ("តើការទាមទារសំណងការខូចខាតដោយសារការមិនអនុវត្តកាតព្វកិច្ចមានលក្ខខណ្ឌអ្វីខ្លះ? (Civil Code Art. 398 - សំណងការខូចខាត)", "តើការទាមទារសំណងការខូចខាតដោយសារការមិនអនុវត្តកាតព្វកិច្ចមានលក្ខខណ្ឌអ្វីខ្លះ?"),
-        # Criminal Code (2009)
-        ("តើគោលការណ៍គ្មានទោសបើគ្មានច្បាប់ចែង (Principle of Legality) មានន័យដូចម្តេច? (Criminal Code Art. 2 - គោលការណ៍ស្របច្បាប់)", "តើគោលការណ៍គ្មានទោសបើគ្មានច្បាប់ចែង (Principle of Legality) មានន័យដូចម្តេច?"),
-        ("តើបទល្មើសព្រហ្មទណ្ឌត្រូវបានបែងចែកជាប៉ុន្មានថ្នាក់? (Criminal Code Art. 46 - បទឧក្រិដ្ឋ បទមជ្ឈិម បទលហុ)", "តើបទល្មើសព្រហ្មទណ្ឌត្រូវបានបែងចែកជាប៉ុន្មានថ្នាក់?"),
-        ("តើអ្វីទៅជាការការពារស្របច្បាប់ (Self-Defense) ក្នុងក្រមព្រហ្មទណ្ឌ? (Criminal Code Art. 33 - ការការពារស្របច្បាប់)", "តើអ្វីទៅជាការការពារស្របច្បាប់ (Self-Defense) ក្នុងក្រមព្រហ្មទណ្ឌ?"),
-        ("តើអ្វីទៅជាបទលួច និងទោសបញ្ញត្តិក្នុងក្រមព្រហ្មទណ្ឌ? (Criminal Code Art. 353 - បទលួច)", "តើអ្វីទៅជាបទលួច និងទោសបញ្ញត្តិក្នុងក្រមព្រហ្មទណ្ឌ?"),
-        ("តើអ្វីទៅជាបទឆបោក និងធាតុផ្សំនៃបទល្មើស? (Criminal Code Art. 377 - បទឆបោក)", "តើអ្វីទៅជាបទឆបោក និងធាតុផ្សំនៃបទល្មើស?"),
-        ("តើការប៉ុនប៉ងប្រព្រឹត្តបទល្មើសព្រហ្មទណ្ឌត្រូវផ្តន្ទាទោសក្នុងករណីណាខ្លះ? (Criminal Code Art. 27 - ការប៉ុនប៉ង)", "តើការប៉ុនប៉ងប្រព្រឹត្តបទល្មើសព្រហ្មទណ្ឌត្រូវផ្តន្ទាទោសក្នុងករណីណាខ្លះ?"),
-        ("តើច្បាប់ព្រហ្មទណ្ឌកម្ពុជាអនុវត្តទៅលើដែនដីណាខ្លះ? (Criminal Code Art. 12 - ដែនអនុវត្តច្បាប់)", "តើច្បាប់ព្រហ្មទណ្ឌកម្ពុជាអនុវត្តទៅលើដែនដីណាខ្លះ?"),
-        ("តើអ្វីទៅជាបទរំលោភលើទំនុកចិត្តក្នុងក្រមព្រហ្មទណ្ឌ? (Criminal Code Art. 391 - បទរំលោភលើទំនុកចិត្ត)", "តើអ្វីទៅជាបទរំលោភលើទំនុកចិត្តក្នុងក្រមព្រហ្មទណ្ឌ?"),
-    ]
+    benchmark_path = repo_root / "tests" / "evaluation" / "ground_truth_qa_kh.json"
+    benchmark = json.loads(benchmark_path.read_text(encoding="utf-8"))
+    benchmark.sort(key=lambda item: item["id"] != "tq-civ-009")
+    benchmark_questions = [("-- Select a benchmark question --", "")]
+    benchmark_questions.extend(
+        (f"{item['id']} | {item['question_kh']} "
+         f"({item['expected_law']}, Art. {', '.join(map(str, item['expected_articles']))})",
+         item["question_kh"])
+        for item in benchmark
+    )
 
     question_labels = [item[0] for item in benchmark_questions]
     selected_label = st.selectbox("Pick an authentic benchmark question:", question_labels)
@@ -692,19 +506,20 @@ with tab_qa:
                 or os.environ.get("OPENAI_API_KEY", "")
             ).strip().strip('"').strip("'")
 
-            if active_key:
+            if active_key and docs:
                 with st.spinner("Generating citation-grounded analysis with DeepSeek Flash..."):
                     try:
-                        qa_use_case = get_qa_use_case()
+                        class DirectRetrieverAdapter:
+                            """Reuse the selected results without loading another model."""
 
-                        # Configure client with provided key
-                        if hasattr(qa_use_case._llm, "_client"):
-                            from openai import OpenAI
-                            qa_use_case._llm._client = OpenAI(
-                                api_key=active_key,
-                                base_url="https://api.deepseek.com",
-                            )
-                            qa_use_case._llm._api_key = active_key
+                            def execute(self, request: RetrievalRequest) -> list[RetrievedDocument]:
+                                """Return the already retrieved context."""
+                                return docs
+
+                        qa_use_case = AnswerLegalQAUseCase(
+                            retriever=DirectRetrieverAdapter(),
+                            llm=OpenAILLM(api_key=active_key, model="deepseek-chat"),
+                        )
 
                         req = LegalQARequest(
                             question=user_query,
@@ -712,15 +527,9 @@ with tab_qa:
                             law_filter=selected_law_filter,
                             model="deepseek-chat",
                         )
-                        # Override retriever in use case temporarily with our selected docs
-                        class DirectRetrieverAdapter:
-                            def execute(self, req_inner):
-                                return docs
-
-                        original_retriever = qa_use_case._retriever
-                        qa_use_case._retriever = DirectRetrieverAdapter()
                         response = qa_use_case.execute(req)
-                        qa_use_case._retriever = original_retriever
+                        st.caption(f"Answer source: {response.model_used}")
+                        st.caption("Citation checks confirm article identity in the context; they do not establish that every claim is correct.")
 
                         st.markdown("### ⚖️ Legal Synthesis & Grounded Analysis")
                         with st.container(border=True):
@@ -904,14 +713,14 @@ with tab_benchmark:
         }
         df_results = pd.DataFrame(results_data)
 
-    st.dataframe(df_results, use_container_width=True, hide_index=True)
+    st.dataframe(df_results, width="stretch", hide_index=True)
 
     st.markdown(
         """
         **Key Findings:**
-        - **Approach A3 (XLM-R Full Fine-Tune)** is the definitive winner: **51.42% Recall@5** and **0.4827 MRR@10** on the Primary Benchmark (T-Q: 200 human legal questions), outperforming BM25 by **+10.67% Recall@5** (p < 0.001) and **+44.1% relative MRR@10** (p < 0.001).
+        - **Approach A3 (XLM-R Full Fine-Tune)** is the definitive winner: **51.42% Recall@5** and **0.4827 MRR@10** on the Primary Benchmark (T-Q: 200 human legal questions), outperforming BM25 by **+10.67 percentage points Recall@5** (p < 0.001) and **+44.1% relative MRR@10** (p < 0.001).
         - **In-Distribution (T-T) vs Out-of-Distribution Shift (T-Q)**: On held-out titles (T-T), models reach near ceiling (A3: **99.32%**, BM25: **97.30%**, A2: **93.92%**). On conversational human questions (T-Q), distribution shift (colloquial phrasing, lack of exact title keywords) causes expected drop across all systems.
-        - **Approach A2 (Linear Probe)** delivers solid parameter-efficient performance (**41.17% Recall@5**, **0.3591 MRR@10**) with only 0.59M trainable parameters (0.21%), essentially matching BM25 (p = 0.9031). Deep fine-tuning across all layers is required to significantly beat sparse keyword search.
+        - **Approach A2 (Linear Probe)** delivers solid parameter-efficient performance (**41.17% Recall@5**, **0.3591 MRR@10**) with only 0.59M trainable parameters (0.21%), essentially matching BM25 (p = 0.9031). A3 significantly outperformed sparse search in this experiment.
         - **Approach A4 (PrahokBART Dual Encoder)** excels in-distribution (T-T: **80.41% Recall@5**, **0.6733 MRR@10**), but drops to **15.17% Recall@5** on conversational questions (T-Q), showing sensitivity to paraphrasing without large-scale legal fine-tuning pairs.
         - **Approach A1 (BiLSTM from scratch)** achieves **20.25% Recall@5** and **0.1724 MRR@10** on T-Q (and **75.68% Recall@5** on T-T), constrained by vocabulary sparsity on low-resource Khmer when trained from scratch without pretraining.
         """
@@ -952,7 +761,7 @@ with tab_benchmark:
     a3_csv = repo_root / "results" / "tuning" / "a3.csv"
     if a3_csv.exists():
         df_tuning = pd.read_csv(a3_csv)
-        st.dataframe(df_tuning, use_container_width=True, hide_index=True)
+        st.dataframe(df_tuning, width="stretch", hide_index=True)
 
     st.divider()
 

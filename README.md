@@ -1,9 +1,9 @@
 # Khmer Legal Article Retrieval: Comparing Deep Learning Retrievers on Cambodian Law
 
 > **Deep Learning Final Project (Individual)** — Bachelor of Software Engineering, Department of Engineering  
-> **Lecturer:** Mr. Soklong HIM · Academic Year 2026–2027 · **Topic Status:** Approved by Lecturer (Week 7)  
+> **Lecturer:** Mr. Soklong HIM · Academic Year 2026–2027 · **Topic Status:** Verbally approved by lecturer (date not recorded)
 > **Author:** Long Mengchheang ([@mengchheanglong](https://github.com/mengchheanglong))  
-> **Presentation Deck:** [`slides/final_presentation.pdf`](slides/final_presentation.pdf) (10-min presentation + 5-min Q&A) · **Weight Checkpoints:** [Hugging Face Hub](https://huggingface.co/mengchheanglong/khmer-legal-xlmr-retriever)
+> **Presentation Deck:** [`slides/Khmer_Legal_Retrieval_Defense.pdf`](slides/Khmer_Legal_Retrieval_Defense.pdf) (10-min presentation + 5-min Q&A) · **Weight Checkpoints:** [Hugging Face Hub](https://huggingface.co/mengchheanglong/khmer-legal-xlmr-retriever)
 
 [![Python 3.11+](https://img.shields.io/badge/Python-3.11+-blue.svg)](https://python.org)
 [![PyTorch](https://img.shields.io/badge/PyTorch-2.x-ee4c2c.svg)](https://pytorch.org)
@@ -116,14 +116,14 @@ All metrics are computed via the shared evaluation harness (`src/dl/evaluate.py`
 *(Additional diagnostic charts: Multi-rank progression [`results/figures/recall_at_k.png`](results/figures/recall_at_k.png) and statute breakdown [`results/figures/code_breakdown.png`](results/figures/code_breakdown.png)).*
 
 ### 5.3 Discussion of Key Findings
-1. **A3 XLM-R Full Fine-Tuning is the Definitive Winner:** Achieves **0.5142 Recall@5** and **0.4827 MRR@10**, delivering a +44.1% relative gain over BM25 and +86.5% over zero-shot E5. Self-attention layers across all 12 transformer blocks successfully adapt multilingual representations to Khmer legal semantics.
+1. **A3 XLM-R Full Fine-Tuning is the Definitive Winner:** Achieves **0.5142 Recall@5** and **0.4827 MRR@10**, delivering a +26.2% relative Recall@5 gain over BM25 and +96.5% over zero-shot E5. The relative MRR@10 gain over BM25 is +44.1%. Self-attention layers across all 12 transformer blocks successfully adapt multilingual representations to Khmer legal semantics.
 2. **Distribution Shift (In-Distribution T-T vs. Out-of-Distribution T-Q):** All models excel on held-out titles (T-T: A3 99.3%, BM25 97.3% Recall@5) because training pairs mirror title-passage formats. Conversational human questions (T-Q) induce severe distribution shift through colloquial synonyms (`សុពលភាព` [validity] vs statutory `មោឃភាព` [nullity]), causing BM25 and linear probes to degrade while A3 retains robust semantic matching.
 3. **PrahokBART (A4) Performance Differences:** While PrahokBART performs solidly on in-distribution titles (80.4% Recall@5), its performance drops on natural questions (15.2% Recall@5). This gap is hypothesized to arise from multiple interacting factors: PrahokBART was pre-trained using a sequence-to-sequence BART reconstruction objective rather than sentence-level contrastive alignment, and its compact 35.8M parameter capacity provides less representational bandwidth for lexical variability, although these factors were not independently ablated.
 4. **Efficiency vs. Accuracy:** A2 trains in 5.9 seconds with only 0.59M parameters and matches BM25, making it optimal for ultra-low-compute environments. A3 provides superior retrieval accuracy when GPU compute is accessible.
 
 ### 5.4 Error Analysis & Limitations (`results/error_analysis/`)
 Analysis of failure cases across the 200 primary benchmark queries at $k=5$:
-- **Vocabulary Mismatch / Paraphrasing:** Accounts for 57.5% of BM25 misses (61 queries) and 60.5% of A3 misses (52 queries). Dense retrieval reduces total misses from 106 to 86 by bridging conversational phrasings to formal legal terms.
+- **Vocabulary Mismatch / Paraphrasing:** The automatic categorizer assigns its residual category to 57.5% of BM25 misses (61 queries) and 60.5% of A3 misses (52 queries). These are heuristic labels, not manually established causes. Dense retrieval reduces total misses from 106 to 86 by bridging conversational phrasings to formal legal terms.
 - **Multi-Article Complexity:** 15–27% of errors stem from legal questions spanning multiple related provisions.
 - **Code Confusion:** Rare in A3 (1 error, 1.2%), demonstrating clear discrimination between Civil and Criminal statutes.
 - **Limitations:** Scope limited to Civil and Criminal Codes (Labour Law excluded pending OCR); evaluation benchmark comprises 200 verified questions (hence 95% bootstrap CIs reported). Detailed case studies are documented in [`results/error_analysis/worked_examples.md`](results/error_analysis/worked_examples.md).
@@ -160,7 +160,7 @@ python -m src.dl.report
 python -m src.dl.visualize
 python -m src.dl.error_analysis
 
-# 5. Automated test suite (138 tests pass in ~60s)
+# 5. Automated test suite (140 existing tests passed in 267 seconds during the October 15 review)
 python -m pytest tests/unit/ -v
 ```
 Interactive Google Colab notebooks for isolated GPU execution are located in [`notebooks/`](notebooks/): [`a1_bilstm_colab.ipynb`](notebooks/a1_bilstm_colab.ipynb), [`a2_xlmr_linear_probe_colab.ipynb`](notebooks/a2_xlmr_linear_probe_colab.ipynb), [`a3_xlmr_finetune_colab.ipynb`](notebooks/a3_xlmr_finetune_colab.ipynb), [`a4_prahokbart_colab.ipynb`](notebooks/a4_prahokbart_colab.ipynb).
@@ -187,15 +187,18 @@ In compliance with rubric guidelines prohibiting large binaries in git, model we
 
 ---
 
+The current presentation is [`slides/Khmer_Legal_Retrieval_Defense.pdf`](slides/Khmer_Legal_Retrieval_Defense.pdf). See [`docs/DEFENSE_REVIEW.md`](docs/DEFENSE_REVIEW.md) for review findings and the demo rehearsal.
+
 ## 7. Citation-Grounded Assistant Prototype
 
 The best-performing retriever (A3 XLM-R) powers an in-process citation-grounded legal assistant prototype:
 1. **Retrieval Stage:** Top-$k$ statutory articles retrieved via A3 PyTorch embeddings (or BM25) from the 1,976-article corpus.
-2. **Grounded Generation:** DeepSeek Flash generates natural Khmer answers strictly conditioned on retrieved statutory context.
-3. **Compound Citation Verification:** Validates extracted `(law_name, article_number)` tuples against retrieved context to prevent hallucinated citations.
+2. **Grounded Generation:** DeepSeek (`deepseek-chat`) generates natural Khmer answers strictly conditioned on retrieved statutory context.
+3. **Compound Citation Verification:** Validates extracted `(law_name, article_number)` tuples against retrieved context to flag citations absent from context. This checks article identity, not the truth of every generated claim.
 
 ```bash
 # Launch interactive Streamlit demonstration (Defense Mode)
+python scripts/build_demo_index.py             # Once after downloading/changing A3 weights
 streamlit run streamlit_app.py                  # http://localhost:8501
 
 # Optional: Launch FastAPI REST microservice
@@ -222,12 +225,12 @@ khmer-legal-retrieval/
 │   ├── figures/                # Publication plots (primary_metrics_bar, learning_curves)
 │   ├── metrics/                # Benchmark evaluation outputs & summary.csv
 │   └── tuning/                 # Hyperparameter search logs (a1.csv - a4.csv)
-├── slides/                     # 15-slide defense deck (PDF + HTML) & speaker notes
+├── slides/                     # Current defense PDF (14 main + 4 appendix slides); older versions in archive/
 ├── src/
 │   ├── dl/                     # PyTorch models (A1–A4), InfoNCE loss, training & evaluation
 │   ├── infrastructure/         # Limon font converter, hierarchical chunker, PyTorch embedders
 │   └── interfaces/             # Streamlit web demo (streamlit_app.py) & FastAPI service
-└── tests/                      # 138 automated unit & integration tests
+└── tests/                      # Automated unit & integration tests
 ```
 
 ---
@@ -235,7 +238,7 @@ khmer-legal-retrieval/
 ## 9. Academic Integrity & AI Disclosure
 
 Per course requirements (Sections 5.E & 6.1):
-- **Tools Used:** Anthropic Claude, Antigravity (Google Gemini).
+- **Tools Used:** Anthropic Claude, Antigravity (Google Gemini), OpenAI Codex (final review, demo fixes, and slide corrections).
 - **Scope of AI Assistance:** Generative AI tools were used extensively as primary implementation assistants across the codebase. AI generated initial boilerplate and scaffolding, data extraction logic (Limon converter and syllable reordering), PyTorch neural architectures (A1–A4 dual encoders), InfoNCE loss functions, training loops, evaluation harnesses, test suites (138 passing unit/integration tests), Streamlit interface components, and documentation drafts.
 - **Student Role, Verification & Ownership:** The author directed project scope and domain requirements, curated the Cambodian Civil and Criminal Code corpora, designed evaluation protocols and leakage quarantine boundaries, executed and supervised all training and tuning experiments locally and on GPU, analyzed retrieval errors, verified test suite execution, and maintains complete understanding of every file and algorithm in the repository to explain and modify code during the defense Q&A.
 
@@ -260,3 +263,7 @@ Per course requirements (Sections 5.E & 6.1):
 - **Source Code:** GNU General Public License v3.0 or later ([`GPL-3.0-or-later`](LICENSE)), per bundled KhmerConverter reordering components ([`THIRD_PARTY_NOTICES.md`](src/infrastructure/extractors/resources/THIRD_PARTY_NOTICES.md)).
 - **Legal Data:** Creative Commons Attribution-ShareAlike 4.0 ([CC-BY-SA-4.0](data/04_chunks/DATA_LICENSE.md)), Open Development Cambodia.
 - **Disclaimer:** This software is an academic research prototype and does **not** constitute legal advice.
+
+### Final defense verification (2026-10-15)
+
+The author confirms verbal topic approval by Mr. Soklong HIM; the original approval date was not recorded. The author has not yet manually compared 20–30 extracted articles against the official Khmer PDFs, so the extraction error rate is **unmeasured**. Consecutive article numbering and automated extraction tests do not establish textual accuracy.
