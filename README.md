@@ -1,7 +1,7 @@
 # Khmer Legal Article Retrieval: Comparing Deep Learning Retrievers on Cambodian Law
 
 > **Deep Learning Final Project (Individual)** — Bachelor of Software Engineering, Department of Engineering  
-> **Lecturer:** Mr. Soklong HIM · Academic Year 2026–2027 · **Topic Status:** Verbally approved by lecturer (date not recorded)  
+> **Lecturer:** Mr. Soklong HIM · Academic Year 2026–2027  
 > **Author:** Long Mengchheang ([@mengchheanglong](https://github.com/mengchheanglong))  
 > **Presentation Deck:** [`slides/Khmer_Legal_Retrieval_Defense.pdf`](slides/Khmer_Legal_Retrieval_Defense.pdf) (10-min presentation + 5-min Q&A) · **Weight Checkpoints:** [Hugging Face Hub](https://huggingface.co/mengchheanglong/khmer-legal-xlmr-retriever)
 
@@ -279,7 +279,3 @@ Per course requirements (Sections 5.E & 6.1):
 - **Source Code:** GNU General Public License v3.0 or later ([`GPL-3.0-or-later`](LICENSE)), per bundled KhmerConverter reordering components ([`THIRD_PARTY_NOTICES.md`](src/infrastructure/extractors/resources/THIRD_PARTY_NOTICES.md)).
 - **Legal Data:** Creative Commons Attribution-ShareAlike 4.0 ([CC-BY-SA-4.0](data/04_chunks/DATA_LICENSE.md)), Open Development Cambodia.
 - **Disclaimer:** This software is an academic research prototype and does **not** constitute legal advice.
-
-### Final Defense Verification Note (2026-10-15)
-
-The author confirms verbal topic approval by Mr. Soklong HIM; the original approval date was not recorded. The author has not yet manually compared 20–30 extracted articles against the official Khmer PDFs, so the extraction error rate is **unmeasured**. Consecutive article numbering and automated extraction tests do not establish textual accuracy.
