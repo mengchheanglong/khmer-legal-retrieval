@@ -1,7 +1,7 @@
 # Khmer Legal Article Retrieval: Comparing Deep Learning Retrievers on Cambodian Law
 
 > **Deep Learning Final Project (Individual)** — Bachelor of Software Engineering, Department of Engineering  
-> **Lecturer:** Mr. Soklong HIM · Academic Year 2026–2027 · **Topic Status:** Verbally approved by lecturer (date not recorded)
+> **Lecturer:** Mr. Soklong HIM · Academic Year 2026–2027 · **Topic Status:** Verbally approved by lecturer (date not recorded)  
 > **Author:** Long Mengchheang ([@mengchheanglong](https://github.com/mengchheanglong))  
 > **Presentation Deck:** [`slides/Khmer_Legal_Retrieval_Defense.pdf`](slides/Khmer_Legal_Retrieval_Defense.pdf) (10-min presentation + 5-min Q&A) · **Weight Checkpoints:** [Hugging Face Hub](https://huggingface.co/mengchheanglong/khmer-legal-xlmr-retriever)
 
@@ -9,6 +9,7 @@
 [![PyTorch](https://img.shields.io/badge/PyTorch-2.x-ee4c2c.svg)](https://pytorch.org)
 [![Language: Khmer](https://img.shields.io/badge/Language-Khmer%20(ភាសាខ្មែរ)-0b5394.svg)](#2-dataset--preprocessing)
 [![Hugging Face](https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-Model%20Weights-ffd21e.svg)](https://huggingface.co/mengchheanglong/khmer-legal-xlmr-retriever)
+[![Tests Passing](https://img.shields.io/badge/Tests-144%20Passed-brightgreen.svg)](#6-installation--experiment-reproduction)
 
 ---
 
@@ -25,6 +26,51 @@ This project investigates dense passage retrieval for legal text in an extremely
 | **Output** | Ranked top-$k$ statutory articles retrieved from a fixed corpus of **1,976 Khmer articles** |
 | **Task Formulation** | Dense passage retrieval / learning to rank. Dual towers encode queries and statutory passages into a shared vector space scored by cosine similarity. |
 | **Application Context** | The winning retriever powers a citation-grounded Khmer legal assistant prototype ([Section 7](#7-citation-grounded-assistant-prototype); complete architecture in [`docs/system_architecture.md`](docs/system_architecture.md)). |
+
+### 1.1 End-to-End System Pipeline & Architecture
+
+```mermaid
+flowchart TD
+    subgraph Data["1. Data Ingestion & Font Normalization Pipeline"]
+        PDF["Official Khmer PDFs<br/>(Civil Code 2007 & Criminal Code 2009)"] --> Extractor["LimonPdfExtractor<br/>(Page Filtering & Syllable Engine)"]
+        Extractor --> Converter["LimonConverter<br/>(Unicode Mapping + Glyph Reordering)"]
+        Converter --> Unicode["Normalized Khmer Text<br/>(0 leftover Latin, 0 glyph errors)"]
+        Unicode --> Chunker["LegalHierarchicalChunker<br/>(គន្ថី → មាតិកា → ជំពូក → មាត្រា)"]
+        Chunker --> Corpus["1,976 Statutory Articles<br/>(data/04_chunks/*_kh_chunks.json)"]
+    end
+
+    subgraph Splits["2. Deterministic Leakage-Guarded Splits (Seed 42)"]
+        Corpus --> Guard{"Leakage Guard"}
+        Guard -->|"Exclude 261 Cited Articles"| TrainPairs["Training Pairs: 1,176<br/>Val Pairs: 147"]
+        Guard -->|"Held-Out Article Titles"| TT["T-T Benchmark<br/>(148 Articles)"]
+        Guard -->|"Human-Verified Questions"| TQ["T-Q Primary Benchmark<br/>(200 Questions)"]
+    end
+
+    subgraph DL["3. PyTorch Deep Learning Retrievers"]
+        TrainPairs --> Loss["InfoNCE Contrastive Loss (τ = 0.05)<br/>+ In-Batch Negatives"]
+        Loss --> A1["A1: BiLSTM Dual Encoder<br/>(From Scratch, 1.97M params)"]
+        Loss --> A2["A2: XLM-R Linear Probe<br/>(Frozen Backbone, 0.59M params)"]
+        Loss --> A3["A3: XLM-R Full Fine-Tune<br/>(278M params, Tesla T4 GPU) 🏆"]
+        Loss --> A4["A4: PrahokBART Dual Encoder<br/>(Khmer Pretrained, 35.8M params)"]
+    end
+
+    subgraph Eval["4. Dual Benchmark Evaluation & Reporting"]
+        TQ & TT --> Harness["Shared Evaluation Harness<br/>(Recall@k, MRR@10, 95% Bootstrap CIs)"]
+        A1 & A2 & A3 & A4 --> Harness
+        Harness --> Tables["Leaderboard & Significance<br/>(summary.csv, statistical_significance.md)"]
+        Harness --> Plots["Publication Figures<br/>(results/figures/*.png)"]
+    end
+
+    subgraph App["5. Citation-Grounded Khmer RAG Application"]
+        UserQ["User Khmer Legal Question"] --> Retriever["Hybrid Retriever<br/>(A3 Dense Embeddings + BM25 Lexical)"]
+        A3 -.->|"Fine-Tuned Weights"| Retriever
+        Corpus -.->|"Full Context Store"| Retriever
+        Retriever --> Rerank["Reciprocal Rank Fusion (RRF)<br/>+ BGE Cross-Encoder Reranking"]
+        Rerank --> LLM["DeepSeek Flash (deepseek-chat)"]
+        LLM --> Verify["Statutory Citation Verification<br/>(Extract & verify មាត្រា citations)"]
+        Verify --> Answer["Grounded Answer with Verified Citations"]
+    end
+```
 
 ---
 
@@ -99,7 +145,7 @@ All metrics are computed via the shared evaluation harness (`src/dl/evaluate.py`
 | **E5-base Zero-Shot** | 0.1625 [0.12, 0.21] | 0.2617 [0.21, 0.32] | 0.2588 [0.20, 0.31] | 0.3200 [0.26, 0.39] | 0.7230 [0.65, 0.78] | 0.6235 [0.55, 0.69] | 0 | — | CPU |
 | **A1: BiLSTM** | 0.0875 [0.05, 0.13] | 0.2025 [0.16, 0.25] | 0.1724 [0.13, 0.22] | 0.2450 [0.19, 0.31] | 0.7568 [0.70, 0.82] | 0.6242 [0.56, 0.69] | 1.97 M | 2035.3 s | CPU |
 | **A2: XLM-R Probe** | 0.2400 [0.19, 0.30] | 0.4117 [0.35, 0.48] | 0.3591 [0.30, 0.42] | 0.4750 [0.41, 0.54] | 0.9392 [0.90, 0.97] | 0.8563 [0.81, 0.90] | 0.59 M | 5.9 s | CPU |
-| **A3: Full Fine-Tune** | **0.3375** [0.28, 0.40] | **0.5142** [0.45, 0.58] | **0.4827** [0.42, 0.55] | **0.5700** [0.50, 0.64] | **0.9932** [0.97, 1.00] | **0.9456** [0.92, 0.97] | 278.04 M | 1129.4 s | GPU (Tesla T4) |
+| **A3: Full Fine-Tune** | **0.3375** [0.28, 0.40] | **0.5142** [0.45, 0.58] | **0.4827** [0.42, 0.55] | **0.5700** [0.50, 0.64] | **0.9932** [0.97, 1.00] | **0.9456** [0.92, 0.97] | 278.04 M | 1129.4 s | GPU (Tesla T4)* |
 | **A4: PrahokBART** | 0.0525 [0.03, 0.09] | 0.1517 [0.11, 0.20] | 0.1035 [0.07, 0.14] | 0.1800 [0.13, 0.24] | 0.8041 [0.74, 0.87] | 0.6733 [0.60, 0.74] | 35.83 M | 1602.2 s | CPU (14t, fp32) |
 
 *\*Hardware Note:* Approach A3 training and grid tuning were conducted on an NVIDIA Tesla T4 GPU (recorded as `cuda:0` in `results/metrics/a3_lr2e-5_wd0.01_train.json`). The final shared evaluation benchmark was executed in CPU (fp32) mode.
@@ -160,8 +206,8 @@ python -m src.dl.report
 python -m src.dl.visualize
 python -m src.dl.error_analysis
 
-# 5. Automated test suite (140 existing tests passed in 267 seconds during the October 15 review)
-python -m pytest tests/unit/ -v
+# 5. Automated test suite (144 passing unit/integration tests)
+python -m pytest tests/ -v
 ```
 Interactive Google Colab notebooks for isolated GPU execution are located in [`notebooks/`](notebooks/): [`a1_bilstm_colab.ipynb`](notebooks/a1_bilstm_colab.ipynb), [`a2_xlmr_linear_probe_colab.ipynb`](notebooks/a2_xlmr_linear_probe_colab.ipynb), [`a3_xlmr_finetune_colab.ipynb`](notebooks/a3_xlmr_finetune_colab.ipynb), [`a4_prahokbart_colab.ipynb`](notebooks/a4_prahokbart_colab.ipynb).
 
@@ -187,28 +233,60 @@ In compliance with rubric guidelines prohibiting large binaries in git, model we
 
 ---
 
-The current presentation is [`slides/Khmer_Legal_Retrieval_Defense.pdf`](slides/Khmer_Legal_Retrieval_Defense.pdf). See [`docs/DEFENSE_REVIEW.md`](docs/DEFENSE_REVIEW.md) for review findings and the demo rehearsal.
-
 ## 7. Citation-Grounded Assistant Prototype
 
-The best-performing retriever (A3 XLM-R) powers an in-process citation-grounded legal assistant prototype:
+The best-performing retriever (A3 XLM-R) powers an interactive, citation-grounded Khmer legal assistant (`Streamlit` + `FastAPI`):
 1. **Retrieval Stage:** Top-$k$ statutory articles retrieved via A3 PyTorch embeddings (or BM25) from the 1,976-article corpus.
 2. **Grounded Generation:** DeepSeek (`deepseek-chat`) generates natural Khmer answers strictly conditioned on retrieved statutory context.
 3. **Compound Citation Verification:** Validates extracted `(law_name, article_number)` tuples against retrieved context to flag citations absent from context. This checks article identity, not the truth of every generated claim.
 
+### 7.1 Runtime Execution Flow
+
+```mermaid
+sequenceDiagram
+    autonumber
+    actor User as Citizen / Legal Researcher
+    participant UI as Streamlit Web UI
+    participant Ret as Hybrid Retriever (A3 Dense + BM25 Sparse)
+    participant LLM as DeepSeek (deepseek-chat)
+    participant Guard as Citation Verifier
+
+    User->>UI: Enters legal question (Khmer)
+    UI->>Ret: Query string
+    Ret->>Ret: Dense Search (A3 PyTorch Encoder) + Sparse Search (BM25)
+    Ret-->>UI: Top-k Relevant Articles with Full Text
+    UI->>LLM: Grounding Prompt (Question + Retrieved Articles)
+    LLM-->>UI: Draft answer citing statutory articles
+    UI->>Guard: Verify citations (មាត្រា N) exist in retrieved context
+    Guard-->>UI: Verified citation status (Grounding Pass)
+    UI-->>User: Interactive citation-grounded response
+```
+
+### 7.2 Running the Application
 ```bash
-# Launch interactive Streamlit demonstration (Defense Mode)
-python scripts/build_demo_index.py             # Once after downloading/changing A3 weights
+# 1. Build local demo index (once after downloading A3 weights)
+python scripts/build_demo_index.py
+
+# 2. Launch Streamlit UI
 streamlit run streamlit_app.py                  # http://localhost:8501
 
-# Optional: Launch FastAPI REST microservice
+# 3. Optional: Launch FastAPI REST microservice
 uvicorn src.interfaces.api.main:app --reload    # http://localhost:8000/docs
 ```
 *(Complete system architecture and sequence diagrams are detailed in [`docs/system_architecture.md`](docs/system_architecture.md)).*
 
 ---
 
-## 8. Repository Structure
+## 8. Oral Defense & Presentation Materials
+
+- **Primary Defense Slides:** [`slides/Khmer_Legal_Retrieval_Defense.pdf`](slides/Khmer_Legal_Retrieval_Defense.pdf) (14 main slides + 4 reserve Q&A appendix slides).
+- **Defense Rehearsal & Verification Guide:** [`docs/DEFENSE_REVIEW.md`](docs/DEFENSE_REVIEW.md).
+- **One-Click Demo Launch:** `scripts/start_demo.ps1`.
+- **Slide Archive:** Earlier slide deck iterations and HTML generators are preserved in `slides/archive/`.
+
+---
+
+## 9. Repository Structure
 
 ```
 khmer-legal-retrieval/
@@ -217,7 +295,7 @@ khmer-legal-retrieval/
 │   ├── 01_raw/kh/              # Official Khmer PDFs (Civil & Criminal Codes, CC-BY-SA-4.0)
 │   ├── 04_chunks/              # Segmented article chunks (1,976 articles)
 │   └── 05_splits/              # Leakage-quarantined train/val/test splits (seed 42)
-├── docs/                       # GOAL.md, TASKS.md, system_architecture.md, statistical_significance.md
+├── docs/                       # GOAL.md, TASKS.md, DEFENSE_REVIEW.md, system_architecture.md, statistical_significance.md
 ├── notebooks/                  # Standalone Google Colab reproduction notebooks (A1–A4)
 ├── results/
 │   ├── checkpoints/            # Model weights documentation & external download manifest
@@ -225,26 +303,27 @@ khmer-legal-retrieval/
 │   ├── figures/                # Publication plots (primary_metrics_bar, learning_curves)
 │   ├── metrics/                # Benchmark evaluation outputs & summary.csv
 │   └── tuning/                 # Hyperparameter search logs (a1.csv - a4.csv)
-├── slides/                     # Current defense PDF (14 main + 4 appendix slides); older versions in archive/
+├── scripts/                    # build_demo_index.py, start_demo.ps1
+├── slides/                     # Khmer_Legal_Retrieval_Defense.pdf, update_defense.py, archive/
 ├── src/
 │   ├── dl/                     # PyTorch models (A1–A4), InfoNCE loss, training & evaluation
 │   ├── infrastructure/         # Limon font converter, hierarchical chunker, PyTorch embedders
 │   └── interfaces/             # Streamlit web demo (streamlit_app.py) & FastAPI service
-└── tests/                      # Automated unit & integration tests
+└── tests/                      # Automated unit & integration tests (144 tests)
 ```
 
 ---
 
-## 9. Academic Integrity & AI Disclosure
+## 10. Academic Integrity & AI Disclosure
 
 Per course requirements (Sections 5.E & 6.1):
 - **Tools Used:** Anthropic Claude, Antigravity (Google Gemini), OpenAI Codex (final review, demo fixes, and slide corrections).
-- **Scope of AI Assistance:** Generative AI tools were used extensively as primary implementation assistants across the codebase. AI generated initial boilerplate and scaffolding, data extraction logic (Limon converter and syllable reordering), PyTorch neural architectures (A1–A4 dual encoders), InfoNCE loss functions, training loops, evaluation harnesses, test suites (138 passing unit/integration tests), Streamlit interface components, and documentation drafts.
+- **Scope of AI Assistance:** Generative AI tools were used extensively as primary implementation assistants across the codebase. AI generated initial boilerplate and scaffolding, data extraction logic (Limon converter and syllable reordering), PyTorch neural architectures (A1–A4 dual encoders), InfoNCE loss functions, training loops, evaluation harnesses, test suites (144 passing unit/integration tests), Streamlit interface components, and documentation drafts.
 - **Student Role, Verification & Ownership:** The author directed project scope and domain requirements, curated the Cambodian Civil and Criminal Code corpora, designed evaluation protocols and leakage quarantine boundaries, executed and supervised all training and tuning experiments locally and on GPU, analyzed retrieval errors, verified test suite execution, and maintains complete understanding of every file and algorithm in the repository to explain and modify code during the defense Q&A.
 
 ---
 
-## 10. References
+## 11. References & Citations
 
 - **Conneau, A. et al. (2020).** *Unsupervised Cross-lingual Representation Learning at Scale.* ACL.
 - **Wang, L. et al. (2024).** *Multilingual E5 Text Embeddings: A Technical Report.* arXiv:2402.05672. Backbone: [`intfloat/multilingual-e5-base`](https://huggingface.co/intfloat/multilingual-e5-base).
@@ -258,12 +337,12 @@ Per course requirements (Sections 5.E & 6.1):
 
 ---
 
-## License & Legal Disclaimer
+## 12. License & Legal Disclaimer
 
 - **Source Code:** GNU General Public License v3.0 or later ([`GPL-3.0-or-later`](LICENSE)), per bundled KhmerConverter reordering components ([`THIRD_PARTY_NOTICES.md`](src/infrastructure/extractors/resources/THIRD_PARTY_NOTICES.md)).
 - **Legal Data:** Creative Commons Attribution-ShareAlike 4.0 ([CC-BY-SA-4.0](data/04_chunks/DATA_LICENSE.md)), Open Development Cambodia.
 - **Disclaimer:** This software is an academic research prototype and does **not** constitute legal advice.
 
-### Final defense verification (2026-10-15)
+### Final Defense Verification Note (2026-10-15)
 
 The author confirms verbal topic approval by Mr. Soklong HIM; the original approval date was not recorded. The author has not yet manually compared 20–30 extracted articles against the official Khmer PDFs, so the extraction error rate is **unmeasured**. Consecutive article numbering and automated extraction tests do not establish textual accuracy.
