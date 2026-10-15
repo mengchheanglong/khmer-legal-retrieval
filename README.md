@@ -40,10 +40,11 @@ All statutory articles are extracted from official Khmer legal codes published b
 - **Civil Code (2007) / ក្រមរដ្ឋប្បវេណី:** 1,304 articles (591,728 characters).
 - **Criminal Code (2009) / ក្រមព្រហ្មទណ្ឌ:** 672 articles (285,984 characters).
 - **Total Corpus:** 1,976 articles (877,712 characters), indexed across all models.
+- **Data Availability:** Processed article chunks (`data/04_chunks/`) and splits (`data/05_splits/`) are committed for immediate reproduction; official raw PDFs can be downloaded from ODC via `python -m src.pipeline.download`.
 
 ### 2.2 Font Extraction & Unicode Normalization
 Official PDFs use legacy **Limon** fonts whose text layer encodes Latin code points (`maRta 336>-` renders visually as `មាត្រា ៣៣៦.-`). We implemented a custom pipeline (`src/infrastructure/extractors/limon_converter.py`) utilizing Khmer Software Initiative mapping tables and a Python 3 syllable reordering engine (34 unit tests).
-- **Automated Validation:** 0 leftover Latin code points, 0 broken sub-consonant clusters (`\s\u17D2`), 0 redundant spaces, and consecutive article verification (Civil 1–1304; Criminal 1–672).
+- **Automated Validation:** 0 leftover Latin code points, 0 broken sub-consonant clusters (`\s\u17D2`), 0 redundant spaces, and consecutive article verification (Civil 1–1304; Criminal 1–672). Note: automated checks verify structural and font consistency, while exhaustive manual proofreading across all 1,976 articles remains limited.
 - **Hierarchy:** `LegalHierarchicalChunker` preserves Book (គន្ថី), Title (មាតិកា), Chapter (ជំពូក), Section (ផ្នែក), and Article (មាត្រា) metadata.
 
 ### 2.3 Deterministic Splits & Leakage Quarantine (Seed 42)
@@ -53,7 +54,7 @@ To guarantee strict academic integrity and avoid test leakage, splits were deter
    - **Training Set (`train.jsonl`):** 1,176 pairs (890 Civil, 286 Criminal; 79.95%). Title line is removed from passage text.
    - **Validation Set (`val.jsonl`):** 147 pairs (107 Civil, 40 Criminal; 9.99%) for hyperparameter tuning and model selection.
    - **Secondary Benchmark (`test_titles.jsonl` / T-T):** 148 held-out article titles (10.06%) evaluating in-distribution retrieval.
-   - **Primary Benchmark (`ground_truth_qa_kh.json` / T-Q):** 200 human legal questions (100 Civil, 100 Criminal) citing 261 articles, evaluating out-of-distribution conversational legal query understanding.
+   - **Primary Benchmark (`ground_truth_qa_kh.json` / T-Q):** 200 human-curated legal questions (100 Civil, 100 Criminal) citing 261 articles, verified against the statutory text to evaluate out-of-distribution conversational legal query understanding.
 
 ### 2.4 Preprocessing
 - **Word-Level (BM25 & A1):** Segmented with `khmer-nltk` dictionary-based tokenizer; NFC normalized.
@@ -107,7 +108,9 @@ All metrics are computed via the shared evaluation harness (`src/dl/evaluate.py`
 | **A3: Full Fine-Tune** | **0.3375** [0.28, 0.40] | **0.5142** [0.45, 0.58] | **0.4827** [0.42, 0.55] | **0.5700** [0.50, 0.64] | **0.9932** [0.97, 1.00] | **0.9456** [0.92, 0.97] | 278.04 M | 1129.4 s | GPU (Tesla T4)* |
 | **A4: PrahokBART** | 0.0525 [0.03, 0.09] | 0.1517 [0.11, 0.20] | 0.1035 [0.07, 0.14] | 0.1800 [0.13, 0.24] | 0.8041 [0.74, 0.87] | 0.6733 [0.60, 0.74] | 35.83 M | 1602.2 s | CPU (14t, fp32) |
 
-*\*Hardware Note:* Approach A3 training and grid tuning were conducted on an NVIDIA Tesla T4 GPU (recorded as `cuda:0` in `results/metrics/a3_lr2e-5_wd0.01_train.json`). The final shared evaluation benchmark was executed in CPU (fp32) mode.
+*\*Hardware & Timing Notes:*
+- Approach A3 training and grid tuning were conducted on an NVIDIA Tesla T4 GPU (recorded as `cuda:0` in `results/metrics/a3_lr2e-5_wd0.01_train.json`). The final shared evaluation benchmark was executed in CPU (fp32) mode.
+- Approach A2's 5.9 s wall-clock time trains the 768→768 linear projection head on pre-cached backbone embeddings; it does not include initial one-time offline feature extraction.
 
 *Paired Bootstrap Significance (T-Q):* A3's improvements over BM25 ($\Delta = +0.1067$ Recall@5, $\Delta = +0.1477$ MRR@10) and over all neural baselines (A1, A2, A4) are statistically significant at $p < 0.001$. In contrast, linear probe A2 does not significantly outperform BM25 ($p = 0.9031$). Complete 14-comparison matrix documented in [`docs/statistical_significance.md`](docs/statistical_significance.md).
 
@@ -124,14 +127,14 @@ All metrics are computed via the shared evaluation harness (`src/dl/evaluate.py`
 1. **A3 XLM-R Full Fine-Tuning is the Definitive Winner:** Achieves **0.5142 Recall@5** and **0.4827 MRR@10**, delivering a +26.2% relative Recall@5 gain over BM25 and +96.5% over zero-shot E5. The relative MRR@10 gain over BM25 is +44.1%. Self-attention layers across all 12 transformer blocks successfully adapt multilingual representations to Khmer legal semantics.
 2. **Distribution Shift (In-Distribution T-T vs. Out-of-Distribution T-Q):** All models excel on held-out titles (T-T: A3 99.3%, BM25 97.3% Recall@5) because training pairs mirror title-passage formats. Conversational human questions (T-Q) induce severe distribution shift through colloquial synonyms (`សុពលភាព` [validity] vs statutory `មោឃភាព` [nullity]), causing BM25 and linear probes to degrade while A3 retains robust semantic matching.
 3. **PrahokBART (A4) Performance Differences:** While PrahokBART performs solidly on in-distribution titles (80.4% Recall@5), its performance drops on natural questions (15.2% Recall@5). This gap is hypothesized to arise from multiple interacting factors: PrahokBART was pre-trained using a sequence-to-sequence BART reconstruction objective rather than sentence-level contrastive alignment, and its compact 35.8M parameter capacity provides less representational bandwidth for lexical variability, although these factors were not independently ablated.
-4. **Efficiency vs. Accuracy:** A2 trains in 5.9 seconds with only 0.59M parameters and matches BM25, making it optimal for ultra-low-compute environments. A3 provides superior retrieval accuracy when GPU compute is accessible.
+4. **Efficiency vs. Accuracy:** A2's linear head trains in 5.9 seconds on cached embeddings with only 0.59M parameters and matches BM25, making it an efficient lightweight baseline. A3 provides superior retrieval accuracy when GPU compute is accessible.
 
 ### 5.4 Error Analysis & Limitations (`results/error_analysis/`)
 Analysis of failure cases across the 200 primary benchmark queries at $k=5$:
 - **Vocabulary Mismatch / Paraphrasing:** The automatic categorizer assigns its residual category to 57.5% of BM25 misses (61 queries) and 60.5% of A3 misses (52 queries). These are heuristic labels, not manually established causes. Dense retrieval reduces total misses from 106 to 86 by bridging conversational phrasings to formal legal terms.
 - **Multi-Article Complexity:** 15–27% of errors stem from legal questions spanning multiple related provisions.
 - **Code Confusion:** Rare in A3 (1 error, 1.2%), demonstrating clear discrimination between Civil and Criminal statutes.
-- **Limitations:** Scope limited to Civil and Criminal Codes (Labour Law excluded pending OCR); evaluation benchmark comprises 200 verified questions (hence 95% bootstrap CIs reported). Detailed case studies are documented in [`results/error_analysis/worked_examples.md`](results/error_analysis/worked_examples.md).
+- **Limitations:** Scope limited to Civil and Criminal Codes (Labour Law excluded pending OCR); evaluation benchmark comprises 200 verified questions (hence 95% bootstrap CIs reported); and automated text extraction checks verify consecutive numbering and 0 leftover Latin code points, but do not replace exhaustive manual proofreading across all 1,976 articles. Detailed case studies are documented in [`results/error_analysis/worked_examples.md`](results/error_analysis/worked_examples.md).
 
 ---
 
@@ -159,6 +162,7 @@ python -m src.dl.experiments.tune_a1                # A1 BiLSTM from scratch
 python -m src.dl.experiments.tune_a2                # A2 XLM-R linear probe
 python -m src.dl.experiments.tune_a3 --grid full     # A3 XLM-R full fine-tuning (complete 6-run grid)
 python -m src.dl.experiments.tune_a4                # A4 PrahokBART dual encoder
+python -m src.dl.evaluate --model a4                # A4 held-out benchmark evaluation
 
 # 4. Generate consolidated reports, significance tests, and figures
 python -m src.dl.report
@@ -253,9 +257,9 @@ khmer-legal-retrieval/
 
 ## 10. Academic Integrity & AI Disclosure
 
-- **Tools Used:** Anthropic Claude, Antigravity (Google Gemini), OpenAI Codex.
-- **AI Assistance:** Generative AI was used as a coding assistant for writing boilerplate, scaffolding scripts, tests, and the Streamlit UI.
-- **Author's Role:** All model training, experiments, hyperparameter tuning, and evaluations were conducted and analyzed directly by the author.
+- **Tools Used:** Anthropic Claude, Google Gemini (Antigravity), OpenAI Codex.
+- **Scope of AI Assistance:** Generative AI was used extensively as a coding and implementation assistant across the repository, including data preprocessing logic, PyTorch neural architectures (A1–A4 dual encoders), training loops, evaluation harnesses, test suites (144 tests), Streamlit interface components, and documentation drafts.
+- **Author's Role & Verification:** The author conceived the research design, curated the Cambodian legal corpora, and personally configured, executed, and supervised all model training runs and hyperparameter tuning sweeps locally and on GPU. The author performed all empirical evaluations, verified every line of code and test result, and maintains full code ownership to explain, defend, and live-code any component during the defense Q&A.
 
 ---
 
