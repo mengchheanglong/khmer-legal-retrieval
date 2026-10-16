@@ -271,7 +271,7 @@ uvicorn src.interfaces.api.main:app --reload    # http://localhost:8000/docs
 
 ## 8. Oral Defense & Presentation Materials
 
-- **Primary Defense Slides:** [`slides/Khmer_Legal_Retrieval_Defense.pdf`](slides/Khmer_Legal_Retrieval_Defense.pdf) (14 main slides + 4 reserve Q&A appendix slides).
+- **Primary Defense Slides:** [`slides/Khmer_Legal_Retrieval_Defense.pdf`](slides/Khmer_Legal_Retrieval_Defense.pdf) (16 slides: 15 core defense slides + References).
 - **Defense Rehearsal & Verification Guide:** [`docs/DEFENSE_REVIEW.md`](docs/DEFENSE_REVIEW.md).
 - **One-Click Demo Launch:** `scripts/start_demo.ps1`.
 - **Slide Archive:** Earlier slide deck iterations and HTML generators are preserved in `slides/archive/`.

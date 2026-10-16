@@ -1,8 +1,8 @@
 # Current presentation
 
-Present **Khmer_Legal_Retrieval_Defense.pdf**: 14 main slides and 4 appendix slides.
-It is based on the latest PDF supplied by the author, with missing experimental
-setup/results evidence added and misleading claims corrected.
+Present **Khmer_Legal_Retrieval_Defense.pdf**: 16 slides (15 core defense slides + References).
+It is based on the latest PDF deck supplied by the author with full experimental
+setup, results tables, learning curves, and user flow.
 
 - `update_defense.py` reproducibly edits the supplied PDF and pulls tables from
   `results/metrics/summary.csv` without changing experiment results.
