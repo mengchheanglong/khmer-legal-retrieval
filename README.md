@@ -3,7 +3,7 @@
 > **Deep Learning Final Project (Individual)** — Bachelor of Software Engineering, Department of Engineering  
 > **Lecturer:** Mr. Soklong HIM · Academic Year 2026–2027  
 > **Author:** Long Mengchheang ([@mengchheanglong](https://github.com/mengchheanglong))  
-> **Presentation Deck:** [`slides/Khmer_Legal_Retrieval_Defense.pdf`](slides/Khmer_Legal_Retrieval_Defense.pdf) (10-min presentation + 5-min Q&A) · **Weight Checkpoints:** [Hugging Face Hub](https://huggingface.co/mengchheanglong/khmer-legal-xlmr-retriever)
+> **Presentation Deck:** [`slides/Khmer_Legal_Retrieval_Defense.pdf`](slides/Khmer_Legal_Retrieval_Defense.pdf) (16 slides · 15-min presentation + 5-min Q&A) · **Weight Checkpoints:** [Hugging Face Hub](https://huggingface.co/mengchheanglong/khmer-legal-xlmr-retriever)
 
 [![Python 3.11+](https://img.shields.io/badge/Python-3.11+-blue.svg)](https://python.org)
 [![PyTorch](https://img.shields.io/badge/PyTorch-2.x-ee4c2c.svg)](https://pytorch.org)
@@ -249,10 +249,13 @@ In compliance with rubric guidelines prohibiting large binaries in git, model we
 
 ## 7. Citation-Grounded Assistant Prototype
 
-The best-performing retriever (A3 XLM-R) powers an interactive, citation-grounded Khmer legal assistant (`Streamlit` + `FastAPI`):
+The best-performing retriever (A3 XLM-R) powers an interactive, citation-grounded Khmer legal assistant prototype (`Streamlit` + `FastAPI`):
 1. **Retrieval Stage:** Top-$k$ statutory articles retrieved via A3 PyTorch embeddings (or BM25) from the 1,976-article corpus.
 2. **Grounded Generation:** DeepSeek (`deepseek-chat`) generates natural Khmer answers strictly conditioned on retrieved statutory context.
-3. **Compound Citation Verification:** Validates extracted `(law_name, article_number)` tuples against retrieved context to flag citations absent from context. This checks article identity, not the truth of every generated claim.
+3. **Compound Citation Verification:** Validates extracted `(law_name, article_number)` tuples against retrieved context to flag citations absent from context. This checks article presence in context, not whether the legal explanation or reasoning is factually correct.
+
+> **Runtime Architecture & Citation Scope:**  
+> The primary Streamlit demo performs local retrieval using precomputed PyTorch embeddings and NumPy similarity search. The separate FastAPI architecture supports PostgreSQL/pgvector when configured. The application is an academic prototype, and citation verification does not guarantee legal correctness.
 
 ### 7.1 Running the Application
 ```bash
@@ -271,7 +274,7 @@ uvicorn src.interfaces.api.main:app --reload    # http://localhost:8000/docs
 
 ## 8. Oral Defense & Presentation Materials
 
-- **Primary Defense Slides:** [`slides/Khmer_Legal_Retrieval_Defense.pdf`](slides/Khmer_Legal_Retrieval_Defense.pdf) (16 slides: 15 core defense slides + References).
+- **Primary Defense Slides:** [`slides/Khmer_Legal_Retrieval_Defense.pdf`](slides/Khmer_Legal_Retrieval_Defense.pdf) (16 slides: 15 core defense slides + References; structured for a 15-min presentation + 5-min Q&A).
 - **Defense Rehearsal & Verification Guide:** [`docs/DEFENSE_REVIEW.md`](docs/DEFENSE_REVIEW.md).
 - **One-Click Demo Launch:** `scripts/start_demo.ps1`.
 

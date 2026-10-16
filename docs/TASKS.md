@@ -29,9 +29,9 @@
 | AI-use disclosure in README (§5E) | ✅ | Fully and honestly disclosed in README §10 |
 | Repo contains README, requirements.txt, code, `results/`, `slides/` (§6.1) | ✅ | All required directories and files populated and committed |
 | `requirements.txt` with exact packages (§6.1) | ✅ | Exact package versions pinned in `requirements.txt` |
-| Weights > 50 MB hosted externally with link (§9) | 🟡 | A3 checkpoint (~1.1 GB) saved locally; upload instructions documented in `results/checkpoints/README.md` |
+| Weights > 50 MB hosted externally with link (§9) | ✅ | A3 checkpoint (~1.1 GB) hosted on Hugging Face Hub ([mengchheanglong/khmer-legal-xlmr-retriever](https://huggingface.co/mengchheanglong/khmer-legal-xlmr-retriever)) |
 | Regular commit history (§6.1) | ✅ | Regular, small, descriptive commits maintained across all PRs #1–#7 |
-| Slides 10–20, required structure (§6.2, §6.3) | ✅ | 18 slides: 14 main slides plus 4 reserve Q&A appendix slides; rehearsal required to stay within 10 minutes, compiled to `slides/Khmer_Legal_Retrieval_Defense.pdf` |
+| Slides 10–20, required structure (§6.2, §6.3) | ✅ | 16 slides: 15 core defense slides + References; rehearsal required to stay within 15 minutes, compiled to `slides/Khmer_Legal_Retrieval_Defense.pdf` |
 
 ---
 
@@ -153,7 +153,7 @@
 
 ---
 
-## Phase 8: Slides & Presentation (10–20 slides, 10 min + 5 min Q&A)
+## Phase 8: Slides & Presentation (10–20 slides, 15 min + 5 min Q&A)
 - [x] Problem & motivation (Khmer, official text, input → output)
 - [x] Dataset & pipeline (ODC PDFs, Limon problem and conversion, article chunking, sizes, splits, leakage guard)
 - [x] Architectures & strategies (A1–A4 diagrams, tokenization contrast, justification)
@@ -161,7 +161,7 @@
 - [x] Results (single table, learning curves, metric chart)
 - [x] Discussion & error analysis (why the winner won, Khmer failure cases, limitations)
 - [x] Conclusion & future work; appendix (tuning table, examples, parameter counts)
-- [x] Export to `slides/Khmer_Legal_Retrieval_Defense.pdf`; rehearse to ≤ 10 minutes (§6.2, §6.3)
+- [x] Export to `slides/Khmer_Legal_Retrieval_Defense.pdf`; rehearse to ≤ 15 minutes (§6.2, §6.3)
 - [x] Q&A prep: Limon reordering, InfoNCE, in-batch negatives, pooling, freezing, checkpoint/resume, each metric, every line of `src/dl/`
 
 ---

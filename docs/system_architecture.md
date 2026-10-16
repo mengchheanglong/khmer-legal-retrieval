@@ -67,9 +67,9 @@ The project provides two execution paths designed according to **Clean Architect
 
 ### Path A: Interactive Streamlit UI (In-Process Defense Mode)
 The interactive demo (`streamlit_app.py`) executes use cases directly **in-process** without requiring external database or microservice overhead:
-1. **Retriever Ingestion & Model Selection:** Ingests the 1,976 Khmer statutory articles and runs local retrieval via our winning PyTorch checkpoint (Approach A3: XLM-R full fine-tune) or the lexical BM25 baseline with `khmer-nltk` tokenization.
+1. **Retriever Ingestion & Model Selection:** Ingests the 1,976 Khmer statutory articles and runs local retrieval using precomputed PyTorch embeddings and NumPy similarity search (`data/indices/khmer_benchmark_embeddings.pt` via our winning Approach A3 checkpoint) or the lexical BM25 baseline with `khmer-nltk` tokenization.
 2. **Grounded Synthesis:** Calls DeepSeek Flash (`deepseek-chat`) with strict system prompts requiring article citations (`មាត្រា N` / `(Civil Code 2007, Article N)`).
-3. **Compound Citation Verification:** Verifies citations against compound `(law_name, article_number)` identifiers to avoid Civil vs Criminal article collisions, and flags whether retrieved articles provide factual support vs explicit lack-of-coverage disclaimers.
+3. **Compound Citation Verification:** Verifies citations against compound `(law_name, article_number)` identifiers to avoid Civil vs Criminal article collisions, and flags whether cited articles exist in the retrieved context. (Note: Citation verification checks whether cited articles are present in the retrieved context; it does not guarantee that the legal explanation or reasoning is factually correct).
 4. **Live Benchmark Audit:** Surfaces real metrics from `results/metrics/summary.csv` and side-by-side comparative diagnostics.
 
 ```mermaid
@@ -82,12 +82,12 @@ sequenceDiagram
     participant Guard as Compound Citation Verifier
 
     User->>UI: Select retriever (A3 XLM-R / BM25) & ask Khmer legal question
-    UI->>Ret: Search question against 1,976 articles
+    UI->>Ret: Search question against 1,976 articles (PyTorch/NumPy)
     Ret-->>UI: Top-5 retrieved statutory articles with text & similarity
     UI->>LLM: Grounded prompt (question + retrieved articles)
     LLM-->>UI: Generated legal response citing articles
-    UI->>Guard: Verify (law, article) existence in retrieved context & check factual support
-    Guard-->>UI: Verified / unverified status + factual support notes
+    UI->>Guard: Verify (law, article) presence in retrieved context
+    Guard-->>UI: Verified / unverified context match status
     UI-->>User: Render legal analysis, citation badges, and retrieved statutory context
 ```
 
@@ -95,4 +95,7 @@ sequenceDiagram
 The repository also includes a production-style REST API (`FastAPI` at `src/interfaces/api/main:app`) exposing standard OpenAPI endpoints (`/api/v1/qa`, `/api/v1/retrieval`):
 - **Dependency Injection:** Resolves domain ports to infrastructure adapters via `src/interfaces/api/dependencies.py`.
 - **Flexible Embedders:** Prioritizes local fine-tuned PyTorch A3 weights (`TorchEncoderEmbedding`) when available, falling back gracefully to external embeddings (`OpenAIEmbedding`).
-- **Storage Layer:** Integrates PostgreSQL + pgvector for persistent vector indexing, with automatic in-memory fallback.
+- **Storage Layer:** Integrates PostgreSQL + pgvector for persistent vector indexing, with automatic in-memory fallback when unconfigured.
+
+> **Academic Prototype & Legal Disclaimer:**  
+> The application is an academic research prototype, and citation verification does not guarantee legal correctness. Official Khmer gazettes remain the sole legal authority.

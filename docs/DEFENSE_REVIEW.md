@@ -6,7 +6,7 @@ This document records findings from the final pre-defense review of the Khmer Le
 
 ## Slide Deck
 
-The current presentation is `slides/Khmer_Legal_Retrieval_Defense.pdf` (14 main slides + 4 appendix slides).
+The current presentation is `slides/Khmer_Legal_Retrieval_Defense.pdf` (16 slides: 15 core defense slides + References; structured for a 15-min presentation + 5-min Q&A).
 Older HTML/PDF decks have been archived to `slides/archive/`.
 
 ## Key Corrections Made
