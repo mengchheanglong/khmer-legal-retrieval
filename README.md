@@ -274,7 +274,6 @@ uvicorn src.interfaces.api.main:app --reload    # http://localhost:8000/docs
 - **Primary Defense Slides:** [`slides/Khmer_Legal_Retrieval_Defense.pdf`](slides/Khmer_Legal_Retrieval_Defense.pdf) (16 slides: 15 core defense slides + References).
 - **Defense Rehearsal & Verification Guide:** [`docs/DEFENSE_REVIEW.md`](docs/DEFENSE_REVIEW.md).
 - **One-Click Demo Launch:** `scripts/start_demo.ps1`.
-- **Slide Archive:** Earlier slide deck iterations and HTML generators are preserved in `slides/archive/`.
 
 ---
 
@@ -296,7 +295,7 @@ khmer-legal-retrieval/
 │   ├── metrics/                # Benchmark evaluation outputs & summary.csv
 │   └── tuning/                 # Hyperparameter search logs (a1.csv - a4.csv)
 ├── scripts/                    # build_demo_index.py, start_demo.ps1
-├── slides/                     # Khmer_Legal_Retrieval_Defense.pdf, update_defense.py, archive/
+├── slides/                     # Khmer_Legal_Retrieval_Defense.pdf
 ├── src/
 │   ├── dl/                     # PyTorch models (A1–A4), InfoNCE loss, training & evaluation
 │   ├── infrastructure/         # Limon font converter, hierarchical chunker, PyTorch embedders
